@@ -1,6 +1,11 @@
 django==3.2.16
 django-environ
 mysqlclient
-setuptools-rust
 channels
-pyopenssl==22.1.0
+pyopenssl==21.0.0
+cryptography==36.0.1
+django-db-views
+djangorestframework == 3.11.0
+coreapi
+requests_toolbelt
+py_eureka_client

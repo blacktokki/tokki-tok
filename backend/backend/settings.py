@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
-    'video',
+    'rest_framework',
+    'django_db_views',
+    'account',
+    'messenger',
 ]
 
 MIDDLEWARE = [
@@ -96,6 +99,12 @@ DATABASES = {
     }
 }
 
+# Auth settings
+AUTH_USER_MODEL = "account.user"
+AUTHENTICATION_BACKENDS = [
+    'account.backends.AuthBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -139,3 +148,22 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TASK_SERVICE_DOMAIN = 'localhost:8080'
+
+REST_FRAMEWORK = {
+    # 'DEFAULT_PAGINATION_CLASS': 'worknote.renders.CustomPagenation',
+    'DEFAULT_PERMISSION_CLASSES': (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    # 'DEFAULT_FILTER_BACKENDS': [
+    #     'django_filters.rest_framework.DjangoFilterBackend',
+    #     'worknote.customs.CustomOrderingFilter',
+    #     # 'drf_replace_ordering_filter.filters.ReplaceFieldsOrderingFilter'
+    # ]
+}
