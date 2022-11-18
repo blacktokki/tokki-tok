@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'channels',
     'rest_framework',
+    'django_filters',
     'django_db_views',
     'account',
     'messenger',
@@ -161,9 +162,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    # 'DEFAULT_FILTER_BACKENDS': [
-    #     'django_filters.rest_framework.DjangoFilterBackend',
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
     #     'worknote.customs.CustomOrderingFilter',
     #     # 'drf_replace_ordering_filter.filters.ReplaceFieldsOrderingFilter'
-    # ]
+    ]
 }

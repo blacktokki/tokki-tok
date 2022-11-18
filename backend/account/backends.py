@@ -17,8 +17,11 @@ class AuthBackend(BaseBackend):
         headers = {"X-CSRF-TOKEN": csrf, "Content-Type": mp_encoder.content_type}
         res = sessions.post(f"{url}/login", headers=headers, data=mp_encoder)
         if res.ok and res.status_code == 200 and len(res.history) == 0:
+            res = sessions.get(f"{url}/api/v1/user/?self=true")
+            _username = res.json().get('value')[0]['username']
+            print(_username)
             # request.session['username'] = username
-            return get_user_model().objects.get_by_natural_key(username)
+            return get_user_model().objects.get_by_natural_key(_username)
         return None
 
     def get_user(self, user_id):

@@ -1,9 +1,17 @@
 from rest_framework import viewsets
-from .serializers import BoardSerializer, ChannelSerializer, MessengerMemberSerializer, MessageSerializer
-from .models import Board, Channel, ChannelContent, MessengerMember, Message
+
+from account.filtersets import GroupFilterSet
+from account.models import Group
+from .serializers import BoardSerializer, ChannelSerializer, ChannelGroupSerializer, MessengerMemberSerializer, MessageSerializer
+from .models import Board, Channel, MessengerMember, Message
 
 
 # Create your views here.
+class ChannelGroupViewSet(viewsets.ModelViewSet):
+    serializer_class = ChannelGroupSerializer
+    filterset_class = GroupFilterSet
+    queryset = Group.objects.all()
+
 
 class ChannelViewSet(viewsets.ModelViewSet):
     serializer_class = ChannelSerializer

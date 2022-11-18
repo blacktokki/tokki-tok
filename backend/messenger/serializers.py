@@ -1,6 +1,13 @@
 from rest_framework import serializers
+
+from account.models import Group
 from .models import Board, Channel, MessengerMember, Message
 
+
+class ChannelGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
 
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:

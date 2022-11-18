@@ -1,15 +1,12 @@
+from argparse import Action
 from rest_framework import viewsets
-from .serializers import MembershipSerializer, GroupSerializer
-from .models import Membership, Group
 
+from account.filtersets import  UserFilterSet
+from .serializers import UserSerializer
+from .models import User
 
 # Create your views here.
-
-class GroupViewSet(viewsets.ModelViewSet):
-    serializer_class = GroupSerializer
-    queryset = Group.objects.all()
-
-
-class MembershipViewSet(viewsets.ModelViewSet):
-    serializer_class = MembershipSerializer
-    queryset = Membership.objects.all().select_related('user')
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    filterset_class = UserFilterSet
+    queryset = User.objects.all()
