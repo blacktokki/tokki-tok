@@ -1,10 +1,23 @@
 from django.db import models, migrations, connections, DEFAULT_DB_ALIAS
 from django_db_views.operations import ViewRunPython
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django_db_views.db_view import DBView
+
+
+class CustomUserManager(UserManager):
+    def annotate_membership_set(self):
+        return self.prefetch_related(
+            models.Prefetch('membership_set', Membership.objects.annotate(
+                # parent_group_id=models.F('group__parent_id'),
+                root_group_id=models.F('group__root_id'),
+                image_url=models.F('group__image_url'),
+                groupname=models.F('group__name')
+            )))
+
 
 # Create your models here.
 class User(AbstractUser, DBView):
+    objects = CustomUserManager()
     image_url = models.CharField(max_length=255, help_text='')
     
     view_definition = """
@@ -23,6 +36,10 @@ class User(AbstractUser, DBView):
         NOW() AS last_login
     FROM {0}.user as us
     """
+
+    @property
+    def name(self):
+        return self.last_name
 
     class Meta:
         managed = False

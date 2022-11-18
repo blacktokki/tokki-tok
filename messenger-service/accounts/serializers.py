@@ -3,12 +3,25 @@ from .models import User, Membership
 
 
 class UserSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(read_only=True)
     class Meta:
         model = User
-        exclude = ['password', 'groups', 'user_permissions']
+        exclude = ['password', 'groups', 'user_permissions', 'first_name', 'last_name']
 
 
-class MembershipSerializer(serializers.ModelSerializer):
+class MembershipUserSerializer(serializers.ModelSerializer):
+    # parent_group_id = serializers.IntegerField(read_only=True)
+    root_group_id = serializers.IntegerField(read_only=True)
+    image_url = serializers.CharField(read_only=True)
+    groupname = serializers.CharField(read_only=True)
+    
     class Meta:
         model = Membership
-        fields = '__all__'
+        exclude = ['user']
+
+
+class UserMembershipSerializer(UserSerializer):
+    membership_set = MembershipUserSerializer(many=True)
+    class Meta:
+        model = User
+        exclude = UserSerializer.Meta.exclude

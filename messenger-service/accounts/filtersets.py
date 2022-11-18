@@ -1,24 +1,15 @@
 import django_filters
-from .models import Group, User
+from .models import User
 
 
 class UserFilterSet(django_filters.FilterSet):
-    _self = django_filters.BooleanFilter(method='self_filter', help_text='self')
+    name =django_filters.CharFilter(field_name='last_name', label='name', help_text='name')
+    _self = django_filters.BooleanFilter(method='self_filter', label='self', help_text='self')
 
     class Meta:
         model = User
-        exclude = ['password', 'groups', 'user_permissions']
+        exclude = ['password', 'groups', 'user_permissions', 'first_name', 'last_name']
 
     def self_filter(self, queryset, name, value):
         return queryset.filter(id=self.request.user.id)
 
-
-class GroupFilterSet(django_filters.FilterSet):
-    _self = django_filters.BooleanFilter(method='self_filter', help_text='self')
-
-    def self_filter(self, queryset, name, value):
-        return queryset.filter(membership__user_id=self.request.user.id, root_id__isnull=True)
-
-    class Meta:
-        model = Group
-        fields = '__all__'

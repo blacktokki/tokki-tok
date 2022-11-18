@@ -13,7 +13,6 @@ import messenger.viewsets as messenger_api
 
 router = routers.DefaultRouter()
 router.register('users', accounts_api.UserViewSet)
-router.register('groups', messenger_api.ChannelGroupViewSet)
 router.register('channels', messenger_api.ChannelViewSet)
 router.register('messages', messenger_api.MessageViewset)
 router.register('boards', messenger_api.BoardViewset)
