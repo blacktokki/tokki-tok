@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from account.filtersets import GroupFilterSet
-from account.models import Group
+from accounts.filtersets import GroupFilterSet
+from accounts.models import Group
 from .serializers import BoardSerializer, ChannelSerializer, ChannelGroupSerializer, MessengerMemberSerializer, MessageSerializer
 from .models import Board, Channel, MessengerMember, Message
 

@@ -1,7 +1,6 @@
-from argparse import Action
 from rest_framework import viewsets
 
-from account.filtersets import  UserFilterSet
+from accounts.filtersets import  UserFilterSet
 from .serializers import UserSerializer
 from .models import User
 

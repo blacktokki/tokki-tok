@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'django_db_views',
-    'account',
+    'accounts',
     'messenger',
 ]
 
@@ -101,9 +101,9 @@ DATABASES = {
 }
 
 # Auth settings
-AUTH_USER_MODEL = "account.user"
+AUTH_USER_MODEL = "accounts.user"
 AUTHENTICATION_BACKENDS = [
-    'account.backends.AuthBackend',
+    'accounts.backends.AuthBackend',
     # 'django.contrib.auth.backends.ModelBackend',
 ]
 

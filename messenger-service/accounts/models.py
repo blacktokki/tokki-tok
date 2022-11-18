@@ -62,7 +62,7 @@ class BaseMigrationMixin:
         return sql.template.startswith('ALTER TABLE') and str(sql.parts.get('column', None)) in ['`user_id`', '`group_id`', '`membership_id`']
 
     def _format_view_sql(self):
-        if self.app_label != 'account':
+        if self.app_label != 'accounts':
             return
         for op in self.operations:
             if isinstance(op, ViewRunPython):

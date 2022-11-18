@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('account', '0002_auto_20221116_0501'),
+        ('accounts', '0002_auto_20221116_0501'),
     ]
 
     operations = [
@@ -22,8 +22,8 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(db_column='ch_type', default='messenger', max_length=100)),
                 ('description', models.TextField(blank=True, db_column='ch_description', default='', null=True)),
                 ('is_archive', models.BooleanField(db_column='ch_is_archive', default=False)),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='account.group')),
-                ('owner', models.ForeignKey(db_column='user_id', on_delete=django.db.models.deletion.CASCADE, to='account.user')),
+                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.group')),
+                ('owner', models.ForeignKey(db_column='user_id', on_delete=django.db.models.deletion.CASCADE, to='accounts.user')),
             ],
             options={
                 'db_table': 'channel',
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='messenger.channel')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='account.user')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.user')),
             ],
             options={
                 'db_table': 'channel_content',
@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 ('mobile_notification', models.BooleanField(db_column='ms_mobile_notification', default=True)),
                 ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='messenger.channel')),
                 ('last_message', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='messenger.message')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='account.user')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.user')),
             ],
             options={
                 'db_table': 'messenger_member',

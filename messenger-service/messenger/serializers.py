@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from account.models import Group
+from accounts.models import Group
 from .models import Board, Channel, MessengerMember, Message
 
 

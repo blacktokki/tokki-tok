@@ -6,8 +6,7 @@
 # * param2: database username
 # * param3: database password
 
-PROPERTY_FILE=./.env
-FRONTEND_DIRECTORY=./frontend
+PROPERTY_FILE=./messenger-service/backend/.env
 
 git config user.email "$1@github.com"
 git config user.name "$1"

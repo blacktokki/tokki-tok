@@ -1,6 +1,6 @@
 from django.db import models
 
-from account.models import Group, User
+from accounts.models import Group, User
 
 # Create your models here.
 
