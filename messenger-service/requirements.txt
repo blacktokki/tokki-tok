@@ -9,3 +9,5 @@ djangorestframework == 3.11.0
 coreapi
 requests_toolbelt
 py_eureka_client
+gunicorn
+uvicorn
