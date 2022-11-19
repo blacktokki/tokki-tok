@@ -3,14 +3,11 @@ from .models import Channel, ChannelContent, MessengerMember
 
 
 class ChannelFilterSet(django_filters.FilterSet):
-    messenger_user_id = django_filters.NumberFilter(label='messenger_user_id', method='messenger_user_filter')
+    messenger_user_id = django_filters.NumberFilter(label='messenger_user_id', field_name='messengermember__user_id')
 
     class Meta:
         model = Channel
         fields = '__all__'
-
-    def messenger_user_filter(self, queryset, name, value):
-        return queryset.filter(messenger_member__user_id=value)
 
 
 class ChannelContentFilterSet(django_filters.FilterSet):

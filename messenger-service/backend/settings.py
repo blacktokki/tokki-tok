@@ -159,12 +159,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'accounts.authentication.CsrfExemptSessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
-    #     'worknote.customs.CustomOrderingFilter',
+    #     'CustomOrderingFilter',
     #     # 'drf_replace_ordering_filter.filters.ReplaceFieldsOrderingFilter'
     ]
 }
