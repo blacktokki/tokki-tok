@@ -1,5 +1,5 @@
 
-import { Group, User } from '../types';
+import { User, UserMembership } from '../types';
 import axios from './axios';
 
 export const login = async(username:string, password:string) => {
@@ -25,23 +25,27 @@ export const guestLogin =  async() => {
 
 export const checkLogin = async() => {
     try{
-        const value = (await axios.get("/api/v1/users/?_self=true"))?.data
+        const value = (await axios.get("/api/v1/users/memberships/?_self=true"))?.data
         if (value && value.length){
-            return value[0] as User
+            return value[0] as UserMembership
         }
         return null
     }
     catch(e){
         throw {
             error:e,
-            isOffline:e.code == "ERR_NETWORK" || e.message && (e.message as string).startsWith("Cannot read")
+            isOffline:((e as any).code == "ERR_NETWORK" || (e as any).message && ((e as any).message as string).startsWith("Cannot read"))
         }
     }
 }
 
-// export const getUserList = async (group:Group)=>{
-//     return (await axios.get(`/api/v1/users/?groupId=${group.id}`) ).data.value as User[]
-// }
+export const getUserList = async (group_id:number)=>{
+    return (await axios.get(`/api/v1/users/?group_id=${group_id}`) ).data as User[]
+}
+
+export const getUserMembershipList = async (group_id:number)=>{
+    return (await axios.get(`/api/v1/users/memberships/?group_id=${group_id}`) ).data as UserMembership[]
+}
 
 // export const getGroup = async (user:User)=>{
 //     return (await) axios.get(``)

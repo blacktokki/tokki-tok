@@ -3,31 +3,60 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
-export type Group = {
-  id?:number,
-  rootId?:number,
-  parentId?:number,
-  name:string,
-  imageUrl?:string
-}
+import { PathConfig } from "@react-navigation/native"
+
+export type Screens = Record<string, PathConfig & {title:string, component:React.ComponentType<any>, options?:(props:{navigation:any, route:any}, windowType:'landscape'|'portrait')=>any}>
 
 export type User = {
   id:number,
-  isAdmin:boolean,
-  isGuest:boolean,
+  is_staff:boolean,
   name:string,
   username:string,
   imageUrl?:string
-  groupList: Group[]
 }
 
-// export type Membership = {
-//   id?:number
-//   userId:number,
-//   name:string,
-//   imageUrl?:string
-// }
+export type Membership = {
+  id?:number
+  root_group_id?:number,
+  image_url?:string
+  groupname:string,
+  group:number
+}
 
-// export type GroupMembership = Group & {
-//   membershipList: Membership[]
-// }
+export type UserMembership =  User & {
+  membership_set:Membership[]
+}
+
+export type Channel = {
+  id?: number,
+  name: string,
+  type: "board"| "messenger",
+  description: string,
+  is_archive: boolean,
+  owner: number,
+  group: number
+}
+export type Board = {
+  id?: number,
+  title:string,
+  content: string,
+}
+
+export type EditBoard = Board & {
+  channel:number
+  user?:number
+}
+
+export type BoardContent = {
+  id: number,
+  board_set:Board[]
+  user: number,
+  channel: number
+  created: string,
+  updated: string,
+  name: string
+}
+
+export type MessengerContent = any
+
+export type MessengerMember = any

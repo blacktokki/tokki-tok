@@ -4,13 +4,14 @@ import { View } from 'react-native';
 
 import useResizeWindow from '../hooks/useResizeWindow';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import {main, login} from '../screens/main';
+import {main, login, modal} from '../screens';
 import DrawerNavigator from './DrawerNavigator';
 import useLoginContext, {LoginProvider} from '../hooks/useLoginContext';
 
 const Root = createStackNavigator();
 
 export default function RootNavigator() {
+    const windowType = useResizeWindow();
     return (
             <LoginProvider>
                 <Root.Navigator
@@ -19,12 +20,14 @@ export default function RootNavigator() {
                     screenOptions={{
                         cardStyle:{
                             backgroundColor:"transparent",
-                            opacity:0.99
+                            opacity:0.99,
                         }
                     }}
                 >
-                    <Root.Screen name="Main" component={MainNavigator}/>
-                    {/* <Root.Screen name="Modal" component={}/> */}
+                    <Root.Screen name="Main" component={MainNavigator} options={{headerShown:false}}/>
+                    {Object.entries(modal).map(([key, screen])=><Root.Screen key={key} name={key} component={screen.component} options={(props)=>
+                        ({ title: screen.title, cardStyle:{backgroundColor:windowType=='portrait'?'white':'transparent'}, ...screen.options?.(props, windowType)})
+                    } />)}
                 </Root.Navigator>
             </LoginProvider>
     );
@@ -38,13 +41,16 @@ function MainNavigator(){
     const entries = useMemo(()=>{
         if (user === undefined)
             return []
+        console.log('current user: ', user)
         return Object.entries(user === null?login:main)
     }, [user])
     return (user!==undefined?<View style={{flexDirection:'row', flex:1}}>
         {user && windowType=='landscape'?<DrawerNavigator/>:undefined}
         <View style={{flex:1, flexDirection:'column-reverse'}}>
             <Main.Navigator>
-                {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title, ...screen.options }} />)}
+                {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={(props)=>
+                    ({ title: screen.title, ...screen.options?.(props, windowType)})
+                } />)}
                 <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
             </Main.Navigator>
         </View>

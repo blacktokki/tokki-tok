@@ -5,7 +5,7 @@ import CommonSection from '../../components/CommonSection';
 import { MaterialIcons } from '@expo/vector-icons';
 
 
-export default function BoardScreen({navigation}: StackScreenProps<any, 'TabChat'>) {
+export default function ChatScreen({navigation}: StackScreenProps<any, 'Chat'>) {
   return <View style={{padding:10, alignItems:'center'}}>
     <View style={{flexDirection:'row', justifyContent:'flex-start', width:'100%'}}>
       <MaterialIcons size={38} style={{marginBottom: -3, marginRight:10 }} name='account-circle'/>

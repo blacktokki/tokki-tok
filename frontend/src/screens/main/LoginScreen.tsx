@@ -13,7 +13,7 @@ import useLoginContext from '../../hooks/useLoginContext';
 
 export default function LoginScreen({
   navigation
-}: StackScreenProps<any, 'TabLogin'>) {
+}: StackScreenProps<any, 'Login'>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const {setUser} = useLoginContext()

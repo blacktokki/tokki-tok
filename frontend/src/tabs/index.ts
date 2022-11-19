@@ -2,7 +2,8 @@ import React from "react";
 import MemberTab from "./MemberTab";
 import OneTab from "./OneTab";
 import DrawerTab from './DrawerTab';
-import ChatTab from "./ChatTab";
+import MessengerTab from "./MessengerTab";
+import BoardTab from "./BoardTab";
 
 export const bottomTabs = {
     OneTab:{
@@ -10,12 +11,12 @@ export const bottomTabs = {
         component:MemberTab,
     },
     TwoTab:{
-        title:'chat',
-        component:ChatTab,
+        title:'messenger',
+        component:MessengerTab,
     },
     ThreeTab:{
-        title:'channel',
-        component:OneTab
+        title:'board',
+        component:BoardTab,
     },FourTab:{
         title:'config',
         component:OneTab,
@@ -28,11 +29,11 @@ export const drawerTabs = {
         component:DrawerTab.Member,
     },
     TwoTab:{
-        title:'chat',
-        component:DrawerTab.Chat,
+        title:'messenger',
+        component:DrawerTab.Messenger,
     },
     ThreeTab:{
-        title:'channel',
-        component:DrawerTab.Channel
+        title:'board',
+        component:DrawerTab.Board
     }
 } as Record<string, {title:string, component:React.ComponentType<any>}>

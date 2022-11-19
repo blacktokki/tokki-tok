@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { checkLogin } from "../apis"
-import { User } from "../types"
+import { UserMembership } from "../types"
 
-const LoginContext = createContext<{user?:User|null, setUser:(user?:User|null)=>void}>({setUser:()=>{}});
+const LoginContext = createContext<{user?:UserMembership|null, setUser:(user?:UserMembership|null)=>void}>({setUser:()=>{}});
 
 
 export const LoginProvider = ({children}:{children:React.ReactNode})=>{
-  const [user, setUser] = useState<User|null>();
+  const [user, setUser] = useState<UserMembership|null>();
   useEffect(()=>{
     if(user===undefined){
       checkLogin().then((user)=>{
