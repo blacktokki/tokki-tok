@@ -11,13 +11,6 @@ export const main = {
         title:'home',
         component:HomeScreen,
         path:'home',
-        options:(props, windowType)=>{
-            const titles = ['member', 'messenger', 'board', 'config']
-            if(windowType == 'portrait'){
-                return {title: titles[props.route?.params?.tab | 0]}
-            }
-            return {}
-        }
     },
     ChatScreen:{
         title:'chat',

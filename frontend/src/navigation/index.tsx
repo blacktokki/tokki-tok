@@ -13,6 +13,8 @@ import RootNavigator from './RootNavigator';
 
 const navigationRef = React.createRef<NavigationContainerRef>();
 
+export { queryClient } from './RootNavigator'
+
 export function navigate(name:string, params?:any) {
   if (params)
     navigationRef.current?.navigate(name, params);
@@ -23,7 +25,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   return (
     <NavigationContainer
       ref={navigationRef}
-      documentTitle={{formatter: (options, route) => {return `${options?.headerTitle || route?.name} - My App`}}}
+      documentTitle={{formatter: (options, route) => {return `KIBLACK TOK`}}}
       linking={(process.versions && process.versions['electron'])?undefined:LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <RootNavigator />

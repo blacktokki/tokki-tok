@@ -5,19 +5,19 @@ import CommonSection from '../components/CommonSection';
 import { View, Text } from '../components/Themed';
 import CommonButton from '../components/CommonButton';
 import useBoardChannelList from '../hooks/lists/useBoardChannelList';
-import useLoginContext from '../hooks/useLoginContext';
-import { patchBoard, postBoard } from '../apis';
+import useAuthContext from '../hooks/useAuthContext';
 import { navigate } from '../navigation';
-import useBoardContentList from '../hooks/lists/useBoardContentList';
+import useBoardContentList, { useBoardContentMutation } from '../hooks/lists/useBoardContentList';
 import { Board } from '../types';
 
 
 export default function BoardEditScreen({navigation, route}: StackScreenProps<any, 'BoardEdit'>) {
   const id = route?.params?.id
   const channel_id = route?.params?.channel_id
-  const {user} = useLoginContext()
-  const boardChannelList = useBoardChannelList(user)
+  const {auth} = useAuthContext()
+  const boardChannelList = useBoardChannelList(auth)
   const boardContentList = useBoardContentList(channel_id)
+  const boardContentMutation = useBoardContentMutation()
   const channel = boardChannelList?.find(v=>v.id==channel_id)
   const board = useMemo(()=>boardContentList?.find(v=>v.id==id)?.board_set[0], [boardContentList])
   const [title, setTitle] = useState('')
@@ -58,9 +58,8 @@ export default function BoardEditScreen({navigation, route}: StackScreenProps<an
     <View style={[styles.field, {justifyContent:'flex-end'}]}>
       <CommonButton title={'save'} onPress={()=>{
         const newBoard:Board = {id:board?.id, title, content};
-        (id?patchBoard(newBoard):postBoard({...newBoard, user:user?.id, channel:channel_id})).then(()=>{
-          navigate("Main", {screen:"BoardScreen", params: {id:channel_id}})
-        })       
+        id?boardContentMutation.update(newBoard):boardContentMutation.create({...newBoard, user:auth.user?.id, channel:channel_id})
+        navigate("Main", {screen:"BoardScreen", params: {id:channel_id}})
       }}/>
       <CommonButton title={'cancel'} onPress={back}/>
     </View>

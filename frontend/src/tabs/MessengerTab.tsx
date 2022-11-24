@@ -2,13 +2,13 @@ import { FontAwesome } from "@expo/vector-icons"
 import React from "react"
 import { Text, View } from "react-native"
 import CommonItem from "../components/CommonItem"
-import useLoginContext from "../hooks/useLoginContext"
+import useAuthContext from "../hooks/useAuthContext"
 import useMessengerChannelList from "../hooks/lists/useMessengerChannelList"
 import { navigate } from "../navigation"
 
 export default ()=>{
-    const {user} = useLoginContext()
-    const channelList = useMessengerChannelList(user)
+    const {auth} = useAuthContext()
+    const channelList = useMessengerChannelList(auth)
 
     return <View style={{flex:1, backgroundColor:'white'}}>
         {channelList?.map((item, index)=><CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>

@@ -1,20 +1,22 @@
+import { useMutation, useQuery } from "react-query"
+import { deleteBoardContent, getBoardContentList, patchBoard, postBoard } from "../../apis"
+import { queryClient } from "../../navigation";
 
-import React from "react";
-import { getBoardContentList } from "../../apis";
-import { BoardContent } from "../../types";
 
-let _cache:BoardContent[];
-export default function useBoardContentList(channel_id:number, deps?:React.DependencyList){
-    const [contentList, setContentList] = React.useState<BoardContent[]>()
-    const _deps = [channel_id, ...(deps||[])]
-    React.useEffect(()=>{
-      if (deps==undefined && _cache !=undefined)
-        setContentList(_cache)
-      else{
-        getBoardContentList(channel_id).then((m)=>{
-            setContentList(m);_cache = m
-        });
-      }
-    }, _deps)
-    return contentList
+export default function useBoardContentList(channel_id:number){
+  const { data } = useQuery(["BoardContentList", channel_id] , async()=>await getBoardContentList(channel_id))
+  return data
+}
+
+export function useBoardContentMutation(){
+  const create = useMutation(postBoard, {
+    onSuccess: () => queryClient.invalidateQueries("BoardContentList")
+  });
+  const update = useMutation(patchBoard, {
+    onSuccess: () => queryClient.invalidateQueries("BoardContentList")
+  })
+  const remove = useMutation(deleteBoardContent, {
+    onSuccess: () => queryClient.invalidateQueries("BoardContentList")
+  })
+  return { create:create.mutate, update:update.mutate, remove:remove.mutate }
 }

@@ -5,7 +5,7 @@
 
 import { PathConfig } from "@react-navigation/native"
 
-export type Screens = Record<string, PathConfig & {title:string, component:React.ComponentType<any>, options?:(props:{navigation:any, route:any}, windowType:'landscape'|'portrait')=>any}>
+export type Screens = Record<string, PathConfig & {title:string, component:React.ComponentType<any>}>
 
 export type User = {
   id:number,
@@ -31,8 +31,8 @@ export type Channel = {
   id?: number,
   name: string,
   type: "board"| "messenger",
-  description: string,
-  is_archive: boolean,
+  description?: string,
+  is_archive?: boolean,
   owner: number,
   group: number
 }
@@ -59,4 +59,10 @@ export type BoardContent = {
 
 export type MessengerContent = any
 
-export type MessengerMember = any
+export type MessengerMember = {
+  notification?: boolean,
+  mobile_notification?: boolean,
+  user: number,
+  channel: number,
+  last_message?: number
+}

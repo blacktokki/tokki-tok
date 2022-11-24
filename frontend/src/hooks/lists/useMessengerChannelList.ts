@@ -1,20 +1,22 @@
+import { useMutation, useQuery } from "react-query";
+import { getMessengerChannelList, postChannel, postMessengerMember } from "../../apis";
+import { queryClient } from "../../navigation";
+import { Auth } from "../useAuthContext";
 
-import React from "react";
-import { getMessengerChannelList } from "../../apis";
-import { Channel, UserMembership } from "../../types";
+export default function useMessengerChannelList(auth?:Auth){
+  const { data } = useQuery(["MessengerChannelList", auth?.user?.id] , async()=>auth?.user?.id?(await getMessengerChannelList(auth.user.id)):[])
+  return data
+}
 
-let _cache:Channel[];
-export default function useMessengerChannelList(user?:UserMembership|null, deps?:React.DependencyList){
-    const [channelList, setChannelList] = React.useState<Channel[]>()
-    const _deps = [user, ...(deps||[])]
-    React.useEffect(()=>{
-      if (deps==undefined && _cache !=undefined)
-        setChannelList(_cache)
-      else{
-        user && getMessengerChannelList(user.id).then((m)=>{
-            setChannelList(m);_cache = m
-        });
-      }
-    }, _deps)
-    return channelList
+export function useMessengerChannelMutation(){
+  const memberCreate = useMutation(postMessengerMember,{
+    onSuccess: () => queryClient.invalidateQueries("MessengerChannelList")
+  })
+
+  const create = useMutation(postChannel, {
+    onSuccess: (data) => {data.id && memberCreate.mutate({
+      user:data.owner, channel:data.id
+    })}
+  });
+  return { create:create.mutate }
 }
