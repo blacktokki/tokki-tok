@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "react-query";
 import { getMessengerChannelList, postChannel, postMessengerMember } from "../../apis";
-import { queryClient } from "../../navigation";
+import { invalidateQueries } from "../../navigation";
 import { Auth } from "../useAuthContext";
 
 export default function useMessengerChannelList(auth?:Auth){
@@ -10,7 +10,7 @@ export default function useMessengerChannelList(auth?:Auth){
 
 export function useMessengerChannelMutation(){
   const memberCreate = useMutation(postMessengerMember,{
-    onSuccess: () => queryClient.invalidateQueries("MessengerChannelList")
+    onSuccess: () => invalidateQueries("MessengerChannelList")
   })
 
   const create = useMutation(postChannel, {

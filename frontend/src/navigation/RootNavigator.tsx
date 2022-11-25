@@ -9,6 +9,7 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import {main, login, modal} from '../screens';
 import DrawerNavigator from './DrawerNavigator';
 import useAuthContext, {AuthProvider} from '../hooks/useAuthContext';
+import { WebSocketProvider } from '../hooks/useWebsocketContext';
 
 const Root = createStackNavigator();
 
@@ -20,22 +21,24 @@ export default function RootNavigator() {
             <AuthProvider>
                 <QueryClientProvider client={queryClient}>
                     {/* devtools */}
-                    <ReactQueryDevtools initialIsOpen={true} />
-                    <Root.Navigator
-                        mode= 'modal'
-                        headerMode= 'none'
-                        screenOptions={{
-                            cardStyle:{
-                                backgroundColor:"transparent",
-                                opacity:0.99,
-                            }
-                        }}
-                    >
-                        <Root.Screen name="Main" component={MainNavigator} options={{headerShown:false}}/>
-                        {Object.entries(modal).map(([key, screen])=><Root.Screen key={key} name={key} component={screen.component} options={(props)=>
-                            ({ title: screen.title, cardStyle:{backgroundColor:windowType=='portrait'?'white':'transparent'}})
-                        } />)}
-                    </Root.Navigator>
+                    {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+                    <WebSocketProvider>
+                        <Root.Navigator
+                            mode= 'modal'
+                            headerMode= 'none'
+                            screenOptions={{
+                                cardStyle:{
+                                    backgroundColor:"transparent",
+                                    opacity:0.99,
+                                }
+                            }}
+                        >
+                            <Root.Screen name="Main" component={MainNavigator} options={{headerShown:false}}/>
+                            {Object.entries(modal).map(([key, screen])=><Root.Screen key={key} name={key} component={screen.component} options={(props)=>
+                                ({ title: screen.title, cardStyle:{backgroundColor:windowType=='portrait'?'white':'transparent'}})
+                            } />)}
+                        </Root.Navigator>
+                    </WebSocketProvider>
                 </QueryClientProvider>
             </AuthProvider>
     );
@@ -55,12 +58,14 @@ function MainNavigator(){
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
         {auth.user && windowType=='landscape'?<DrawerNavigator/>:undefined}
         <View style={{flex:1, flexDirection:'column-reverse'}}>
-            <Main.Navigator>
-                {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={(props)=>
-                    ({ title: screen.title })
-                } />)}
-                <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-            </Main.Navigator>
+            <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
+                <Main.Navigator>
+                    {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={(props)=>
+                        ({ title: screen.title })
+                    } />)}
+                    <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+                </Main.Navigator>
+            </WebSocketProvider>
         </View>
     </View>:<></>);
 }

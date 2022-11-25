@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "react-query"
 import { deleteBoardContent, getBoardContentList, patchBoard, postBoard } from "../../apis"
-import { queryClient } from "../../navigation";
+import { invalidateQueries } from "../../navigation";
 
 
 export default function useBoardContentList(channel_id:number){
@@ -10,13 +10,13 @@ export default function useBoardContentList(channel_id:number){
 
 export function useBoardContentMutation(){
   const create = useMutation(postBoard, {
-    onSuccess: () => queryClient.invalidateQueries("BoardContentList")
+    onSuccess: () => invalidateQueries("BoardContentList")
   });
   const update = useMutation(patchBoard, {
-    onSuccess: () => queryClient.invalidateQueries("BoardContentList")
+    onSuccess: () => invalidateQueries("BoardContentList")
   })
   const remove = useMutation(deleteBoardContent, {
-    onSuccess: () => queryClient.invalidateQueries("BoardContentList")
+    onSuccess: () => invalidateQueries("BoardContentList")
   })
   return { create:create.mutate, update:update.mutate, remove:remove.mutate }
 }

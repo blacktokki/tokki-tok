@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "react-query";
 import { getBoardChannelList, postChannel } from "../../apis";
-import { queryClient } from "../../navigation";
+import { invalidateQueries } from "../../navigation";
 import { Auth } from "../useAuthContext";
 
 export default function useBoardChannelList(auth?:Auth){
@@ -10,7 +10,7 @@ export default function useBoardChannelList(auth?:Auth){
 
 export function useBoardChannelMutation(){
   const create = useMutation(postChannel, {
-    onSuccess: () => queryClient.invalidateQueries("BoardChannelList")    
+    onSuccess: () => invalidateQueries("BoardChannelList")    
   });
   return { create:create.mutate }
 }
