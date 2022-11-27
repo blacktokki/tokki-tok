@@ -57,7 +57,25 @@ export type BoardContent = {
   name: string
 }
 
-export type MessengerContent = any
+export type Message = {
+  id?: number,
+  content: string,
+}
+
+export type EditMessage = Message & {
+  channel:number
+  user?:number
+}
+
+export type MessengerContent = {
+  id: number,
+  message_set:Message[]
+  user: number,
+  channel: number
+  created: string,
+  updated: string,
+  name: string
+}
 
 export type MessengerMember = {
   notification?: boolean,

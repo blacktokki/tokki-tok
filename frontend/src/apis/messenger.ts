@@ -1,4 +1,4 @@
-import { Board, EditBoard, BoardContent, Channel, MessengerMember } from '../types';
+import { Board, EditBoard, BoardContent, Channel, MessengerMember, MessengerContent, EditMessage } from '../types';
 import axios from './axios';
 
 export const getBoardChannelList = async (group_id:number)=>{
@@ -31,4 +31,17 @@ export const deleteBoardContent = async (content_id:number)=>{
 
 export const postMessengerMember = async (messengerMember:MessengerMember)=>{
     await axios.post(`/api/v1/messengermembers/`, messengerMember)
+}
+
+export const getMessengerContentList = async (channel_id:number, id_lt?:number)=>{
+    const id_lt_param = id_lt?`&id_lt=${id_lt}`:''
+    return (await axios.get(`/api/v1/messengercontents/?limit=15&channel=${channel_id}${id_lt_param}`)).data.results as MessengerContent[]
+}
+
+export const postMessage = async (message:EditMessage)=>{
+    await axios.post(`/api/v1/messengercontents/messages/`, message)
+}
+
+export const deleteMessengerContent = async (content_id:number)=>{
+    await axios.delete(`/api/v1/messengercontents/${content_id}/`)
 }

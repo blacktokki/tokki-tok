@@ -13,7 +13,7 @@ import { WebSocketProvider } from '../hooks/useWebsocketContext';
 
 const Root = createStackNavigator();
 
-export const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
 export default function RootNavigator() {
     const windowType = useResizeWindow();
@@ -22,7 +22,6 @@ export default function RootNavigator() {
                 <QueryClientProvider client={queryClient}>
                     {/* devtools */}
                     {/* <ReactQueryDevtools initialIsOpen={true} /> */}
-                    <WebSocketProvider>
                         <Root.Navigator
                             mode= 'modal'
                             headerMode= 'none'
@@ -38,7 +37,6 @@ export default function RootNavigator() {
                                 ({ title: screen.title, cardStyle:{backgroundColor:windowType=='portrait'?'white':'transparent'}})
                             } />)}
                         </Root.Navigator>
-                    </WebSocketProvider>
                 </QueryClientProvider>
             </AuthProvider>
     );
@@ -47,7 +45,6 @@ export default function RootNavigator() {
 const Main = createStackNavigator();
 
 function MainNavigator(){
-    const windowType = useResizeWindow();
     const {auth} = useAuthContext()
     const entries = useMemo(()=>{
         if (auth.user === undefined)
@@ -56,8 +53,8 @@ function MainNavigator(){
         return Object.entries(auth.user === null?login:main)
     }, [auth])
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
-        {auth.user && windowType=='landscape'?<DrawerNavigator/>:undefined}
-        <View style={{flex:1, flexDirection:'column-reverse'}}>
+        {auth.user?<DrawerNavigator/>:undefined}
+        <View style={{flex:1}}>
             <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                 <Main.Navigator>
                     {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={(props)=>

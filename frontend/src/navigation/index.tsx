@@ -9,11 +9,9 @@ import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 
 import LinkingConfiguration from './LinkingConfiguration';
-import RootNavigator, { queryClient } from './RootNavigator';
+import RootNavigator from './RootNavigator';
 
 const navigationRef = React.createRef<NavigationContainerRef>();
-
-export const { invalidateQueries } = queryClient
 
 export function navigate(name:string, params?:any) {
   if (params)

@@ -1,9 +1,9 @@
 import React, { createContext, useContext } from "react"
 import useWebSocket from "react-use-websocket"
-import { JsonValue, SendJsonMessage } from "react-use-websocket/dist/lib/types"
+import { SendJsonMessage } from "react-use-websocket/dist/lib/types"
 import { Auth } from "./useAuthContext";
 
-const WebSocketContext = createContext<{lastJsonMessage:JsonValue|null, sendJsonMessage:SendJsonMessage }>({lastJsonMessage:null, sendJsonMessage:()=>{}});
+const WebSocketContext = createContext<{lastJsonMessage:any, sendJsonMessage:SendJsonMessage }>({lastJsonMessage:null, sendJsonMessage:()=>{}});
 
 export const WebSocketProvider = ({disable, children}:{disable?:boolean, children:React.ReactNode})=>{
   const { lastJsonMessage, sendJsonMessage } = useWebSocket('ws://localhost:8000/ws/',{
