@@ -6,21 +6,16 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import { navigate } from '../../navigation';
 import { StackScreenProps } from '@react-navigation/stack';
-import { login, guestLogin } from '../../apis';
-import useLoginContext from '../../hooks/useLoginContext';
+import useAuthContext from '../../hooks/useAuthContext';
 
 export default function LoginScreen({
   navigation
-}: StackScreenProps<any, 'TabLogin'>) {
+}: StackScreenProps<any, 'Login'>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {setUser} = useLoginContext()
-  const _login = ()=>login(username, password).then(user=>{
-    setUser(user)
-    // navigation.navigate('HomeScreen')
-  })
+  const {dispatch} = useAuthContext()
+  const _login = ()=>dispatch({type:'LOGIN_REQUEST', username, password})
 
   return (
     <View style={Styles.login_wrapper}>
@@ -47,7 +42,7 @@ export default function LoginScreen({
             <Text style={Styles.button_label}>{'Sign in'}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => guestLogin()}>
+        <TouchableOpacity onPress={() => dispatch({type:"LOGIN_GUEST"})}>
           <Text style={Styles.guest_footer_text}>
             {"Sign in as guest"}
           </Text>

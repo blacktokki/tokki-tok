@@ -3,10 +3,10 @@ import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TabView, SceneMap,NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
-import { logout } from '../apis';
 import CommonButton from '../components/CommonButton';
 import DummyView from '../components/DummyView';
-import useLoginContext from '../hooks/useLoginContext';
+import useAuthContext from '../hooks/useAuthContext';
+import useResizeWindow from '../hooks/useResizeWindow';
 import { drawerTabs } from '../tabs';
 
 export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"top"|"bottom", index?:number, onTab?:(index:number)=>void})=>{
@@ -35,8 +35,9 @@ export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"
 
 export default ()=> {
   const { colors } = useTheme();
-  const {setUser} = useLoginContext()
-  return <View
+  const {dispatch} = useAuthContext()
+  const windowType = useResizeWindow();
+  return windowType=='landscape'?<View
       style={[
         styles.tabBar,
         {
@@ -48,11 +49,11 @@ export default ()=> {
       pointerEvents={false ? 'none' : 'auto'}
     >
       <DummyView style={{width:'100%', height:135}} text='profile'/>
-      <CommonButton title={'logout'} onPress={()=>logout().then(()=>setUser(null))}/>
+      <CommonButton title={'logout'} onPress={()=>dispatch({type:"LOGOUT_REQUEST"})}/>
       <View accessibilityRole="tablist" style={styles.content}>
         <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"}/>
       </View>
-    </View>
+    </View>:<View style={{width:1}}></View>
 }
 
 {/*<Text style={[styles.label, { color: d.isFocused ? colors.primary : '#222' }]}></Text> */}
