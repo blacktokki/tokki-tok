@@ -3,7 +3,7 @@
 # Usage:
 # bash scripts/runserver.sh [param]...
 # bash ../scripts/runserver.sh [param]...
-# * param: service name (messneger|eureka_client)
+# * param: service name (gunicorn|eureka_client)
 
 for var in "$@"
 do
@@ -13,7 +13,7 @@ do
         echo "=====$var is running at" $PID
     else
         DIR=`find ../ -name messenger-service -type d`
-        if [ "$var" == "messenger" ]
+        if [ "$var" == "gunicorn" ]
         then
             echo "=====$var isn't running====="
             nohup gunicorn backend.asgi:application -k uvicorn.workers.UvicornWorker --chdir $DIR >/dev/null 2>&1 &
