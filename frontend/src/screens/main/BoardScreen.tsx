@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect} from 'react';
 import {FlatList } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -7,6 +7,8 @@ import CommonSection from '../../components/CommonSection';
 import { View, Text } from '../../components/Themed';
 import CommonButton from '../../components/CommonButton';
 import { BoardContent } from '../../types';
+import HeaderRight from '../../components/HeaderRight';
+import { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
 
 
 
@@ -14,7 +16,14 @@ import { BoardContent } from '../../types';
 export default function BoardScreen({navigation, route}: StackScreenProps<any, 'Board'>) {
   const channel_id = route?.params?.id
   const contentList = useBoardContentList(channel_id)
+  const boardChannelMutation = useBoardChannelMutation()
   const contentMutation = useBoardContentMutation()
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: ()=> <HeaderRight extra={[{title:'delete', onPress:()=>{boardChannelMutation.delete(channel_id);back()}}]}/>
+    });
+  }, [navigation, route]);
   
   const renderItem = useCallback(({item}:{item:BoardContent})=><CommonSection bodyStyle={{alignItems:'flex-start', paddingHorizontal:35}}>
     <View style={{flexDirection:'row', width:'100%', justifyContent:'space-between'}}>
@@ -27,7 +36,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
       </View>
       <View style={{flexDirection:'row'}}>
         <CommonButton title={'edit'} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id:item.channel, id:item.id})}/>
-        <CommonButton title={'delete'} onPress={()=> contentMutation.remove(item.id)}/>
+        <CommonButton title={'delete'} onPress={()=> contentMutation.delete(item.id)}/>
       </View>
     </View>
     <Text style={{fontSize:20}}>{item.board_set[0].title}</Text>
@@ -39,7 +48,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
     if(navigation.canGoBack())
         navigation.goBack()
       else{
-        navigation.navigate('HomeScreen')
+        navigation.navigate('HomeScreen', {tab:2})
       }
   }
   useEffect(()=>{

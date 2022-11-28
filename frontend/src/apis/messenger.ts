@@ -13,6 +13,14 @@ export const postChannel = async(channel:Channel)=>{
     return (await axios.post(`/api/v1/channels/`, channel)).data as Channel
 }
 
+export const putChannel = async(channel:Channel)=>{
+    return (await axios.post(`/api/v1/channels/${channel.id}/`, channel)).data as Channel
+}
+
+export const deleteChannel = async(channel_id:number)=>{
+    await axios.delete(`/api/v1/channels/${channel_id}/`)
+}
+
 export const getBoardContentList = async (channel_id:number)=>{
     return (await axios.get(`/api/v1/boardcontents/?channel=${channel_id}`) ).data as BoardContent[]
 }
@@ -29,8 +37,16 @@ export const deleteBoardContent = async (content_id:number)=>{
     await axios.delete(`/api/v1/boardcontents/${content_id}/`)
 }
 
+export const getMessengerMemberList = async(channel_id:number)=>{
+    return (await axios.get(`/api/v1/messengermembers/?channel=${channel_id}`) ).data as MessengerMember[]
+}
+
 export const postMessengerMember = async (messengerMember:MessengerMember)=>{
     await axios.post(`/api/v1/messengermembers/`, messengerMember)
+}
+
+export const deleteMessengerMember = async(member_id:number)=>{
+    await axios.delete(`/api/v1/messengermembers/${member_id}/`)
 }
 
 export const getMessengerContentList = async (channel_id:number, id_lt?:number)=>{

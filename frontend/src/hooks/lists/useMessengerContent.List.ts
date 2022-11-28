@@ -8,12 +8,14 @@ import useWebsocketContext from "../useWebsocketContext"
 export default function useMessengerContentList(channel_id:number){
   const [extraData, setExtraData] = useState<MessengerContent[]>([])
   const { data, fetchNextPage } = useInfiniteQuery("MessengerContentList", async({pageParam})=>getMessengerContentList(channel_id, pageParam), {
-    getNextPageParam:(lastPage)=>lastPage.length?lastPage[lastPage.length - 1].id:undefined
+    getNextPageParam:(lastPage)=>lastPage.length?lastPage[lastPage.length - 1].id:undefined,
+    refetchOnReconnect:false,
+    refetchOnWindowFocus:false
   })
   const { lastJsonMessage } = useWebsocketContext()
   useEffect(()=>{
-    if(lastJsonMessage !=null && lastJsonMessage['type']=='nextMessage'){
-      console.log(lastJsonMessage)
+    if(lastJsonMessage !=null && lastJsonMessage['type']=='next_message'){
+      setExtraData([lastJsonMessage['data'], ...extraData])
     }
   }, [lastJsonMessage])
 
@@ -21,7 +23,7 @@ export default function useMessengerContentList(channel_id:number){
 }
 
 export function useMessengerContentMutation(){
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
   const create = useMutation(postMessage, {
     onSuccess: () => {
       // queryClient.setQueryData(['MessengerContentList'], (data:any) => ({
@@ -31,7 +33,7 @@ export function useMessengerContentMutation(){
       // queryClient.invalidateQueries("MessengerContentList")
     }
   });
-  const remove = useMutation(deleteMessengerContent, {
+  const _delete = useMutation(deleteMessengerContent, {
     onSuccess: (d, variables) => {
       // queryClient.setQueryData(['MessengerContentList'], (data:any) => ({
       //   pages: (data.pages as MessengerContent[][]).map(v=>v.filter(v2=>v2.id != variables)),
@@ -39,5 +41,5 @@ export function useMessengerContentMutation(){
       // }))
     }
   })
-  return { create:create.mutate, remove:remove.mutate }
+  return { create:create.mutate, delete:_delete.mutate }
 }

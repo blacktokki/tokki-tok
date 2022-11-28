@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { getMessengerChannelList, postChannel, postMessengerMember } from "../../apis";
+import { deleteMessengerMember, getMessengerChannelList, postChannel, postMessengerMember, putChannel } from "../../apis";
 import { Auth } from "../useAuthContext";
 
 export default function useMessengerChannelList(auth?:Auth){
@@ -18,5 +18,14 @@ export function useMessengerChannelMutation(){
       user:data.owner, channel:data.id
     })}
   });
-  return { create:create.mutate }
+
+  const update = useMutation(putChannel, {
+    onSuccess: () => queryClient.invalidateQueries("MessengerChannelList")
+  })
+
+  const leave = useMutation(deleteMessengerMember, {
+    onSuccess: () => queryClient.invalidateQueries("MessengerChannelList")
+  })
+
+  return { create:create.mutate, update:update.mutate, leave: leave.mutate}
 }

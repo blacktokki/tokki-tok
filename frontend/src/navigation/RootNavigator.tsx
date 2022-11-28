@@ -10,6 +10,7 @@ import {main, login, modal} from '../screens';
 import DrawerNavigator from './DrawerNavigator';
 import useAuthContext, {AuthProvider} from '../hooks/useAuthContext';
 import { WebSocketProvider } from '../hooks/useWebsocketContext';
+import HeaderRight from '../components/HeaderRight'
 
 const Root = createStackNavigator();
 
@@ -58,7 +59,7 @@ function MainNavigator(){
             <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                 <Main.Navigator>
                     {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={(props)=>
-                        ({ title: screen.title })
+                        ({ title: screen.title , headerRight:()=><HeaderRight/>})
                     } />)}
                     <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
                 </Main.Navigator>

@@ -4,6 +4,7 @@ import HomeScreen from "./main/HomeScreen";
 import TabOneScreen from "./main/TabOneScreen";
 import BoardScreen from "./main/BoardScreen";
 import BoardEditScreen from "./BoardEditScreen";
+import ChannelEditScreen from "./ChannelEditScreen"
 import { Screens } from "../types";
 
 export const main = {
@@ -42,5 +43,10 @@ export const modal = {
         title:'board',
         component:BoardEditScreen,
         path:'modal/board'
+    },
+    ChannelEditScreen:{
+        title:'board',
+        component:ChannelEditScreen,
+        path:'modal/channel'
     },
 } as Screens

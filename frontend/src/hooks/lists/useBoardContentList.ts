@@ -15,8 +15,8 @@ export function useBoardContentMutation(){
   const update = useMutation(patchBoard, {
     onSuccess: () => queryClient.invalidateQueries("BoardContentList")
   })
-  const remove = useMutation(deleteBoardContent, {
+  const _delete = useMutation(deleteBoardContent, {
     onSuccess: () => queryClient.invalidateQueries("BoardContentList")
   })
-  return { create:create.mutate, update:update.mutate, remove:remove.mutate }
+  return { create:create.mutate, update:update.mutate, delete:_delete.mutate }
 }

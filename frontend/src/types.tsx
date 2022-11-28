@@ -78,6 +78,7 @@ export type MessengerContent = {
 }
 
 export type MessengerMember = {
+  id?:number,
   notification?: boolean,
   mobile_notification?: boolean,
   user: number,
