@@ -17,6 +17,7 @@ sudo apt-get --assume-yes install python3
 sudo apt-get --assume-yes install python3-pip
 sudo apt-get --assume-yes install python3-venv
 sudo apt-get --assume-yes install libmysqlclient-dev
+sudo apt-get --assume-yes install redis-server
 
 python3 -m venv ../venv1
 . ../venv1/bin/activate

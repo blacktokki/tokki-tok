@@ -1,26 +1,11 @@
 import json
+
+from accounts.models import Group
+from .models import Channel
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
-class CallConsumer(WebsocketConsumer):
-    def connect(self):
-        self.accept()
-
-        # response to client, that we are connected.
-        self.send(text_data=json.dumps({
-            'type': 'connection',
-            'data': {
-                'message': "Connected"
-            }
-        }))
-
-    def disconnect(self, close_code):
-        # Leave room group
-        async_to_sync(self.channel_layer.group_discard)(
-            self.my_name,
-            self.channel_name
-        )
-
+class WebRtcConsumerMixin:
     # Receive message from client WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -28,17 +13,6 @@ class CallConsumer(WebsocketConsumer):
 
         eventType = text_data_json['type']
 
-        if eventType == 'login':
-            name = text_data_json['data']['name']
-
-            # we will use this as room name as well
-            self.my_name = name
-
-            # Join room
-            async_to_sync(self.channel_layer.group_add)(
-                self.my_name,
-                self.channel_name
-            )
         if eventType == 'ready_call':
             name = text_data_json['data']['user']
             print(self.my_name, "is request call", name)
@@ -59,7 +33,7 @@ class CallConsumer(WebsocketConsumer):
         
         if eventType == 'call':
             name = text_data_json['data']['name']
-            print(self.my_name, "is calling", name);
+            print(self.my_name, "is calling", name)
             # print(text_data_json)
 
 
@@ -143,3 +117,84 @@ class CallConsumer(WebsocketConsumer):
             'type': 'ICEcandidate',
             'data': event['data']
         }))
+
+GROUP_PREFIX = 'group-'
+CHANNEL_PREFIX = 'channel-'
+
+
+class MessengerConsumer(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+        self.user = self.scope["user"]
+        self.group = Group.objects.filter(membership__user_id=self.user.id, root_id__isnull=True).first()
+        self.channel_ids = set(Channel.objects.filter(messengermember__user_id=self.user.id).values_list('id', flat=True))
+        
+        async_to_sync(self.channel_layer.group_add)(
+            f"{GROUP_PREFIX}{self.group.id}",
+            self.channel_name
+        )
+        for channel_id in self.channel_ids:
+            async_to_sync(self.channel_layer.group_add)(
+                f"{CHANNEL_PREFIX}{channel_id}",
+                self.channel_name
+            )
+
+        # response to client, that we are connected.
+        self.send(text_data=json.dumps({
+            'type': 'connection',
+            'data': {
+                'message': "Connected"
+            }
+        }))
+
+    def disconnect(self, code):
+        async_to_sync(self.channel_layer.group_discard)(
+            f"{GROUP_PREFIX}{self.group.id}",
+            self.channel_name
+        )
+        for channel_id in self.channel_ids:
+            # self.channel_ids.remove(room_id)
+            async_to_sync(self.channel_layer.group_discard)(
+                f"{CHANNEL_PREFIX}{channel_id}",
+                self.channel_name
+            )
+
+    # Receive message from client WebSocket
+    def receive(self, text_data):
+        # text_data_json = json.loads(text_data)
+        # print(text_data_json)
+
+        # eventType = text_data_json['type']
+
+        # if eventType == 'api':
+        #     async_to_sync(self.channel_layer.group_send)    
+        
+        super().receive(text_data)
+        
+    def enter(self, event):
+        channel_id = event['data']['channel_id']
+        user_ids = event['data']['user_ids']
+        if self.user.id not in user_ids:
+            return
+
+        self.channel_ids.add(channel_id)
+        print(self.channel_ids)
+        async_to_sync(self.channel_layer.group_add)(
+            f"{CHANNEL_PREFIX}{channel_id}",
+            self.channel_name
+        )
+
+    def leave(self, event):
+        channel_id = event['data']['channel_id']
+        user_ids = event['data'].get('user_ids')
+        if user_ids is not None and self.user.id not in user_ids:
+            return
+
+        self.channel_ids.remove(channel_id)
+        async_to_sync(self.channel_layer.group_discard)(
+            f"{CHANNEL_PREFIX}{channel_id}",
+            self.channel_name
+        )
+
+    def next_message(self, event):
+        self.send(text_data=json.dumps(event))
