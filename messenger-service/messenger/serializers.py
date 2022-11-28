@@ -12,6 +12,16 @@ class ChannelSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(write_only=True, queryset=User.objects.all())
+    channel = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Channel.objects.filter(type='messenger'))
+
+    @transaction.atomic
+    def create(self, validated_data):
+        user = validated_data.pop("user")
+        channel = validated_data.pop("channel")
+        validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel)
+        return super().create(validated_data)
+
     class Meta:
         model = Message
         exclude = ['channel_content']

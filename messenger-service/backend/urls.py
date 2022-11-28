@@ -14,7 +14,7 @@ import messenger.viewsets as messenger_api
 router = routers.DefaultRouter()
 router.register('users', accounts_api.UserViewSet)
 router.register('channels', messenger_api.ChannelViewSet)
-router.register('messagecontents', messenger_api.MessageContentViewset)
+router.register('messengercontents', messenger_api.MessengerContentViewset, 'messengercontents')
 router.register('boardcontents', messenger_api.BoardContentViewset)
 router.register('messengermembers', messenger_api.MessengerMemberViewset)
 
