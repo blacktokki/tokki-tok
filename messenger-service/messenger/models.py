@@ -22,7 +22,7 @@ class Channel(models.Model):
 
 
 class ChannelContent(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text='')
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='')
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='')
     created = models.DateTimeField(db_column='cc_created', null=True, auto_now_add=True)
     updated = models.DateTimeField(db_column='cc_updated', null=True, auto_now=True)
@@ -60,7 +60,7 @@ class Board(ContentMixin, models.Model):
 
 
 class MessengerMember(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text='')
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='')
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='')
     last_message = models.ForeignKey(Message, null=True, blank=True, on_delete=models.CASCADE, help_text='')
     notification = models.BooleanField(db_column="ms_notification", default=True, help_text='')

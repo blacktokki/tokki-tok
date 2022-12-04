@@ -1,15 +1,14 @@
 from django.db import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
-from messenger.consumers import CHANNEL_PREFIX, GROUP_PREFIX
+from messenger.consumers import send_enter, send_leave, send_next_message
 from .serializers import (
     BoardContentSerializer, 
     ChannelSerializer, 
     MessengerContentSerializer, 
-    MessengerMemberSerializer, 
+    MessengerMemberSerializer,
+    MessengerUserBulkSerializer, 
     MessengerUserSerializer, 
     BoardSerializer,
     MessageSerializer
@@ -18,30 +17,32 @@ from .filtersets import ChannelFilterSet, ChannelContentFilterSet, MessengerMemb
 from .models import Board, Message, Channel, MessengerMember, ChannelContent
 
 
+def post_create_message(channel_id, message_ids):
+    for instance in ChannelContent.objects.annotate(name=models.F('user__last_name')).filter(message__id__in=message_ids):
+        serializer = MessengerContentSerializer(instance=instance)
+        send_next_message(channel_id, serializer.data)
+
+
 # Create your views here.
 class ChannelViewSet(viewsets.ModelViewSet):
     serializer_class = ChannelSerializer
     filterset_class = ChannelFilterSet
     queryset = Channel.objects.all()
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        if response.data['type'] == 'messenger':
-            async_to_sync(get_channel_layer().group_send)(f"{GROUP_PREFIX}{response.data['group']}", {"type": "enter", "data": {
-                "channel_id": response.data["id"],
-                "user_ids": [response.data["owner"]]
-            }})
-        return response
+    def perform_create(self, serializer):
+        serializer.save()
+        if serializer.data['type'] == 'messenger':
+            send_enter(serializer.data, serializer.data["owner"])
+            post_create_message(serializer.data["id"], [serializer.data['enter_message_id']])
+
 
     def perform_destroy(self, instance):
         id = instance.id
         _type = instance.type
         instance.delete()
         if _type == "messenger":
-            async_to_sync(get_channel_layer().group_send)(f"{CHANNEL_PREFIX}{id}", {"type": "leave", "data": {
-                "channel_id": id,
-            }})
-
+            send_leave(id)
+            
 
 class MessengerContentViewset(viewsets.ModelViewSet):
     serializer_class = MessengerContentSerializer
@@ -53,8 +54,7 @@ class MessengerContentViewset(viewsets.ModelViewSet):
         serializer_class=MessageSerializer)
     def messages(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        serializer = MessengerContentSerializer(instance=ChannelContent.objects.annotate(name=models.F('user__last_name')).get(message__id=response.data["id"]))
-        async_to_sync(get_channel_layer().group_send)(f"{CHANNEL_PREFIX}{request.data['channel']}", {"type": "next_message", "data": serializer.data})
+        post_create_message(request.data['channel'], [response.data['id']])
         return response
 
     @action(detail=True, methods=['patch'],
@@ -95,8 +95,23 @@ class MessengerMemberViewset(viewsets.ModelViewSet):
     def user(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    @action(detail=False, methods=['post'], url_path='bulk', serializer_class=MessengerUserBulkSerializer)
+    def bulk_create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        channel = Channel.objects.get(id=response.data["channel"])
+        for user_id in response.data["user_ids"]:
+            send_enter(channel, user_id)
+        post_create_message(response.data["channel"], response.data["enter_message_ids"])
+        return response
+
     def perform_destroy(self, instance):
+        user_id = instance.user_id
         channel = instance.channel
         instance.delete()
+        send_leave(channel.id, user_id)
+        serializer = MessageSerializer(data={"channel": channel.id, "content": f"{instance.user.name} 퇴장"})
+        serializer.is_valid()
+        serializer.save()
+        post_create_message(channel.id, [serializer.data['id']])
         if not MessengerMember.objects.filter(channel=channel).exists():
             channel.delete()

@@ -39,6 +39,14 @@ echo "DATABASE_HOST=127.0.0.1" >> $PROPERTY_FILE
 echo "DATABASE_USER=$2" >> $PROPERTY_FILE
 echo "DATABASE_PASS=$3" >> $PROPERTY_FILE
 
+## setup kurento
+# sudo apt-get --assume-yes install gnupg
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5AFA7A83
+# echo "deb [arch=amd64] http://ubuntu.openvidu.io/6.16.0 bionic kms6" | sudo tee /etc/apt/sources.list.d/kurento.list
+# sudo apt-get update
+# sudo apt-get --assume-yes install kurento-media-server
+
+
 ## setup coturn
 # EXTERNAL_IP=$4
 # INTERNAL_IP=$(ifconfig |grep 'inet 10'|  awk '{ print $2 }')
