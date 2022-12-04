@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View } from './Themed';
 import { StyleSheet, StyleProp, ViewStyle, TextStyle, Pressable } from 'react-native';
+import Colors from '../constants/Colors';
 
 export type ItemParamList = {
     outerContainerStyle?:StyleProp<TextStyle>
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   },  
   container: {
       marginHorizontal:20,
-      backgroundColor:'rgba(0,0,0,0)'
+      backgroundColor:'transparent'
     },
     bodyView:{
       width: '100%',
@@ -48,8 +49,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       borderBottomWidth:1,
-      borderColor:'#d0d7de',
-      backgroundColor:'rgba(0,0,0,0)'
+      borderColor:Colors.borderColor,
+      backgroundColor:'transparent'
     }
   });
   

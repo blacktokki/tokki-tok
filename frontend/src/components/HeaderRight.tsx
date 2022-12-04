@@ -1,5 +1,5 @@
 import React from 'react'
-import CommonButton from "./CommonButton"
+import TextButton from "./TextButton"
 import useAuthContext from "../hooks/useAuthContext"
 import useResizeWindow from '../hooks/useResizeWindow'
 import { View } from 'react-native'
@@ -9,10 +9,10 @@ type ButtonProps = {title:string, onPress:()=>void, windowType?:'landscape'|'por
 export default (props:{extra?:ButtonProps[]})=>{
     const {dispatch} = useAuthContext()
     const windowType = useResizeWindow()
-    const defaultButtonProps:ButtonProps[] = [{title:'logout', onPress:()=>dispatch({type:"LOGOUT_REQUEST"})}]
+    const defaultButtonProps:ButtonProps[] = [{title:'Logout', onPress:()=>dispatch({type:"LOGOUT_REQUEST"})}]
     const buttonProps = (props.extra?[...props.extra, ...defaultButtonProps]:defaultButtonProps).filter(v=>v.windowType==windowType || v.windowType == undefined)
     return<View style={{flexDirection:'row'}}>
-        {buttonProps.map((v,k)=><CommonButton key={k} {...v}/>)}
+        {buttonProps.map((v,k)=><TextButton key={k} {...v} textStyle={{color:'white'}} color='#gray'/>)}
     </View>
 }
   

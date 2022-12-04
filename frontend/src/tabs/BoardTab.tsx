@@ -1,5 +1,4 @@
-import { FontAwesome } from "@expo/vector-icons"
-import { useRoute } from "@react-navigation/core"
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons"
 import React from "react"
 import { Text, View } from "react-native"
 import CommonItem from "../components/CommonItem"
@@ -17,3 +16,5 @@ export default ()=>{
         </CommonItem>)}
     </View>
 }
+
+export const BoardIcon = <FontAwesome5 size={30} style={{ marginBottom: -3 }} name='clipboard-list'/>

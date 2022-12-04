@@ -1,28 +1,52 @@
 import React, { useState } from 'react';
-import { Text, StyleProp, ButtonProps, ViewStyle, TextStyle, Pressable} from 'react-native';
+import { Text, StyleSheet, Pressable, StyleProp, ViewStyle} from 'react-native';
+import Colors from '../constants/Colors';
+import { CustomButtonProps } from '../types';
 
-type CustomButtonProps = ButtonProps & {
-    style?:StyleProp<ViewStyle>,
-    textStyle?:StyleProp<TextStyle>
-    onPress:()=>void
-}
-
-export default (props:CustomButtonProps)=>{
+const DefaultButton = (props:CustomButtonProps)=>{
     const [hover, setHover] = useState(false)
-    const _props = {
-        color: '#f6f8fa',//'rgba(9,30,66,0.08)',//rgb(242,242,242)
-        ...props,
-    }
     return <Pressable
-        onPress={()=>_props.onPress()}
+        onPress={()=>props.onPress()}
         //@ts-ignore
         onHoverIn={()=>setHover(true)}
         onHoverOut={()=>setHover(false)}
         style={[
-            {borderRadius:6, borderColor:'rgba(27,31,36,0.15)', borderWidth:1, backgroundColor:_props.color, paddingVertical:5, paddingHorizontal:16},
-            _props.style, 
-            hover?{backgroundColor:'rgb(242,242,242)'}:{}
+            {
+                paddingVertical:5, 
+                paddingHorizontal:16
+            },
+            props.style,
+            hover?{backgroundColor:props.color}:{}
         ]}>
-            <Text selectable={false} style={[{color:'black', textAlign:'center', fontSize:14, fontWeight:'400'}, _props.textStyle]}>{_props.title}</Text>
+            <Text selectable={false} style={[{fontSize:14}, props.textStyle]}>{props.title}</Text>
         </Pressable>
 }
+
+export default (props:CustomButtonProps)=>{
+    const _props = {
+        color:Colors.button.color,
+        ...props,
+        style:[
+            styles.style,
+            props.style,
+        ] as StyleProp<ViewStyle>,
+        textStyle:[
+            styles.text, props.textStyle
+        ]
+    }
+    return <DefaultButton {..._props}/>
+}
+
+const styles = StyleSheet.create({
+    style:{
+        borderRadius:6, 
+        borderColor:Colors.button.borderColor, 
+        borderWidth:1, 
+        backgroundColor:Colors.button.backgroundColor
+    },
+    text:{
+        color:'black', 
+        textAlign:'center', 
+        fontWeight:'600'
+    }
+});

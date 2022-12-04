@@ -41,8 +41,8 @@ export const getMessengerMemberList = async(channel_id:number)=>{
     return (await axios.get(`/api/v1/messengermembers/?channel=${channel_id}`) ).data as MessengerMember[]
 }
 
-export const postMessengerMember = async (messengerMember:MessengerMember)=>{
-    await axios.post(`/api/v1/messengermembers/`, messengerMember)
+export const postBulkMessengerMember = async(data:{channel_id:number, user_ids:number[]})=>{
+    await axios.post(`/api/v1/messengermembers/bulk/`, {channel:data.channel_id, user_ids:data.user_ids})
 }
 
 export const deleteMessengerMember = async(member_id:number)=>{
@@ -51,7 +51,7 @@ export const deleteMessengerMember = async(member_id:number)=>{
 
 export const getMessengerContentList = async (channel_id:number, id_lt?:number)=>{
     const id_lt_param = id_lt?`&id_lt=${id_lt}`:''
-    return (await axios.get(`/api/v1/messengercontents/?limit=15&channel=${channel_id}${id_lt_param}`)).data.results as MessengerContent[]
+    return (await axios.get(`/api/v1/messengercontents/?limit=30&channel=${channel_id}${id_lt_param}`)).data.results as MessengerContent[]
 }
 
 export const postMessage = async (message:EditMessage)=>{

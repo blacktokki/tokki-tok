@@ -2,7 +2,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, {useMemo} from 'react';
 import { View } from 'react-native';
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 
 import useResizeWindow from '../hooks/useResizeWindow';
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -11,6 +10,7 @@ import DrawerNavigator from './DrawerNavigator';
 import useAuthContext, {AuthProvider} from '../hooks/useAuthContext';
 import { WebSocketProvider } from '../hooks/useWebsocketContext';
 import HeaderRight from '../components/HeaderRight'
+import Colors from '../constants/Colors';
 
 const Root = createStackNavigator();
 
@@ -54,13 +54,17 @@ function MainNavigator(){
         return Object.entries(auth.user === null?login:main)
     }, [auth])
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
-        {auth.user?<DrawerNavigator/>:undefined}
+        {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
         <View style={{flex:1}}>
             <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
-                <Main.Navigator>
-                    {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={(props)=>
-                        ({ title: screen.title , headerRight:()=><HeaderRight/>})
-                    } />)}
+                <Main.Navigator
+                    screenOptions={{
+                        headerStyle:{backgroundColor:Colors.header},
+                        headerTitleStyle:{color:'white'},
+                        headerRight:()=><HeaderRight/>
+                    }}
+                >
+                    {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
                     <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
                 </Main.Navigator>
             </WebSocketProvider>

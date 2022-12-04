@@ -1,4 +1,4 @@
-import { FontAwesome } from "@expo/vector-icons"
+import { Ionicons, FontAwesome } from "@expo/vector-icons"
 import React from "react"
 import { Text, View } from "react-native"
 import CommonItem from "../components/CommonItem"
@@ -29,3 +29,5 @@ export default ()=>{
         </CommonItem>)}
     </View>
 }
+
+export const MessengerIcon = <Ionicons size={30} style={{ marginBottom: -3 }} name='chatbox'/>

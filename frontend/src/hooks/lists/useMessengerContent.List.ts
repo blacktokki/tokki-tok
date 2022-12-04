@@ -1,25 +1,41 @@
-import { useEffect, useState } from "react"
-import { useInfiniteQuery, useMutation, useQueryClient } from "react-query"
+import { useCallback, useEffect, useState } from "react"
+import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from "react-query"
 import { getMessengerContentList, postMessage, deleteMessengerContent } from "../../apis"
 import { MessengerContent } from "../../types"
 import useWebsocketContext from "../useWebsocketContext"
 
+export type MessengerContentPage = {
+  next?:MessengerContentPage
+  current:MessengerContent[]
+}
 
-export default function useMessengerContentList(channel_id:number){
-  const [extraData, setExtraData] = useState<MessengerContent[]>([])
-  const { data, fetchNextPage } = useInfiniteQuery("MessengerContentList", async({pageParam})=>getMessengerContentList(channel_id, pageParam), {
-    getNextPageParam:(lastPage)=>lastPage.length?lastPage[lastPage.length - 1].id:undefined,
-    refetchOnReconnect:false,
-    refetchOnWindowFocus:false
-  })
+export default function useMessengerContentList(channel_id:number){  
+  const queryClient = useQueryClient()
+  const { data, fetchNextPage } = useInfiniteQuery<MessengerContentPage>(
+    ["MessengerContentList", channel_id], 
+    async({pageParam})=>getMessengerContentList(channel_id, pageParam).then(current=>({current})), 
+    {
+      select:data=>{
+        if(data.pages.length > 1)
+          data.pages[data.pages.length - 2].next = data.pages[data.pages.length - 1]
+        return data;
+      },
+      getNextPageParam:(lastPage)=>lastPage.current.length?lastPage.current[lastPage.current.length - 1].id:undefined,
+      refetchOnReconnect:false,
+      refetchOnWindowFocus:false
+    }
+  )
   const { lastJsonMessage } = useWebsocketContext()
   useEffect(()=>{
-    if(lastJsonMessage !=null && lastJsonMessage['type']=='next_message'){
-      setExtraData([lastJsonMessage['data'], ...extraData])
+    if(lastJsonMessage !=null && lastJsonMessage['type']=='next_message' && lastJsonMessage['data']['channel'] == channel_id){
+      queryClient.setQueryData<InfiniteData<MessengerContentPage>>(["MessengerContentList", channel_id], (_data)=>{
+        if(_data?.pages[0].current)
+          _data.pages[0].current = [lastJsonMessage['data'], ..._data?.pages[0].current]
+        return {...(_data || {pages:[], pageParams:[]})}
+      })
     }
   }, [lastJsonMessage])
-
-  return { data, extraData , fetchNextPage }
+  return { data, fetchNextPage }
 }
 
 export function useMessengerContentMutation(){

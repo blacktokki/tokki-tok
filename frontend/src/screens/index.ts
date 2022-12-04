@@ -6,6 +6,7 @@ import BoardScreen from "./main/BoardScreen";
 import BoardEditScreen from "./BoardEditScreen";
 import ChannelEditScreen from "./ChannelEditScreen"
 import { Screens } from "../types";
+import InviteScreen from "./InviteScreen";
 
 export const main = {
     HomeScreen:{
@@ -49,4 +50,9 @@ export const modal = {
         component:ChannelEditScreen,
         path:'modal/channel'
     },
+    InviteScreen:{
+        title:'invite',
+        component:InviteScreen,
+        path:'modal/invite'
+    }
 } as Screens

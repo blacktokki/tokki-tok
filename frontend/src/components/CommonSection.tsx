@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text } from './Themed';
 import { StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import Colors from '../constants/Colors';
 
 export type SectionParamList = {
     title?: string,
@@ -35,17 +36,17 @@ const styles = StyleSheet.create({
     width:'100%',
     maxWidth:1080,
     alignItems:'stretch',
-    backgroundColor:'rgba(0,0,0,0)'
+    backgroundColor:'transparent'
   },  
   container: {
       marginHorizontal:20,
       marginVertical: 10,
-      backgroundColor:'rgba(0,0,0,0)',
+      backgroundColor:'transparent',
     },
     titleView:{
       width: '100%',
       flexDirection:'row',
-      backgroundColor:'rgba(0,0,0,0)',
+      backgroundColor:'transparent',
       marginBottom:5,
     },
     title: {
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth:1,
-      borderColor:'#d0d7de',
+      borderColor:Colors.borderColor,
       borderRadius:6
     }
   });

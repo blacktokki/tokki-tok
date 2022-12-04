@@ -4,8 +4,20 @@
  */
 
 import { PathConfig } from "@react-navigation/native"
+import { ButtonProps, StyleProp, TextStyle, ViewStyle } from "react-native"
 
 export type Screens = Record<string, PathConfig & {title:string, component:React.ComponentType<any>}>
+
+export type CustomButtonProps = ButtonProps & {
+  style?:StyleProp<ViewStyle>,
+  textStyle?:StyleProp<TextStyle>
+  onPress:()=>void
+}
+
+export type ProfileProps = {
+  name:string,
+  username:string
+}
 
 export type User = {
   id:number,

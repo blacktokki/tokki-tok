@@ -1,17 +1,19 @@
-import { FontAwesome } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TabView, SceneMap,NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
-import DummyView from '../components/DummyView';
+import Profile from '../components/Profile';
+import Colors from '../constants/Colors';
 import useResizeWindow from '../hooks/useResizeWindow';
 import { drawerTabs } from '../tabs';
+import { UserMembership } from '../types';
 
 export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"top"|"bottom", index?:number, onTab?:(index:number)=>void})=>{
   const [index, setIndex] = React.useState(props.index || 0);
   const entries = Object.entries(props.tabs)
   const onTab = props.onTab
-  const icons = Object.assign({}, ...entries.map(([k, v])=>({[k]:<FontAwesome size={30} style={{ marginBottom: -3 }} name='code'/>})))
+  const icons = Object.assign({}, ...entries.map(([k, v])=>({[k]:v.icon})))
+  console.log(icons)
   return <TabView
     renderTabBar={(props:SceneRendererProps & {navigationState: NavigationState<any>})=>{
       return <TabBar
@@ -31,7 +33,7 @@ export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"
   />
 }
 
-export default ()=> {
+export default ({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
   const windowType = useResizeWindow();
   return windowType=='landscape'?<View
@@ -45,7 +47,7 @@ export default ()=> {
       ]}
       pointerEvents={false ? 'none' : 'auto'}
     >
-      <DummyView style={{width:'100%', height:135}} text='profile'/>
+      <Profile username={user.username} name={user.name}/>
       <View accessibilityRole="tablist" style={styles.content}>
         <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"}/>
       </View>
@@ -58,6 +60,8 @@ const styles = StyleSheet.create({
     tabBar: {
       width:240,
       elevation: 8,
+      borderRightWidth:1,
+      borderColor:Colors.borderColor
     },
     content: {
       flex: 1,
