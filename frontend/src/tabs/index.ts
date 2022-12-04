@@ -20,11 +20,12 @@ export const bottomTabs = {
         title:'board',
         component:BoardTab,
         icon:BoardIcon
-    },FourTab:{
-        title:'config',
-        component:OneTab,
-        icon:ConfigIcon
-    }
+    },
+    // FourTab:{
+    //     title:'config',
+    //     component:OneTab,
+    //     icon:ConfigIcon
+    // }
 } as Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}>
 
 export const drawerTabs = {

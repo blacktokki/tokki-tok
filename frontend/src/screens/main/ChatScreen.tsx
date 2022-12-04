@@ -10,6 +10,9 @@ import useAuthContext from '../../hooks/useAuthContext';
 import HeaderRight from '../../components/HeaderRight';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../../hooks/lists/useMessengerMemberList';
 import { navigate } from '../../navigation';
+import Colors from '../../constants/Colors';
+
+const marginBottom = 65
 
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
   const channel_id = route?.params?.id
@@ -82,7 +85,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
 
   return <View style={{flex:1, alignItems:'center'}}>
     <FlatList
-        style={{width:'100%', flexDirection: 'column-reverse', marginBottom:30}}
+        style={{width:'100%', flexDirection: 'column-reverse', marginBottom}}
         contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
         data={data?.pages}
         renderItem={renderItem}
@@ -92,9 +95,13 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         }}
         onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
       />
-      <CommonSection containerStyle={{margin: 0}} bodyStyle={{position:'absolute', top:-30, flexDirection:'row', paddingVertical:0, borderWidth:0}}>
-        <TextInput value={value} onChangeText={setValue} style={{borderWidth:1}} onSubmitEditing={postValue}/><CommonButton title={'write'} onPress={postValue}/>
-      </CommonSection>
+      <View style={{width:'100%'}}>
+        <View style={{position:'absolute', top:-marginBottom, width:'100%', backgroundColor:'white', alignItems:'center'}}>
+          <View style={{width:'100%',flexDirection:'row', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
+            <TextInput value={value} onChangeText={setValue} style={{flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor}} onSubmitEditing={postValue}/><CommonButton title={'write'} onPress={postValue}/>
+          </View>
+        </View>
+      </View>
   </View>
 }
 // outerContainerStyle={{alignContent:'flex-end'}} containerStyle={{width:'50%'}}

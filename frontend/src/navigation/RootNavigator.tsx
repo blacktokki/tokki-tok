@@ -61,7 +61,8 @@ function MainNavigator(){
                     screenOptions={{
                         headerStyle:{backgroundColor:Colors.header},
                         headerTitleStyle:{color:'white'},
-                        headerRight:()=><HeaderRight/>
+                        headerRight:()=><HeaderRight/>,
+                        headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor}
                     }}
                 >
                     {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
