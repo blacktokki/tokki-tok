@@ -4,7 +4,7 @@
 # bash scripts/setup.sh param1 param2 param3
 # * param1: github username
 # * param2: database username
-# * param3: database password
+# * param3: database password, secret key
 
 PROPERTY_FILE=./messenger-service/backend/.env
 
@@ -38,6 +38,7 @@ create database db1_messenger;
 echo "DATABASE_HOST=127.0.0.1" >> $PROPERTY_FILE
 echo "DATABASE_USER=$2" >> $PROPERTY_FILE
 echo "DATABASE_PASS=$3" >> $PROPERTY_FILE
+echo "SECRET_KEY=$3" >> $PROPERTY_FILE
 
 ## setup kurento
 # sudo apt-get --assume-yes install gnupg

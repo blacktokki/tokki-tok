@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d6^l_5=6fby&+kh(i+a(xq)pwmokvr6w^!+rqgi_$p8(p$s!36'
+# SECRET_KEY = 'django-insecure-d6^l_5=6fby&+kh(i+a(xq)pwmokvr6w^!+rqgi_$p8(p$s!36'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -162,7 +163,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'accounts.authentication.CsrfExemptSessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
@@ -172,3 +173,20 @@ REST_FRAMEWORK = {
     #     # 'drf_replace_ordering_filter.filters.ReplaceFieldsOrderingFilter'
     ],
 }
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console':{
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler'
+#         }
+#     },
+#     'loggers':{
+#         'django.db.backends':{
+#             'handlers': ['console'],
+#             'level': 'DEBUG'
+#         }
+#     }
+# }
