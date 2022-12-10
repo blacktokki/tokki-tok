@@ -25,6 +25,30 @@ class ChannelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LastMessageSerializer(serializers.Serializer):
+    created = serializers.DateTimeField(source='channel_content__created', read_only=True)
+    content = serializers.CharField(read_only=True)
+
+
+class MessengerChannelSerializer(serializers.ModelSerializer):
+    last_message_id = serializers.HiddenField(default=None)
+    last_message = LastMessageSerializer(required=False)
+    member_count = serializers.IntegerField(read_only=True)
+    unread_count = serializers.IntegerField(read_only=True)
+
+    def to_representation(self, instance):
+        if not hasattr(self, '_last_message'):
+            _last_message = [i.last_message_id for i in self.parent.instance] if self.parent else [self.instance.last_message_id]
+            self._last_message = {i['channel_content__channel_id']:i for i in Message.objects.filter(channel_content_id__in=_last_message).values('channel_content__channel_id', 'channel_content__created', 'content')}
+        data = super().to_representation(instance)
+        data['last_message'] = LastMessageSerializer(instance=self._last_message[data['id']]).data if data['id'] in self._last_message else None
+        return data
+
+    class Meta:
+        model = Channel
+        fields = '__all__'
+
+
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(write_only=True, required=False, queryset=User.objects.all())
     channel = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Channel.objects.filter(type='messenger'))

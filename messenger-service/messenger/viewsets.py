@@ -5,7 +5,8 @@ from rest_framework.decorators import action
 from messenger.consumers import send_enter, send_leave, send_next_message
 from .serializers import (
     BoardContentSerializer, 
-    ChannelSerializer, 
+    ChannelSerializer,
+    MessengerChannelSerializer, 
     MessengerContentSerializer, 
     MessengerMemberSerializer,
     MessengerUserBulkSerializer, 
@@ -28,6 +29,16 @@ class ChannelViewSet(viewsets.ModelViewSet):
     serializer_class = ChannelSerializer
     filterset_class = ChannelFilterSet
     queryset = Channel.objects.all()
+
+    @action(detail=False, methods=['get'], 
+        queryset=Channel.objects.filter(type='messenger').annotate(
+            member_count=models.Count('messengermember'),
+            unread_count=models.Count('channelcontent', filter=models.Q(channelcontent__message__id__gt=models.F('messengermember__last_message'))),
+            last_message_id=models.Max('channelcontent__message'),
+        ),
+        serializer_class=MessengerChannelSerializer)
+    def messenger(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -113,5 +124,5 @@ class MessengerMemberViewset(viewsets.ModelViewSet):
         serializer.is_valid()
         serializer.save()
         post_create_message(channel.id, [serializer.data['id']])
-        if not MessengerMember.objects.filter(channel=channel).exists():
+        if not MessengerMember.objects.filter(channel_id=channel.id).exists():
             channel.delete()
