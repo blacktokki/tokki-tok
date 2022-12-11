@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getMessengerChannelList, postChannel, putChannel } from "../../apis";
-import { Channel } from "../../types";
+import { MessengerChannel } from "../../types";
 import { Auth } from "../useAuthContext";
 import useWebsocketContext from "../useWebsocketContext";
 
@@ -13,7 +13,7 @@ export default function useMessengerChannelList(auth?:Auth){
   useEffect(()=>{
     if(lastJsonMessage !=null){
       if(lastJsonMessage['type']=='enter'){
-        queryClient.setQueryData<Channel[]>("MessengerChannelList", (_data)=>{
+        queryClient.setQueryData<MessengerChannel[]>("MessengerChannelList", (_data)=>{
           return (_data?.find(v=>v.id==lastJsonMessage['data']['id'])?_data:[lastJsonMessage['data'] , ...(_data|| [])]).sort((a, b)=>a.id - b.id)
         })
       }

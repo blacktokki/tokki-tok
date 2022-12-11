@@ -1,4 +1,4 @@
-import { Board, EditBoard, BoardContent, Channel, MessengerMember, MessengerContent, EditMessage } from '../types';
+import { Board, EditBoard, BoardContent, Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel } from '../types';
 import axios from './axios';
 
 export const getBoardChannelList = async (group_id:number)=>{
@@ -6,7 +6,7 @@ export const getBoardChannelList = async (group_id:number)=>{
 }
 
 export const getMessengerChannelList = async (user_id:number)=>{
-    return (await axios.get(`/api/v1/channels/?type=messenger&messenger_user_id=${user_id}`) ).data as Channel[]
+    return (await axios.get(`/api/v1/channels/messenger/?type=messenger&messenger_user_id=${user_id}`) ).data as MessengerChannel[]
 }
 
 export const postChannel = async(channel:Channel)=>{

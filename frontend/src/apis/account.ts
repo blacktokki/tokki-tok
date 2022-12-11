@@ -3,6 +3,8 @@ import { User, UserMembership } from '../types';
 import axios from './axios';
 
 export const login = async(username:string, password:string) => {
+    if(username.endsWith('.guest') && password.length == 0)
+        password = 'guest'
     const r = await axios.get("/csrf/")
     var bodyFormData = new FormData();
     bodyFormData.append('csrfmiddlewaretoken', r.data)
