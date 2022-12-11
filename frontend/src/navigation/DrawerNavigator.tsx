@@ -1,8 +1,10 @@
 import { useTheme } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TabView, SceneMap,NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
+import { navigate } from '.';
 import Profile from '../components/Profile';
+import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
 import useResizeWindow from '../hooks/useResizeWindow';
 import { drawerTabs } from '../tabs';
@@ -13,7 +15,6 @@ export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"
   const entries = Object.entries(props.tabs)
   const onTab = props.onTab
   const icons = Object.assign({}, ...entries.map(([k, v])=>({[k]:v.icon})))
-  console.log(icons)
   return <TabView
     renderTabBar={(props:SceneRendererProps & {navigationState: NavigationState<any>})=>{
       return <TabBar
@@ -33,9 +34,16 @@ export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"
   />
 }
 
+const onAddList = [
+  ()=>{},
+  ()=>navigate("ChannelEditScreen", {type:"messenger"}),
+  ()=>navigate("ChannelEditScreen", {type:"board"})
+]
+
 export default ({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
   const windowType = useResizeWindow();
+  const [index, setIndex] = useState(0);
   return windowType=='landscape'?<View
       style={[
         styles.tabBar,
@@ -48,8 +56,11 @@ export default ({user}:{user:UserMembership})=> {
       pointerEvents={false ? 'none' : 'auto'}
     >
       <Profile username={user.username} name={user.name}/>
+      <View style={{flexDirection:'row-reverse'}}>
+          <TextButton title='+' textStyle={{fontSize:20}} onPress={onAddList[index]}/>
+      </View>
       <View accessibilityRole="tablist" style={styles.content}>
-        <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"}/>
+        <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>
       </View>
     </View>:<View style={{width:1}}></View>
 }

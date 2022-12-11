@@ -28,7 +28,7 @@ const AuthReducer =(initialState:AuthState, action:AuthAction)=>{
               user:action.user,
               request:undefined
           }
-      case 'LOGOUT_FAILED':
+      case 'LOGIN_FAILED':
           return{
               ...initialState,
               request:undefined

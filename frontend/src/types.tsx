@@ -48,6 +48,16 @@ export type Channel = {
   owner: number,
   group: number
 }
+
+export type MessengerChannel = Channel & {
+  member_count: number,
+  unread_count: number,
+  last_message?: {
+    created: string,
+    content: string
+  }
+}
+
 export type Board = {
   id?: number,
   title:string,
