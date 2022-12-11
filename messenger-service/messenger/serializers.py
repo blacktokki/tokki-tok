@@ -15,10 +15,11 @@ class ChannelSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-       result = super().create(validated_data)
-       if validated_data['type'] == 'messenger':
-            validated_data['enter_message_id'] = create_enter_message(validated_data['id'], validated_data['owner']).id
-       return result 
+        instance = super().create(validated_data)
+        if instance.type == 'messenger':
+            MessengerMember.objects.create(user_id=validated_data['owner'].id, channel_id=instance.id)
+            instance.enter_message_id = create_enter_message(instance.id, validated_data['owner']).id
+        return instance
     
     class Meta:
         model = Channel
@@ -39,7 +40,7 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         if not hasattr(self, '_last_message'):
             _last_message = [i.last_message_id for i in self.parent.instance] if self.parent else [self.instance.last_message_id]
-            self._last_message = {i['channel_content__channel_id']:i for i in Message.objects.filter(channel_content_id__in=_last_message).values('channel_content__channel_id', 'channel_content__created', 'content')}
+            self._last_message = {i['channel_content__channel_id']:i for i in Message.objects.filter(id__in=_last_message).values('channel_content__channel_id', 'channel_content__created', 'content')}
         data = super().to_representation(instance)
         data['last_message'] = LastMessageSerializer(instance=self._last_message[data['id']]).data if data['id'] in self._last_message else None
         return data

@@ -32,7 +32,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], 
         queryset=Channel.objects.filter(type='messenger').annotate(
-            member_count=models.Count('messengermember'),
+            member_count=models.Subquery( Channel.objects.filter(id=models.OuterRef('id')).annotate(member_count=models.Count('messengermember')).values('member_count')[:1]),
             unread_count=models.Count('channelcontent', filter=models.Q(channelcontent__message__id__gt=models.F('messengermember__last_message'))),
             last_message_id=models.Max('channelcontent__message'),
         ),
@@ -43,7 +43,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
         if serializer.data['type'] == 'messenger':
-            send_enter(serializer.data, serializer.data["owner"])
+            send_enter(serializer.instance, serializer.data["owner"])
             post_create_message(serializer.data["id"], [serializer.data['enter_message_id']])
 
 
