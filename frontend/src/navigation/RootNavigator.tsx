@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import React, {useMemo} from 'react';
 import { View } from 'react-native';
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -25,18 +25,18 @@ export default function RootNavigator() {
                     {/* <ReactQueryDevtools initialIsOpen={true} /> */}
                         <Root.Navigator
                             mode= 'modal'
-                            headerMode= 'none'
+                            headerMode= 'screen'
                             screenOptions={{
-                                cardStyle:{
-                                    backgroundColor:"transparent",
-                                    opacity:0.99,
-                                }
+                                cardStyle:{backgroundColor:"white"},
+                                animationEnabled: true,
+                                cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
                             }}
                         >
                             <Root.Screen name="Main" component={MainNavigator} options={{headerShown:false}}/>
-                            {Object.entries(modal).map(([key, screen])=><Root.Screen key={key} name={key} component={screen.component} options={(props)=>
-                                ({ title: screen.title, cardStyle:{backgroundColor:windowType=='portrait'?'white':'transparent'}})
-                            } />)}
+                            {Object.entries(modal).map(([key, screen])=><Root.Screen key={key} name={key} component={screen.component} options={{
+                                title: screen.title,
+                                gestureDirection: windowType == 'landscape'?'vertical-inverted':'vertical'
+                            }} />)}
                         </Root.Navigator>
                 </QueryClientProvider>
             </AuthProvider>

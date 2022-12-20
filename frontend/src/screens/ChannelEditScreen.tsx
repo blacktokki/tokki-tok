@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { TextInput, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import CommonSection from '../components/CommonSection';
 import { View, Text } from '../components/Themed';
 import CommonButton from '../components/CommonButton';
@@ -9,6 +9,7 @@ import useAuthContext from '../hooks/useAuthContext';
 import { navigate } from '../navigation';
 import { Channel } from '../types';
 import useMessengerChannelList, { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
+import TextField from '../components/TextField';
 
 
 export default function ChannelEditScreen({navigation, route}: StackScreenProps<any, 'ChannelEdit'>) {
@@ -20,7 +21,6 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
   const channel = channelList?.find(v=>v.id==id)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [contentHeight, setContentHeight] = useState<number>()
   const back = ()=>{
     if(navigation.canGoBack())
         navigation.goBack()
@@ -39,19 +39,18 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
     <Text style={{fontSize:20}}>Edit Channel - {type}</Text>
     </View>
     <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={styles.field}>
-      <Text style={styles.text}>Name</Text><TextInput style={styles.textInput} value={name} onChangeText={setName}/>
-    </View>
-    <View style={styles.field}>
-      <Text style={styles.text}>Description</Text><TextInput style={[styles.textInput, {height:contentHeight}]} value={description} onChangeText={setDescription}
-         onContentSizeChange={(e) => setContentHeight(e.nativeEvent.contentSize.height + 2)} multiline/>
+    <View style={{width:'50%'}}>
+      <TextField name='Name' value={name} setValue={setName} width={'100%'}/>
+      <TextField name='Description' value={description} setValue={setDescription} multiline width={'100%'}/>
     </View>
     <View style={[styles.field, {justifyContent:'flex-end'}]}>
       <CommonButton title={'save'} onPress={()=>{
         if(auth?.user?.id && auth.groupId){
           const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
-          id?channelMutation.update(newChannel):channelMutation.create(newChannel)
-          navigate("Main", {screen:"HomeScreen", params: {tab:type=='messenger'?1:2}})
+          (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
+            screen:v.type == 'messenger'?'MessengerScreen':'BoardScreen',
+            params:{id:v.id}
+          }))
         }
       }}/>
       <CommonButton title={'cancel'} onPress={back}/>
@@ -64,18 +63,6 @@ const styles = StyleSheet.create({
     width:'50%',
     flexDirection:'row',
     padding:10,
-  },
-  text:{
-    flex:1,
-    fontSize:16
-  },
-  textInput: {
-    flex:2,
-    fontSize:16,
-    borderRadius:6,
-    borderWidth:1,
-    padding:1,
-    borderColor:'#d0d7de',
   },
   separator: {
     marginBottom: 20,

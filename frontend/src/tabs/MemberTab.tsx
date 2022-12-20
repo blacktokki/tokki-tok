@@ -5,6 +5,7 @@ import CommonItem from "../components/CommonItem"
 import useAuthContext from "../hooks/useAuthContext"
 import useUserMembershipList from "../hooks/lists/useUserMembershipList"
 import { UserMembership } from "../types"
+import { navigate } from "../navigation"
 
 export const renderMemberItem = (item:UserMembership, onPress?:(item:UserMembership)=>void)=> (
     <CommonItem key={item.id} bodyStyle={{flexDirection:'row', justifyContent:'flex-start'}} onPress={onPress?()=>onPress(item):undefined}>
@@ -17,7 +18,7 @@ export default ()=>{
     const {auth} = useAuthContext()
     const userList = useUserMembershipList(auth)
     return <View style={{flex:1, backgroundColor:'white'}}>
-        {userList && userList.map(item=>renderMemberItem(item))}
+        {userList && userList.map(item=>renderMemberItem(item, (item)=>navigate("ProfileScreen", {id:item.id})))}
     </View>
 }
 

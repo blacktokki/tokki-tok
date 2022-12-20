@@ -19,5 +19,5 @@ export function useBoardChannelMutation(){
     onSuccess: () => queryClient.invalidateQueries("BoardChannelList")
   })
 
-  return { create:create.mutate, update:update.mutate, delete:_delete.mutate}
+  return { create:create.mutateAsync, update:update.mutateAsync, delete:_delete.mutate}
 }

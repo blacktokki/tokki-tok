@@ -35,7 +35,6 @@ export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"
 }
 
 const onAddList = [
-  ()=>{},
   ()=>navigate("ChannelEditScreen", {type:"messenger"}),
   ()=>navigate("ChannelEditScreen", {type:"board"})
 ]
@@ -57,12 +56,12 @@ export default ({user}:{user:UserMembership})=> {
     >
       <Profile username={user.username} name={user.name}/>
       <View style={{flexDirection:'row-reverse'}}>
-          <TextButton title='+' textStyle={{fontSize:20}} onPress={onAddList[index]}/>
+          <TextButton title='+' textStyle={{fontSize:20}} style={{borderRadius:20}} onPress={onAddList[index]}/>
       </View>
       <View accessibilityRole="tablist" style={styles.content}>
         <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>
       </View>
-    </View>:<View style={{width:1}}></View>
+    </View>:<View style={{width:0}}></View>
 }
 
 {/*<Text style={[styles.label, { color: d.isFocused ? colors.primary : '#222' }]}></Text> */}
