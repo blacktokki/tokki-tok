@@ -10,7 +10,7 @@ type AuthState ={user?:UserMembership|null, request?:{username:string, password:
 
 const AuthContext = createContext<{auth:Auth, dispatch:Dispatch<AuthAction>}>({auth:{}, dispatch:()=>{}});
 
-const AuthReducer =(initialState:AuthState, action:AuthAction)=>{
+const authReducer =(initialState:AuthState, action:AuthAction)=>{
   switch (action.type){
       case 'LOGIN_REQUEST':
         return {
@@ -51,7 +51,7 @@ const AuthReducer =(initialState:AuthState, action:AuthAction)=>{
 
 
 export const AuthProvider = ({children}:{children:React.ReactNode})=>{
-  const [authState, dispatch] = useReducer(AuthReducer, {} as Auth)
+  const [authState, dispatch] = useReducer(authReducer, {} as Auth)
   const auth = useMemo(()=>({
     user:authState.user,
     groupId: authState.user?.membership_set.find(g=>g.root_group_id==null)?.group

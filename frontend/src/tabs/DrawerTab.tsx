@@ -4,7 +4,6 @@ import CommonItem from "../components/CommonItem"
 import useBoardChannelList from "../hooks/lists/useBoardChannelList"
 import useMessengerChannelList from "../hooks/lists/useMessengerChannelList"
 import useAuthContext from "../hooks/useAuthContext"
-import useUserMembershipList from "../hooks/lists/useUserMembershipList"
 import { navigate } from "../navigation"
 
 const DrawerTab = (props:{data:{name:string, onPress?:()=>void}[]})=><View style={{flex:1, backgroundColor:'white'}}>
@@ -15,11 +14,6 @@ const DrawerTab = (props:{data:{name:string, onPress?:()=>void}[]})=><View style
 </View>
 
 export default {
-    Member:()=>{
-        const {auth} = useAuthContext()
-        const userList = useUserMembershipList(auth);
-        return <DrawerTab data={userList || []}/>
-    },
     Messenger:()=>{
         const {auth} = useAuthContext()
         const channelList = useMessengerChannelList(auth);

@@ -17,4 +17,4 @@ export default ()=>{
     </View>
 }
 
-export const BoardIcon = <FontAwesome5 size={30} style={{ marginBottom: -3 }} name='clipboard-list'/>
+export const BoardIcon = <FontAwesome5 size={30} style={{ marginBottom: 3 }} name='clipboard-list'/>

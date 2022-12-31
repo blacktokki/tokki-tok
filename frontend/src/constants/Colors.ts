@@ -22,5 +22,6 @@ export default {
     backgroundColor:'#f6f8fa', //'rgba(9,30,66,0.08)',//rgb(242,242,242)
   },
   borderColor:'#d0d7de',
-  header:'#24292f'
+  header:'#24292f',
+  focus:'#0065A4',
 };
