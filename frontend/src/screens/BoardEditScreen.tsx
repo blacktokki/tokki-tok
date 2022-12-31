@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { TextInput, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import CommonSection from '../components/CommonSection';
 import { View, Text } from '../components/Themed';
 import CommonButton from '../components/CommonButton';
@@ -9,6 +9,7 @@ import useAuthContext from '../hooks/useAuthContext';
 import { navigate } from '../navigation';
 import useBoardContentList, { useBoardContentMutation } from '../hooks/lists/useBoardContentList';
 import { Board } from '../types';
+import TextField from '../components/TextField';
 
 
 export default function BoardEditScreen({navigation, route}: StackScreenProps<any, 'BoardEdit'>) {
@@ -22,7 +23,6 @@ export default function BoardEditScreen({navigation, route}: StackScreenProps<an
   const board = useMemo(()=>boardContentList?.find(v=>v.id==id)?.board_set[0], [boardContentList])
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [contentHeight, setContentHeight] = useState<number>()
   const back = ()=>{
     if(navigation.canGoBack())
         navigation.goBack()
@@ -42,18 +42,13 @@ export default function BoardEditScreen({navigation, route}: StackScreenProps<an
   }, [board])
   return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
     <View style={{justifyContent:'space-around'}}>
-    <Text style={{fontSize:20}}>Edit Board</Text>
+      <Text style={{fontSize:20}}>Edit Board</Text>
     </View>
     <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={styles.field}>
-      <Text style={styles.text}>Channel</Text><TextInput style={[styles.textInput, {backgroundColor:'#EEE'}]} editable={false} value={channel?.name || ''}/>
-    </View>
-    <View style={styles.field}>
-      <Text style={styles.text}>Title</Text><TextInput style={styles.textInput} value={title} onChangeText={setTitle}/>
-    </View>
-    <View style={styles.field}>
-      <Text style={styles.text}>Contnet</Text><TextInput style={[styles.textInput, {height:contentHeight}]} value={content} onChangeText={setContent}
-         onContentSizeChange={(e) => setContentHeight(e.nativeEvent.contentSize.height + 2)} multiline/>
+    <View style={{width:'50%'}}>
+      <TextField name='Channel' disabled={true} value={channel?.name || ''} width={'100%'}/>
+      <TextField name='Title' value={title} setValue={setTitle} width={'100%'}/>
+      <TextField name='Content'  value={content} setValue={setContent} multiline width={'100%'}/>
     </View>
     <View style={[styles.field, {justifyContent:'flex-end'}]}>
       <CommonButton title={'save'} onPress={()=>{
@@ -71,18 +66,6 @@ const styles = StyleSheet.create({
     width:'50%',
     flexDirection:'row',
     padding:10,
-  },
-  text:{
-    flex:1,
-    fontSize:16
-  },
-  textInput: {
-    flex:2,
-    fontSize:16,
-    borderRadius:6,
-    borderWidth:1,
-    padding:1,
-    borderColor:'#d0d7de',
   },
   separator: {
     marginBottom: 20,

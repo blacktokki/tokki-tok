@@ -14,7 +14,7 @@ export const postChannel = async(channel:Channel)=>{
 }
 
 export const putChannel = async(channel:Channel)=>{
-    return (await axios.post(`/api/v1/channels/${channel.id}/`, channel)).data as Channel
+    return (await axios.put(`/api/v1/channels/${channel.id}/`, channel)).data as Channel
 }
 
 export const deleteChannel = async(channel_id:number)=>{

@@ -37,5 +37,5 @@ export function useMessengerChannelMutation(){
   })
 
 
-  return { create:create.mutate, update:update.mutate}
+  return { create:create.mutateAsync, update:update.mutateAsync}
 }

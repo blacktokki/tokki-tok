@@ -29,11 +29,6 @@ export const bottomTabs = {
 } as Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}>
 
 export const drawerTabs = {
-    OneTab:{
-        title:'member',
-        component:DrawerTab.Member,
-        icon:MemberIcon
-    },
     TwoTab:{
         title:'messenger',
         component:DrawerTab.Messenger,

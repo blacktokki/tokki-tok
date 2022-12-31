@@ -4,7 +4,7 @@ import { CustomButtonProps } from '../types';
 import CommonButton from './CommonButton';
 
 export default (props:CustomButtonProps)=>{
-    return <CommonButton {...props} style={styles.style}/>
+    return <CommonButton {...props} style={[styles.style, props.style]}/>
 }
 
 const styles = StyleSheet.create({
