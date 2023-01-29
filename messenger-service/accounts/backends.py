@@ -11,7 +11,7 @@ user_logged_in.disconnect(update_last_login, dispatch_uid='update_last_login')
 class AuthBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None):
         sessions = requests.Session()
-        url = f"http://{settings.TASK_SERVICE_DOMAIN}"
+        url = f"http://{settings.ACCOUNT_SERVICE_DOMAIN}"
         csrf = sessions.get(f"{url}/api/v1/user/csrf/").content
         mp_encoder = MultipartEncoder(fields={'username': username, 'password': password})
         # remote_addr = request.META.get('REMOTE_ADDR')

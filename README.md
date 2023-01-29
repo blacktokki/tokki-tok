@@ -1,1 +1,63 @@
 # kiblack-tok
+[![Python](https://img.shields.io/badge/python-3.6.9-blue.svg?style=flat-square)](https://www.python.org/downloads/release/python-362/)
+[![Django](https://img.shields.io/badge/django-3.2.16-blue.svg?style=flat-square)](https://www.djangoproject.com/)
+[![Django Rest Framework](https://img.shields.io/badge/django_rest_framework-3.11.0-blue.svg?style=flat-square)](http://www.django-rest-framework.org/)
+
+> #### A messenger service based on Python and Typescript.
+
+## Overview
+
++ Separated backend and frontend; Rest API; Micro service
++ Full cross-platform support(Desktop, Web, Mobile)
++ Documented with swagger
+
+Main modules are available below:
+
++ Messenger server(Django + React Native): [https://github.com/blacktokki/kiblack-tok](https://github.com/blacktokki/kiblack-tok)
++ Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
+
+Screenshot from the architecture below:
+![제목 없는 다이어그램 drawio](https://user-images.githubusercontent.com/39031723/214096215-32210842-d719-46a8-aff2-4fdcfff1e5a3.png)
+
+## Installation
+### Install account server
+    $ git clone https://github.com/blacktokki/blacktokki-account
+    $ cd blacktokki-account
+    $ bash scripts/setup.sh <github username> <database username> <database password>
+### Install messenger server
+    $ bash scripts/setup.sh <github username> <database username> <database password>
+
+## Usage
+### Run account server
+```sh
+# run account services
+$ bash scripts/runserver.sh discovery gateway account
+```
+### Run messenger server
+```sh
+# run backend with gunicorn
+$ bash scripts/runserver.sh gunicorn
+
+# connect to discovery server
+$ bash scripts/runserver.sh eureka_client
+```
+### Run client
+```sh
+# cd into frontend directory
+$ cd frontend
+
+# run client development
+$ npm run android
+npm run ios
+npm run web
+npm run desktop
+```
+
+## Screenshots
+### Messenger Screen
+![제목 없음2](https://user-images.githubusercontent.com/39031723/214096452-1061190e-c738-422f-bfc1-b0a8ec9edeaf.png)
+### Board Screen
+![제목 없음22](https://user-images.githubusercontent.com/39031723/214096456-15c7c147-fb68-4b42-8346-af43b0ae4892.png)
+
+
+<!-- ### Read More -->

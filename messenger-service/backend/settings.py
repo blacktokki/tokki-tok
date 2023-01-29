@@ -154,7 +154,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TASK_SERVICE_DOMAIN = 'localhost:8080'
+ACCOUNT_SERVICE_DOMAIN = 'localhost:8080'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
