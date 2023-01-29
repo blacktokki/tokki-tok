@@ -1,0 +1,35 @@
+{
+  "files": {
+    "app.js": "/kiblack-tok/static/js/app.31abcd46.chunk.js",
+    "app.js.map": "/kiblack-tok/static/js/app.31abcd46.chunk.js.map",
+    "runtime~app.js": "/kiblack-tok/static/js/runtime~app.eb408d0f.js",
+    "runtime~app.js.map": "/kiblack-tok/static/js/runtime~app.eb408d0f.js.map",
+    "static/js/2.8fb7411f.chunk.js": "/kiblack-tok/static/js/2.8fb7411f.chunk.js",
+    "static/js/2.8fb7411f.chunk.js.map": "/kiblack-tok/static/js/2.8fb7411f.chunk.js.map",
+    "fonts/AntDesign.ttf": "/kiblack-tok/./fonts/AntDesign.ttf",
+    "fonts/Entypo.ttf": "/kiblack-tok/./fonts/Entypo.ttf",
+    "fonts/Feather.ttf": "/kiblack-tok/./fonts/Feather.ttf",
+    "fonts/FontAwesome.ttf": "/kiblack-tok/./fonts/FontAwesome.ttf",
+    "fonts/FontAwesome5_Brands.ttf": "/kiblack-tok/./fonts/FontAwesome5_Brands.ttf",
+    "fonts/FontAwesome5_Solid.ttf": "/kiblack-tok/./fonts/FontAwesome5_Solid.ttf",
+    "fonts/Fontisto.ttf": "/kiblack-tok/./fonts/Fontisto.ttf",
+    "fonts/Foundation.ttf": "/kiblack-tok/./fonts/Foundation.ttf",
+    "fonts/Ionicons.ttf": "/kiblack-tok/./fonts/Ionicons.ttf",
+    "fonts/MaterialCommunityIcons.ttf": "/kiblack-tok/./fonts/MaterialCommunityIcons.ttf",
+    "fonts/MaterialIcons.ttf": "/kiblack-tok/./fonts/MaterialIcons.ttf",
+    "fonts/SimpleLineIcons.ttf": "/kiblack-tok/./fonts/SimpleLineIcons.ttf",
+    "fonts/SpaceMono-Regular.ttf": "/kiblack-tok/./fonts/SpaceMono-Regular.ttf",
+    "favicon-16.png": "/kiblack-tok/favicon-16.png",
+    "favicon-32.png": "/kiblack-tok/favicon-32.png",
+    "favicon.ico": "/kiblack-tok/favicon.ico",
+    "index.html": "/kiblack-tok/index.html",
+    "manifest.json": "/kiblack-tok/manifest.json",
+    "serve.json": "/kiblack-tok/serve.json",
+    "static/js/2.8fb7411f.chunk.js.LICENSE.txt": "/kiblack-tok/static/js/2.8fb7411f.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime~app.eb408d0f.js",
+    "static/js/2.8fb7411f.chunk.js",
+    "static/js/app.31abcd46.chunk.js"
+  ]
+}
