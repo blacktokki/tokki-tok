@@ -1,8 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 
+const DEVDOMAIN = 'http://localhost:9000'
+const PRODDOMAIN = 'https://blacktokki.com'
+
 export const defaultOption:AxiosRequestConfig = {
-    baseURL: 'http://localhost:9000/messenger/',
+    baseURL: `${PRODDOMAIN}/messenger/`,
     withCredentials: true
 };
 

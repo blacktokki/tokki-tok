@@ -31,7 +31,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
         <MaterialIcons size={38} style={{marginBottom: -3, marginRight:10 }} name='account-circle'/>
         <View>
           <Text style={{fontSize:16}}>{item.name}</Text>
-          <Text style={{fontSize:14, opacity: 0.4}}>{item.created}</Text>
+          <Text style={{fontSize:14, opacity: 0.4}}>{item.created.split('.')[0].replace('T', ' ')}</Text>
         </View>
       </View>
       <View style={{flexDirection:'row'}}>
@@ -59,6 +59,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
       <FlatList
         data={contentList}
         renderItem={renderItem}
+        contentContainerStyle={{flexGrow:1}}
         ListFooterComponent={()=><CommonSection bodyStyle={{flexDirection:'row', justifyContent:'flex-end', paddingVertical:0, borderWidth:0}}>
             <CommonButton title={'write'} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id})}/>
         </CommonSection>}
