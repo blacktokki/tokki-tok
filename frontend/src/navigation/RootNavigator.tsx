@@ -2,7 +2,7 @@ import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/
 import React, {useMemo} from 'react';
 import { View } from 'react-native';
 import { QueryClient, QueryClientProvider } from "react-query";
-
+import { Ionicons } from '@expo/vector-icons';
 import useResizeWindow from '../hooks/useResizeWindow';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import {main, login, modal} from '../screens';
@@ -11,6 +11,7 @@ import useAuthContext, {AuthProvider} from '../hooks/useAuthContext';
 import { WebSocketProvider } from '../hooks/useWebsocketContext';
 import HeaderRight from '../components/HeaderRight'
 import Colors from '../constants/Colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Root = createStackNavigator();
 
@@ -45,6 +46,19 @@ export default function RootNavigator() {
 
 const Main = createStackNavigator();
 
+function headerLeft(navigation:any, route:any){
+    const canGoBack = navigation.canGoBack() || route.name != 'HomeScreen'
+    const goBack = ()=>{
+        if (navigation.canGoBack())
+            navigation.goBack()
+        else if (route.name != 'HomeScreen')
+            navigation.replace('HomeScreen')
+    }
+    if (canGoBack)
+        return <TouchableOpacity onPress={goBack}><Ionicons size={24} style={{marginHorizontal:20 }} name="arrow-back"/></TouchableOpacity>
+    return null
+}
+
 function MainNavigator(){
     const {auth} = useAuthContext()
     const entries = useMemo(()=>{
@@ -58,12 +72,14 @@ function MainNavigator(){
         <View style={{flex:1}}>
             <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                 <Main.Navigator
-                    screenOptions={{
+                    screenOptions={({navigation, route})=>({
                         headerStyle:{backgroundColor:Colors.header},
                         headerTitleStyle:{color:'white'},
+                        headerLeft:()=>headerLeft(navigation, route),
                         headerRight:()=><HeaderRight/>,
-                        headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor}
-                    }}
+                        headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
+                        cardStyle:{flexShrink:1}
+                    })}
                 >
                     {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
                     <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />

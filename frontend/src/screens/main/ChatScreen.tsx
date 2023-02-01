@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { StyleSheet, Text, Button, View} from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
 import CommonSection from '../../components/CommonSection';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
@@ -11,6 +11,7 @@ import HeaderRight from '../../components/HeaderRight';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../../hooks/lists/useMessengerMemberList';
 import { navigate } from '../../navigation';
 import Colors from '../../constants/Colors';
+import Hyperlink from 'react-native-hyperlink'
 
 const marginBottom = 65
 
@@ -63,7 +64,9 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
           <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
             {isFirst && !isSelf?<MaterialIcons size={38} style={{marginBottom: -3, marginRight:10 }} name='account-circle'/>:<View style={{width:48}}/>}
             <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
-              <Text>{content.message_set[0].content}</Text>
+              <Hyperlink linkDefault={ true }>
+                <Text>{content.message_set[0].content}</Text>
+              </Hyperlink>
             </CommonSection>
           </View>
         </View>

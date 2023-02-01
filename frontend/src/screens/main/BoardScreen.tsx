@@ -1,7 +1,8 @@
 import React, {useCallback, useEffect, useLayoutEffect} from 'react';
 import {FlatList } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import Hyperlink from 'react-native-hyperlink'
 import useBoardContentList, { useBoardContentMutation } from '../../hooks/lists/useBoardContentList';
 import CommonSection from '../../components/CommonSection';
 import { View, Text } from '../../components/Themed';
@@ -40,7 +41,9 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
       </View>
     </View>
     <Text style={{fontSize:20}}>{item.board_set[0].title}</Text>
-    <Text style={{fontSize:14}}>{item.board_set[0].content}</Text>
+    <Hyperlink linkDefault={ true }>
+      <Text style={{fontSize:14}}>{item.board_set[0].content}</Text>
+    </Hyperlink>
   </CommonSection>
   , [navigation, contentMutation])
   
