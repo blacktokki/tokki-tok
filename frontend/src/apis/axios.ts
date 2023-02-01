@@ -1,11 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
-
-
-const DEVDOMAIN = 'http://localhost:9000'
-const PRODDOMAIN = 'https://blacktokki.com'
+// @ts-ignore
+import {API_URL} from "@env"
 
 export const defaultOption:AxiosRequestConfig = {
-    baseURL: `${PRODDOMAIN}/messenger/`,
+    baseURL: `${API_URL}/messenger/`,
     withCredentials: true
 };
 

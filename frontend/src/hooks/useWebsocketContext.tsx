@@ -1,11 +1,14 @@
 import React, { createContext, useContext } from "react"
 import useWebSocket from "react-use-websocket"
 import { SendJsonMessage } from "react-use-websocket/dist/lib/types"
+// @ts-ignore
+import {API_URL} from "@env"
 
 const WebSocketContext = createContext<{lastJsonMessage:any, sendJsonMessage:SendJsonMessage }>({lastJsonMessage:null, sendJsonMessage:()=>{}});
+const [SCHEMA, DOMAIN] = API_URL.split('://')
 
 const WebSocketProviderInternal = ({children}:{children:React.ReactNode})=>{
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket('ws://localhost:9000/messenger/ws/',{
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${SCHEMA=='https'?'wss':'ws'}://${DOMAIN}/messenger/ws/`,{
     shouldReconnect: (closeEvent) => true
   })
   return <WebSocketContext.Provider value={{lastJsonMessage, sendJsonMessage}}>
