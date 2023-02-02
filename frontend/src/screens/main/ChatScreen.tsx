@@ -12,6 +12,7 @@ import useMessengerMemberList, { useMessengerMemberMutation } from '../../hooks/
 import { navigate } from '../../navigation';
 import Colors from '../../constants/Colors';
 import Hyperlink from 'react-native-hyperlink'
+import useMessengerChannelList from '../../hooks/lists/useMessengerChannelList';
 
 const marginBottom = 65
 
@@ -19,6 +20,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const channel_id = route?.params?.id
   const height = useRef(0)
   const {auth} = useAuthContext()
+  const channel = useMessengerChannelList(auth)?.find(v=>v.id=channel_id)
   const {data, fetchNextPage } = useMessengerContentList(channel_id)
   const memberList = useMessengerMemberList(channel_id)
   const member_id = useMemo(()=>memberList?.find(v=>v.user == auth.user?.id)?.id, [auth, memberList])
@@ -35,7 +37,8 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       headerRight: ()=> <HeaderRight extra={[
         {title:'invite', onPress:()=>{navigate("InviteScreen", {id:channel_id})}},
         {title:'leave', onPress:()=>{member_id && messengerMemberMutation.leave(member_id);back()}}
-      ]}/>
+      ]}/>,
+      title: channel?.name
     });
   }, [navigation, route, member_id]);
 

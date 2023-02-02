@@ -12,12 +12,14 @@ type Props = {
   width?:any
   disabled?:boolean
   multiline?:boolean
+  minHeight?:number
   textStyle?:StyleProp<TextStyle>
   style?:StyleProp<ViewStyle>
 }
 
 export default function TextField(props:Props) {
   const [contentHeight, setContentHeight] = useState<number>()
+  const minHeight = props.minHeight || 30
   return (
     <RowField name={props.name} width={props.width} textStyle={props.textStyle}>
       <TextInput style={[{
@@ -28,9 +30,9 @@ export default function TextField(props:Props) {
           paddingHorizontal:10, 
           paddingVertical:3, 
           backgroundColor:props.disabled?'#EEE':undefined,
-          height:props.multiline?contentHeight:30
+          height:props.multiline?contentHeight:minHeight,
         }, props.style]} editable={!props.disabled} value={props.value} onChangeText={props.setValue}
-        onContentSizeChange={props.multiline?(e) => setContentHeight(e.nativeEvent.contentSize.height + 2):undefined} 
+        onContentSizeChange={props.multiline?(e) => setContentHeight(Math.max(e.nativeEvent.contentSize.height, minHeight) + 2):undefined} 
         multiline={props.multiline}
       ></TextInput>
    </RowField>

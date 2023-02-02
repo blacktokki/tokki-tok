@@ -9,20 +9,24 @@ import { View, Text } from '../../components/Themed';
 import CommonButton from '../../components/CommonButton';
 import { BoardContent } from '../../types';
 import HeaderRight from '../../components/HeaderRight';
-import { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
+import useBoardChannelList, { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
+import useAuthContext from '../../hooks/useAuthContext';
 
 
 
 
 export default function BoardScreen({navigation, route}: StackScreenProps<any, 'Board'>) {
   const channel_id = route?.params?.id
+  const {auth} = useAuthContext()
+  const channel = useBoardChannelList(auth)?.find(v=>v.id=channel_id)
   const contentList = useBoardContentList(channel_id)
   const boardChannelMutation = useBoardChannelMutation()
   const contentMutation = useBoardContentMutation()
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: ()=> <HeaderRight extra={[{title:'delete', onPress:()=>{boardChannelMutation.delete(channel_id);back()}}]}/>
+      headerRight: ()=> <HeaderRight extra={[{title:'delete', onPress:()=>{boardChannelMutation.delete(channel_id);back()}}]}/>,
+      title: channel?.name
     });
   }, [navigation, route]);
   
