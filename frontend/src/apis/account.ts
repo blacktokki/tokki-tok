@@ -1,23 +1,21 @@
 
 import { User, UserMembership } from '../types';
 import axios from './axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const login = async(username:string, password:string) => {
     if(username.endsWith('.guest') && password.length == 0)
         password = 'guest'
-    const r = await axios.get("/csrf/")
-    var bodyFormData = new FormData();
-    bodyFormData.append('csrfmiddlewaretoken', r.data)
-    bodyFormData.append('username', username)
-    bodyFormData.append('password', password)
-    bodyFormData.append('submit', 'Log in')
-    const r2 = await axios.post("/api-auth/login/", bodyFormData, {headers: {"Content-Type": "multipart/form-data"}})
-    if(r2.status == 200){
+    const r = await axios.post("/api-token-auth/", {username, password});
+    if(r.status == 200){
+        await AsyncStorage.setItem("Authorization", r.data)
         return await checkLogin()
     }
 }
 
 export const logout = async() => {
+    axios.defaults.headers['Authorization'] = ''
+    await AsyncStorage.removeItem("Authorization")
     return await axios.get("/api-auth/logout/")
 }
 
@@ -26,6 +24,7 @@ export const guestLogin =  async() => {
 }
 
 export const checkLogin = async() => {
+    axios.defaults.headers['Authorization'] = `JWT ${await AsyncStorage.getItem("Authorization")}`
     try{
         const value = (await axios.get("/api/v1/users/memberships/?_self=true"))?.data
         if (value && value.length){
