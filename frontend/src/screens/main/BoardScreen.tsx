@@ -1,27 +1,32 @@
 import React, {useCallback, useEffect, useLayoutEffect} from 'react';
 import {FlatList } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import Hyperlink from 'react-native-hyperlink'
 import useBoardContentList, { useBoardContentMutation } from '../../hooks/lists/useBoardContentList';
 import CommonSection from '../../components/CommonSection';
 import { View, Text } from '../../components/Themed';
 import CommonButton from '../../components/CommonButton';
 import { BoardContent } from '../../types';
 import HeaderRight from '../../components/HeaderRight';
-import { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
+import useBoardChannelList, { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
+import useAuthContext from '../../hooks/useAuthContext';
 
 
 
 
 export default function BoardScreen({navigation, route}: StackScreenProps<any, 'Board'>) {
   const channel_id = route?.params?.id
+  const {auth} = useAuthContext()
+  const channel = useBoardChannelList(auth)?.find(v=>v.id=channel_id)
   const contentList = useBoardContentList(channel_id)
   const boardChannelMutation = useBoardChannelMutation()
   const contentMutation = useBoardContentMutation()
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: ()=> <HeaderRight extra={[{title:'delete', onPress:()=>{boardChannelMutation.delete(channel_id);back()}}]}/>
+      headerRight: ()=> <HeaderRight extra={[{title:'delete', onPress:()=>{boardChannelMutation.delete(channel_id);back()}}]}/>,
+      title: channel?.name
     });
   }, [navigation, route]);
   
@@ -31,7 +36,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
         <MaterialIcons size={38} style={{marginBottom: -3, marginRight:10 }} name='account-circle'/>
         <View>
           <Text style={{fontSize:16}}>{item.name}</Text>
-          <Text style={{fontSize:14, opacity: 0.4}}>{item.created}</Text>
+          <Text style={{fontSize:14, opacity: 0.4}}>{item.created.split('.')[0].replace('T', ' ')}</Text>
         </View>
       </View>
       <View style={{flexDirection:'row'}}>
@@ -40,7 +45,9 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
       </View>
     </View>
     <Text style={{fontSize:20}}>{item.board_set[0].title}</Text>
-    <Text style={{fontSize:14}}>{item.board_set[0].content}</Text>
+    <Hyperlink linkDefault={ true }>
+      <Text style={{fontSize:14}}>{item.board_set[0].content}</Text>
+    </Hyperlink>
   </CommonSection>
   , [navigation, contentMutation])
   
@@ -59,6 +66,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
       <FlatList
         data={contentList}
         renderItem={renderItem}
+        contentContainerStyle={{flexGrow:1}}
         ListFooterComponent={()=><CommonSection bodyStyle={{flexDirection:'row', justifyContent:'flex-end', paddingVertical:0, borderWidth:0}}>
             <CommonButton title={'write'} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id})}/>
         </CommonSection>}

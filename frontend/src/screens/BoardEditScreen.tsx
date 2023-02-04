@@ -48,7 +48,7 @@ export default function BoardEditScreen({navigation, route}: StackScreenProps<an
     <View style={{width:'50%'}}>
       <TextField name='Channel' disabled={true} value={channel?.name || ''} width={'100%'}/>
       <TextField name='Title' value={title} setValue={setTitle} width={'100%'}/>
-      <TextField name='Content'  value={content} setValue={setContent} multiline width={'100%'}/>
+      <TextField name='Content' value={content} setValue={setContent} multiline width={'100%'} minHeight={300}/>
     </View>
     <View style={[styles.field, {justifyContent:'flex-end'}]}>
       <CommonButton title={'save'} onPress={()=>{
