@@ -24,8 +24,11 @@ export const guestLogin =  async() => {
 }
 
 export const checkLogin = async() => {
-    axios.defaults.headers['Authorization'] = `JWT ${await AsyncStorage.getItem("Authorization")}`
+    const token = await AsyncStorage.getItem("Authorization")
+    if (token === null)
+        return null
     try{
+        axios.defaults.headers['Authorization'] = `JWT ${token}`
         const value = (await axios.get("/api/v1/users/memberships/?_self=true"))?.data
         if (value && value.length){
             return value[0] as UserMembership

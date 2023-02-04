@@ -47,14 +47,14 @@ export default function RootNavigator() {
 const Main = createStackNavigator();
 
 function headerLeft(navigation:any, route:any){
-    const canGoBack = navigation.canGoBack() || route.name != 'HomeScreen'
+    const canGOBackScreen = ['HomeScreen', 'LoginScreen'].findIndex(v=>v == route.name) == -1
     const goBack = ()=>{
         if (navigation.canGoBack())
             navigation.goBack()
-        else if (route.name != 'HomeScreen')
+        else if (canGOBackScreen)
             navigation.replace('HomeScreen')
     }
-    if (canGoBack)
+    if (navigation.canGoBack()  || canGOBackScreen)
         return <TouchableOpacity onPress={goBack}><Ionicons size={24} style={{marginHorizontal:20 }} name="arrow-back"/></TouchableOpacity>
     return null
 }
