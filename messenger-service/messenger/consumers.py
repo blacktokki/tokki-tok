@@ -11,9 +11,9 @@ USER_PREFIX = 'user-'
 CHANNEL_PREFIX = 'channel-'
 
 
-class MessengerConsumer(WebsocketConsumer):
+class MessengerConsumer(WebsocketConsumer):    
     def connect(self):
-        self.accept()
+        self.accept("Authorization")
         self.user = self.scope["user"]
         self.channel_ids = set(Channel.objects.filter(messengermember__user_id=self.user.id).values_list('id', flat=True))
         

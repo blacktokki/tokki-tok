@@ -32,6 +32,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# CSRF_COOKIE_SAMESITE = 'None'
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SECURE = True
 
 # Application definition
 
@@ -172,6 +176,10 @@ REST_FRAMEWORK = {
     #     'CustomOrderingFilter',
     #     # 'drf_replace_ordering_filter.filters.ReplaceFieldsOrderingFilter'
     ],
+}
+
+JWT_AUTH = {
+    'JWT_PAYLOAD_GET_USERNAME_HANDLER': lambda payload: payload.get('sub')
 }
 
 # LOGGING = {
