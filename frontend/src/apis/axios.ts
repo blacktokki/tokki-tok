@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
 // @ts-ignore
 import {API_URL} from "@env"
-
+const baseURL =  `${API_URL}/messenger/`
 const defaultOption:AxiosRequestConfig = {
-    baseURL: `${API_URL}/messenger/`,
+    baseURL,
     withCredentials: true,
     headers: {}
 };
