@@ -1,8 +1,10 @@
+from collections import defaultdict
 from django.db import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
 
 from messenger.consumers import send_enter, send_leave, send_next_message
+from notifications import send_notification_message
 from .serializers import (
     BoardContentSerializer, 
     ChannelSerializer,
@@ -19,10 +21,20 @@ from .models import Board, Message, Channel, MessengerMember, ChannelContent
 
 
 def post_create_message(channel_id, message_ids):
+    notification_messages = defaultdict(list)
     for instance in ChannelContent.objects.annotate(name=models.F('user__last_name')).filter(message__id__in=message_ids):
         serializer = MessengerContentSerializer(instance=instance)
         send_next_message(channel_id, serializer.data)
-
+        notification_messages[channel_id].append(serializer.data)
+    prefetch = models.Prefetch('messengermember_set', MessengerMember.objects.prefetch_related('user__notification_set').all())
+    for channel in Channel.objects.prefetch_related(prefetch).filter(id__in=notification_messages.keys()):
+        for data in notification_messages[channel_id]:
+            notifications = []
+            for mm in channel.messengermember_set.all():
+                # if mm.user_id == data['user']:
+                #     continue
+                notifications += list(mm.user.notification_set.all())
+            send_notification_message(notifications, data)
 
 # Create your views here.
 class ChannelViewSet(viewsets.ModelViewSet):
