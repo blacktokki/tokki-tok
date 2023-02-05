@@ -12,7 +12,7 @@ from rest_framework.documentation import include_docs_urls
 from accounts.backends import sso_token
 import accounts.viewsets as accounts_api
 import messenger.viewsets as messenger_api
-
+import notifications.viewsets as notification_api
 
 router = routers.DefaultRouter()
 router.register('users', accounts_api.UserViewSet)
@@ -20,6 +20,7 @@ router.register('channels', messenger_api.ChannelViewSet)
 router.register('messengercontents', messenger_api.MessengerContentViewset, 'messengercontents')
 router.register('boardcontents', messenger_api.BoardContentViewset)
 router.register('messengermembers', messenger_api.MessengerMemberViewset)
+router.register('notifications', notification_api.NotificationViewSet)
 
 api_patterns = [
     url(r'^api/v1/', include(router.urls)),

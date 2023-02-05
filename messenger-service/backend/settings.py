@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-d6^l_5=6fby&+kh(i+a(xq)pwmokvr6w^!+rqgi_$p8(p$s!36'
 SECRET_KEY = env('SECRET_KEY')
-
+FCM_API_KEY = env('FCM_API_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django_filters',
     'django_db_views',
     'accounts',
+    'notifications',
     'messenger',
 ]
 
