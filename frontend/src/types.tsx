@@ -107,3 +107,10 @@ export type MessengerMember = {
   channel: number,
   last_message?: number
 }
+
+export type Notification = {
+  id?:number,
+  user: number,
+  type: string,
+  token: string|null
+}

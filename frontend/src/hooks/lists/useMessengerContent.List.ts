@@ -29,7 +29,7 @@ export default function useMessengerContentList(channel_id:number){
   useEffect(()=>{
     if(lastJsonMessage !=null && lastJsonMessage['type']=='next_message' && lastJsonMessage['data']['channel'] == channel_id){
       queryClient.setQueryData<InfiniteData<MessengerContentPage>>(["MessengerContentList", channel_id], (_data)=>{
-        if(_data?.pages[0].current)
+        if(_data?.pages[0].current && _data?.pages[0].current[0].id != lastJsonMessage['data'].id)
           _data.pages[0].current = [lastJsonMessage['data'], ..._data?.pages[0].current]
         return {...(_data || {pages:[], pageParams:[]})}
       })
