@@ -12,6 +12,7 @@ import { WebSocketProvider } from '../hooks/useWebsocketContext';
 import HeaderRight from '../components/HeaderRight'
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import useFirebase, { FirebaseProvider } from '../hooks/useFirebaseContext';
 
 const Root = createStackNavigator();
 
@@ -70,21 +71,23 @@ function MainNavigator(){
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
         {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
         <View style={{flex:1}}>
-            <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
-                <Main.Navigator
-                    screenOptions={({navigation, route})=>({
-                        headerStyle:{backgroundColor:Colors.header},
-                        headerTitleStyle:{color:'white'},
-                        headerLeft:()=>headerLeft(navigation, route),
-                        headerRight:()=><HeaderRight/>,
-                        headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
-                        cardStyle:{flexShrink:1}
-                    })}
-                >
-                    {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
-                    <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-                </Main.Navigator>
-            </WebSocketProvider>
+            <FirebaseProvider user={auth.user}>
+                <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
+                    <Main.Navigator
+                        screenOptions={({navigation, route})=>({
+                            headerStyle:{backgroundColor:Colors.header},
+                            headerTitleStyle:{color:'white'},
+                            headerLeft:()=>headerLeft(navigation, route),
+                            headerRight:()=><HeaderRight/>,
+                            headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
+                            cardStyle:{flexShrink:1}
+                        })}
+                    >
+                        {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
+                        <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+                    </Main.Navigator>
+                </WebSocketProvider>
+            </FirebaseProvider>
         </View>
     </View>:<></>);
 }

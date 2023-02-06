@@ -24,7 +24,7 @@ export const WebSocketProvider = ({disable, children}:{disable?:boolean, childre
     if(disable)
       setToken(null)
     else
-      AsyncStorage.getItem('Authorization').then(setToken)
+      AsyncStorage.getItem('Authorization').then(setToken)   
   },[disable])
   return (disable || token==null)?<>{children}</>:<WebSocketProviderInternal token={token}>
     {children}
