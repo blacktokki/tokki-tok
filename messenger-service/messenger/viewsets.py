@@ -19,10 +19,14 @@ from .serializers import (
 from .filtersets import ChannelFilterSet, ChannelContentFilterSet, MessengerMemberFilterSet
 from .models import Board, Message, Channel, MessengerMember, ChannelContent
 
+ANNOTATE_MESSENGER_CONTENT = {
+    'name': models.F('user__last_name'), 
+    'channel_name': models.F('channel__name')
+}
 
 def post_create_message(channel_id, message_ids):
     notification_messages = defaultdict(list)
-    for instance in ChannelContent.objects.annotate(name=models.F('user__last_name')).filter(message__id__in=message_ids):
+    for instance in ChannelContent.objects.annotate(**ANNOTATE_MESSENGER_CONTENT).filter(message__id__in=message_ids):
         serializer = MessengerContentSerializer(instance=instance)
         send_next_message(channel_id, serializer.data)
         notification_messages[channel_id].append(serializer.data)
@@ -31,8 +35,8 @@ def post_create_message(channel_id, message_ids):
         for data in notification_messages[channel_id]:
             notifications = []
             for mm in channel.messengermember_set.all():
-                # if mm.user_id == data['user']:
-                #     continue
+                if mm.user_id == data['user']:
+                    continue
                 notifications += list(mm.user.notification_set.all())
             send_notification_message(notifications, data)
 
@@ -70,7 +74,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
 class MessengerContentViewset(viewsets.ModelViewSet):
     serializer_class = MessengerContentSerializer
     filterset_class = ChannelContentFilterSet
-    queryset = ChannelContent.objects.filter(channel__type='messenger').annotate(name=models.F('user__last_name')).order_by('-id')
+    queryset = ChannelContent.objects.filter(channel__type='messenger').annotate(**ANNOTATE_MESSENGER_CONTENT).order_by('-id')
 
     @action(detail=False, methods=['post'], 
         queryset=Message.objects.all(),

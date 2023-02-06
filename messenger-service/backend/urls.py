@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
-from accounts.backends import sso_token
+from accounts.backends import sso_token, sso_refresh
 import accounts.viewsets as accounts_api
 import messenger.viewsets as messenger_api
 import notifications.viewsets as notification_api
@@ -30,6 +30,7 @@ urlpatterns = api_patterns + staticfiles_urlpatterns() + [
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1/doc/', include_docs_urls(title='Messenger API', public=False, patterns=api_patterns)),
     url(r'^api-token-auth/', csrf_exempt(require_POST(lambda request: HttpResponse(sso_token(request))))),
+    url(r'^api-token-refresh/', csrf_exempt(require_POST(lambda request: HttpResponse(sso_refresh(request))))),
     url(r'^csrf/', lambda request: HttpResponse(csrf_token(request))),
     url(r'^', lambda request: redirect('/api/v1/'))
 ]
