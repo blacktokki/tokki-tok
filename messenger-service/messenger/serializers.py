@@ -85,6 +85,7 @@ class BoardSerializer(serializers.ModelSerializer):
 class MessengerContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True)
+    channel_name = serializers.CharField(read_only=True)
     class Meta:
         model = ChannelContent
         fields = '__all__'

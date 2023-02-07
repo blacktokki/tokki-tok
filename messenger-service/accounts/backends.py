@@ -10,18 +10,23 @@ from django.contrib.auth.models import update_last_login
 user_logged_in.disconnect(update_last_login, dispatch_uid='update_last_login')
 account_service_url = f"http://{settings.ACCOUNT_SERVICE_DOMAIN}"
 
-def login_session(request, data):
+def account_service_session(request):
     session = requests.Session()
     csrf = session.get(f"{account_service_url}/api/v1/user/csrf/").content
-    mp_encoder = MultipartEncoder(fields=data)
-    # remote_addr = request.META.get('REMOTE_ADDR')
     headers = {
         "X-FORWARDED-FOR": request.META.get('HTTP_X_FORWARDED_FOR'),
         "X-REAL-IP": request.META.get('HTTP_X_REAL_IP'),
         "User-Agent": request.META.get('HTTP_USER_AGENT'),
         "X-CSRF-TOKEN": csrf,
-        "Content-Type": mp_encoder.content_type
     }
+    # remote_addr = request.META.get('REMOTE_ADDR')
+    return session, headers
+
+
+def login_session(request, data):
+    session, headers = account_service_session(request)
+    mp_encoder = MultipartEncoder(fields=data)
+    headers["Content-Type"] = mp_encoder.content_type
     res = session.post(f"{account_service_url}/login", headers=headers, data=mp_encoder)
     if res.ok and res.status_code == 200 and len(res.history) == 0:
         return session
@@ -32,7 +37,16 @@ def sso_token(request):
     session = login_session(request, json.loads(request.body))
     if session:
         return session.get(f"{account_service_url}/api/v1/user/sso/token").text
-    return None
+    return ''
+
+
+def sso_refresh(request):
+    session, headers = account_service_session(request)
+    data = json.loads(request.body)
+    res = session.post(f"{account_service_url}/api/v1/user/sso/refresh", headers=headers, data=data)
+    if res.ok and res.status_code == 200 and len(res.history) == 0:
+        return res.text
+    return ''
 
 
 class AuthBackend(BaseBackend):
