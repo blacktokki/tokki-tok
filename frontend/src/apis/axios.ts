@@ -26,9 +26,9 @@ _axios.interceptors.response.use(
         return response;
     },
     error => {
-        if (error.response.status === 401) {
-            // redirect login
-        }
+        // if (error.response.status === 401) {
+        //     // redirect login
+        // }
         return Promise.reject(error)
     }
 )

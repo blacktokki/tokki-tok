@@ -18,7 +18,7 @@ import useAuthContext from '../../hooks/useAuthContext';
 export default function BoardScreen({navigation, route}: StackScreenProps<any, 'Board'>) {
   const channel_id = route?.params?.id
   const {auth} = useAuthContext()
-  const channel = useBoardChannelList(auth)?.find(v=>v.id=channel_id)
+  const channel = useBoardChannelList(auth)?.find(v=>v.id==parseInt(channel_id))
   const contentList = useBoardContentList(channel_id)
   const boardChannelMutation = useBoardChannelMutation()
   const contentMutation = useBoardContentMutation()

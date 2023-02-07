@@ -96,7 +96,8 @@ export type MessengerContent = {
   channel: number
   created: string,
   updated: string,
-  name: string
+  name: string,
+  channel_name: string
 }
 
 export type MessengerMember = {
