@@ -40,9 +40,9 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
           <Text style={{fontSize:14, opacity: 0.4}}>{item.created.split('.')[0].replace('T', ' ')}</Text>
         </View>
       </View>
-      <View style={{flexDirection:'row'}}>
+      <View style={{flexDirection:'row', height:'80%'}}>
         <CommonButton title={'edit'} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id:item.channel, id:item.id})}/>
-        <CommonButton title={'delete'} onPress={()=> contentMutation.delete(item.id)}/>
+        <CommonButton title={'delete'} style={{marginHorizontal:5}} onPress={()=> contentMutation.delete(item.id)}/>
       </View>
     </View>
     <Text style={{fontSize:20}}>{item.board_set[0].title}</Text>
@@ -80,7 +80,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
         renderItem={renderItem}
         contentContainerStyle={{flexGrow:1}}
         ListHeaderComponent={()=><CommonSection bodyStyle={{flexDirection:'row', justifyContent:'flex-end', paddingVertical:0, borderWidth:0}}>
-            <CommonButton title={'write'} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id})}/>
+            <CommonButton title={'write'} style={{paddingHorizontal:32, paddingBottom:8}} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id})}/>
         </CommonSection>}
       />
   </View>

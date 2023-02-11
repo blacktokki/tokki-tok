@@ -15,7 +15,7 @@ export default function RowField(props:Props) {
         <Text style={[{flex:1, paddingHorizontal: 15, fontSize:16}, props.textStyle]}>{props.name}</Text>
         <View style={{
         // backgroundColor: '#171717',
-        flex: 3,
+        flex: 6,
         justifyContent: 'center',
         paddingHorizontal: 15,
         }}>

@@ -47,7 +47,7 @@ export default function RootNavigator() {
 
 const Main = createStackNavigator();
 
-function headerLeft(navigation:any, route:any){
+function headerLeft(navigation:any, route:any, windowType:string){
     const canGOBackScreen = ['HomeScreen', 'LoginScreen'].findIndex(v=>v == route.name) == -1
     const goBack = ()=>{
         if (navigation.canGoBack())
@@ -55,12 +55,13 @@ function headerLeft(navigation:any, route:any){
         else if (canGOBackScreen)
             navigation.replace('HomeScreen')
     }
-    if (navigation.canGoBack()  || canGOBackScreen)
+    if (windowType=='portrait' && (navigation.canGoBack()  || canGOBackScreen))
         return <TouchableOpacity onPress={goBack}><Ionicons size={24} style={{marginHorizontal:20 }} name="arrow-back"/></TouchableOpacity>
     return null
 }
 
 function MainNavigator(){
+    const windowType = useResizeWindow();
     const {auth} = useAuthContext()
     const entries = useMemo(()=>{
         if (auth.user === undefined)
@@ -77,10 +78,12 @@ function MainNavigator(){
                         screenOptions={({navigation, route})=>({
                             headerStyle:{backgroundColor:Colors.header},
                             headerTitleStyle:{color:'white'},
-                            headerLeft:()=>headerLeft(navigation, route),
+                            headerLeft:()=>headerLeft(navigation, route, windowType),
                             headerRight:()=><HeaderRight/>,
                             headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
-                            cardStyle:{flexShrink:1}
+                            cardStyle:{flexShrink:1},
+                            animationEnabled:windowType=='portrait',
+                            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
                         })}
                     >
                         {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
