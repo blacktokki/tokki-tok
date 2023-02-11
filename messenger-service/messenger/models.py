@@ -59,6 +59,16 @@ class Board(ContentMixin, models.Model):
         db_table = "board"
 
 
+class Link(ContentMixin, models.Model):
+    channel_content = models.ForeignKey(ChannelContent,  on_delete=models.CASCADE, help_text='')
+    parent_content = models.ForeignKey(ChannelContent, related_name='children_link_set', null=True, blank=True, on_delete=models.CASCADE, help_text='')
+    url = models.TextField(db_column='li_url', help_text='')
+    image = models.TextField(db_column='li_image', help_text='')
+
+    class Meta:
+        db_table = "link"
+
+
 class MessengerMember(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='')
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='')
