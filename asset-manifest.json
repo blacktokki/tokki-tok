@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/kiblack-tok/static/js/app.af1b3096.chunk.js",
-    "app.js.map": "/kiblack-tok/static/js/app.af1b3096.chunk.js.map",
+    "app.js": "/kiblack-tok/static/js/app.8c81c31a.chunk.js",
+    "app.js.map": "/kiblack-tok/static/js/app.8c81c31a.chunk.js.map",
     "runtime~app.js": "/kiblack-tok/static/js/runtime~app.eb408d0f.js",
     "runtime~app.js.map": "/kiblack-tok/static/js/runtime~app.eb408d0f.js.map",
-    "static/js/2.97b24313.chunk.js": "/kiblack-tok/static/js/2.97b24313.chunk.js",
-    "static/js/2.97b24313.chunk.js.map": "/kiblack-tok/static/js/2.97b24313.chunk.js.map",
+    "static/js/2.5043aa17.chunk.js": "/kiblack-tok/static/js/2.5043aa17.chunk.js",
+    "static/js/2.5043aa17.chunk.js.map": "/kiblack-tok/static/js/2.5043aa17.chunk.js.map",
     "fonts/AntDesign.ttf": "/kiblack-tok/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/kiblack-tok/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/kiblack-tok/./fonts/Feather.ttf",
@@ -22,14 +22,16 @@
     "favicon-16.png": "/kiblack-tok/favicon-16.png",
     "favicon-32.png": "/kiblack-tok/favicon-32.png",
     "favicon.ico": "/kiblack-tok/favicon.ico",
+    "firebase-config.js": "/kiblack-tok/firebase-config.js",
+    "firebase-messaging-sw.js": "/kiblack-tok/firebase-messaging-sw.js",
     "index.html": "/kiblack-tok/index.html",
     "manifest.json": "/kiblack-tok/manifest.json",
     "serve.json": "/kiblack-tok/serve.json",
-    "static/js/2.97b24313.chunk.js.LICENSE.txt": "/kiblack-tok/static/js/2.97b24313.chunk.js.LICENSE.txt"
+    "static/js/2.5043aa17.chunk.js.LICENSE.txt": "/kiblack-tok/static/js/2.5043aa17.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime~app.eb408d0f.js",
-    "static/js/2.97b24313.chunk.js",
-    "static/js/app.af1b3096.chunk.js"
+    "static/js/2.5043aa17.chunk.js",
+    "static/js/app.8c81c31a.chunk.js"
   ]
 }

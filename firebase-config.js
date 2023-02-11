@@ -1,0 +1,1 @@
+firebaseConfig={apiKey:"AIzaSyAN2ydKUtznjBlg8DUAPrUPGIVbqdPzv88",authDomain:"virtual-metrics-355712.firebaseapp.com",projectId:"virtual-metrics-355712",storageBucket:"virtual-metrics-355712.appspot.com",messagingSenderId:"76003576924",appId:"1:76003576924:web:c8c8a006d07918bbc02a99",measurementId:"G-SEL35L4N5R"};try{module.exports=firebaseConfig}catch(e){}
