@@ -101,7 +101,7 @@ class BoardSerializer(serializers.ModelSerializer):
             if link.url not in link_set:
                 delete_link_ids.append(link.id)
             else:
-                link_set.pop(link.url)
+                link_set.remove(link.url)
         for url in link_set:
             parsed_og_tags = parse_page(url, ["og:url", "og:title", "og:image", "og:description"])
             add_links.append(Link(
