@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useLayoutEffect} from 'react';
-import {FlatList } from 'react-native';
+import {FlatList, Image, Linking } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink'
@@ -11,6 +11,7 @@ import { BoardContent } from '../../types';
 import HeaderRight from '../../components/HeaderRight';
 import useBoardChannelList, { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
 import useAuthContext from '../../hooks/useAuthContext';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
@@ -45,9 +46,20 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
       </View>
     </View>
     <Text style={{fontSize:20}}>{item.board_set[0].title}</Text>
-    <Hyperlink linkDefault={ true }>
+    <Hyperlink linkDefault={ true } linkStyle={{color: '#12b886'}}>
       <Text style={{fontSize:14}}>{item.board_set[0].content}</Text>
     </Hyperlink>
+    {item.link_set.map((link, linkIndex)=><CommonSection key={linkIndex} bodyStyle={{padding:0}}>
+      <TouchableOpacity onPress={()=>Linking.openURL(link.url)} style={{flexDirection:'row'}} containerStyle={{width:'100%'}}>
+          <Image source={{uri:link.image}} resizeMode="cover" style={{ width:'100%', maxWidth:160, maxHeight:160, borderWidth:1}}/>
+          <View style={{flex:1, marginHorizontal:20}}>
+            <Text style={{fontSize:20}}>{link.title}</Text>
+            <Text style={{fontSize:14}}>{link.description}</Text>
+            <Text style={{fontSize:12}}>{link.url}</Text>
+          </View>
+        </TouchableOpacity>
+      </CommonSection>
+    )}
   </CommonSection>
   , [navigation, contentMutation])
   
@@ -67,7 +79,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
         data={contentList}
         renderItem={renderItem}
         contentContainerStyle={{flexGrow:1}}
-        ListFooterComponent={()=><CommonSection bodyStyle={{flexDirection:'row', justifyContent:'flex-end', paddingVertical:0, borderWidth:0}}>
+        ListHeaderComponent={()=><CommonSection bodyStyle={{flexDirection:'row', justifyContent:'flex-end', paddingVertical:0, borderWidth:0}}>
             <CommonButton title={'write'} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id})}/>
         </CommonSection>}
       />

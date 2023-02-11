@@ -1,6 +1,6 @@
 
 import { User, UserMembership } from '../types';
-import axios from './axios';
+import axios, { refreshToken } from './axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const login = async(username:string, password:string) => {
@@ -39,13 +39,12 @@ export const checkLogin = async() => {
     try{
        return await checkLoginToken(token)
     }
-    catch(e){
+    catch(e:any){
         if(e.response !== undefined && e.response.status==401){
-            const r = await axios.post("/api-token-refresh/", {token}, {headers:{'Authorization':''}})
-            if (r.status == 200 && r.data !== ''){
-                await AsyncStorage.setItem("Authorization", r.data)
+            const newToken = await refreshToken(token)
+            if (newToken){
                 try{
-                    return await checkLoginToken(token)
+                    return await checkLoginToken(newToken)
                 }
                 catch(e){
                     throw {error:e, isOffline:false}
