@@ -23,19 +23,35 @@ export const guestLogin =  async() => {
     return await login('guest', 'guest')
 }
 
+const checkLoginToken = async (token:string)=>{
+    axios.defaults.headers['Authorization'] = `JWT ${token}`
+    const value = (await axios.get("/api/v1/users/memberships/?_self=true"))?.data
+    if (value && value.length){
+        return value[0] as UserMembership
+    }
+    return null
+}
+
 export const checkLogin = async() => {
     const token = await AsyncStorage.getItem("Authorization")
     if (token === null)
         return null
     try{
-        axios.defaults.headers['Authorization'] = `JWT ${token}`
-        const value = (await axios.get("/api/v1/users/memberships/?_self=true"))?.data
-        if (value && value.length){
-            return value[0] as UserMembership
-        }
-        return null
+       return await checkLoginToken(token)
     }
     catch(e){
+        if(e.response !== undefined && e.response.status==401){
+            const r = await axios.post("/api-token-refresh/", {token}, {headers:{'Authorization':''}})
+            if (r.status == 200 && r.data !== ''){
+                await AsyncStorage.setItem("Authorization", r.data)
+                try{
+                    return await checkLoginToken(token)
+                }
+                catch(e){
+                    throw {error:e, isOffline:false}
+                }
+            }
+        }
         throw {
             error:e,
             isOffline:((e as any).code == "ERR_NETWORK" || (e as any).message && ((e as any).message as string).startsWith("Cannot read"))

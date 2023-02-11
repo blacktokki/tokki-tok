@@ -15,28 +15,23 @@ const app = firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging(app);
 
 messaging.onMessage((payload) => {
-  console.log('Message received. ', payload);
-  // ...
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notification");
+  }
+  else if (Notification.permission === "granted") {
+    const message_set = JSON.parse(payload.data['message_set'])[0]
+    new Notification(payload.data.channel_name, { body: `${payload.data.name}: ${message_set.content}` });
+  }
 });
 
 const FirebaseContext = createContext<{enable:boolean, setEnable:(enable:boolean)=>void}>({enable:false, setEnable:()=>{}});
 
 const requestToken = async()=>{
-  console.log('Requesting permission...');
   const permission = await Notification.requestPermission();
   if (permission === 'granted') {
-    console.log('Notification permission granted.');   
     const currentToken = await messaging.getToken({ vapidKey: FCM_PUBLIC_VAPID_KEY })
-    if (currentToken) {
-      console.log('currentToken: ', currentToken)
+    if (currentToken)
       return currentToken
-      // Send the token to your server and update the UI if necessary
-      // ...
-    } else {
-      // Show permission request UI
-      console.log('No registration token available. Request permission to generate one.');
-      // ...
-    }
   }
   return undefined
 }
