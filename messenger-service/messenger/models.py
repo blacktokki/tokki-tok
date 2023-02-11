@@ -62,8 +62,10 @@ class Board(ContentMixin, models.Model):
 class Link(ContentMixin, models.Model):
     channel_content = models.ForeignKey(ChannelContent,  on_delete=models.CASCADE, help_text='')
     parent_content = models.ForeignKey(ChannelContent, related_name='children_link_set', null=True, blank=True, on_delete=models.CASCADE, help_text='')
-    url = models.TextField(db_column='li_url', help_text='')
-    image = models.TextField(db_column='li_image', help_text='')
+    title = models.CharField(db_column='li_title', max_length=255, help_text='')
+    description = models.TextField(db_column='li_description', null=True, blank=True, help_text='')
+    url = models.TextField(db_column='li_url', null=True, blank=True, help_text='')
+    image = models.TextField(db_column='li_image', null=True, blank=True, help_text='')
 
     class Meta:
         db_table = "link"

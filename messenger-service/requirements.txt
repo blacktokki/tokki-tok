@@ -16,3 +16,4 @@ daphne==2.5.0
 djangorestframework-jwt
 websockets
 pyfcm==1.5.4
+opengraph_parse
