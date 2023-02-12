@@ -10,6 +10,7 @@ import { navigate } from '../navigation';
 import useBoardContentList, { useBoardContentMutation } from '../hooks/lists/useBoardContentList';
 import { Board } from '../types';
 import TextField from '../components/TextField';
+import useRescaleWindow from '../hooks/useRescaleWindow';
 
 
 export default function BoardEditScreen({navigation, route}: StackScreenProps<any, 'BoardEdit'>) {
@@ -23,6 +24,7 @@ export default function BoardEditScreen({navigation, route}: StackScreenProps<an
   const board = useMemo(()=>boardContentList?.find(v=>v.id==id)?.board_set[0], [boardContentList])
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const scaleType = useRescaleWindow()
   const back = ()=>{
     if(navigation.canGoBack())
         navigation.goBack()
@@ -40,17 +42,18 @@ export default function BoardEditScreen({navigation, route}: StackScreenProps<an
       setContent(board.content)
     }
   }, [board])
+  const minWidth = scaleType=='small'?270:(scaleType == 'medium'?360:720)
   return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
     <View style={{justifyContent:'space-around'}}>
       <Text style={{fontSize:20}}>Edit Board</Text>
     </View>
     <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={{width:'50%', minWidth:450}}>
+    <View style={{width:scaleType=='small'?'50%':'80%', minWidth}}>
       <TextField name='Channel' disabled={true} value={channel?.name || ''} width={'100%'}/>
       <TextField name='Title' value={title} setValue={setTitle} width={'100%'}/>
       <TextField name='Content' value={content} setValue={setContent} multiline width={'100%'} minHeight={300}/>
     </View>
-    <View style={[styles.field, {justifyContent:'flex-end', minWidth:450}]}>
+    <View style={[styles.field, {justifyContent:'flex-end', minWidth}]}>
       <CommonButton title={'save'} onPress={()=>{
         const newBoard:Board = {id:board?.id, title, content};
         id?boardContentMutation.update(newBoard):boardContentMutation.create({...newBoard, user:auth.user?.id, channel:channel_id})

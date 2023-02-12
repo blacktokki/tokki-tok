@@ -10,6 +10,7 @@ import { navigate } from '../navigation';
 import { Channel } from '../types';
 import useMessengerChannelList, { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import TextField from '../components/TextField';
+import useRescaleWindow from '../hooks/useRescaleWindow';
 
 
 export default function ChannelEditScreen({navigation, route}: StackScreenProps<any, 'ChannelEdit'>) {
@@ -21,6 +22,7 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
   const channel = channelList?.find(v=>v.id==id)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const scaleType = useRescaleWindow()
   const back = ()=>{
     if(navigation.canGoBack())
         navigation.goBack()
@@ -34,6 +36,7 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
       setDescription(channel?.description || '')
     }
   }, [channel])
+  const minWidth = scaleType=='small'?270:(scaleType == 'medium'?360:720)
   return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
     <View style={{justifyContent:'space-around'}}>
     <Text style={{fontSize:20}}>Edit Channel - {type}</Text>
@@ -43,7 +46,7 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
       <TextField name='Channel Name' value={name} setValue={setName} width={'100%'}/>
       <TextField name='Description' value={description} setValue={setDescription} multiline width={'100%'}/>
     </View>
-    <View style={[styles.field, {justifyContent:'flex-end'}]}>
+    <View style={[styles.field, {justifyContent:'flex-end', minWidth}]}>
       <CommonButton title={'save'} onPress={()=>{
         if(auth?.user?.id && auth.groupId){
           const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};

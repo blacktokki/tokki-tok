@@ -12,6 +12,7 @@ import HeaderRight from '../../components/HeaderRight';
 import useBoardChannelList, { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
 import useAuthContext from '../../hooks/useAuthContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import useRescaleWindow from '../../hooks/useRescaleWindow';
 
 
 
@@ -23,6 +24,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
   const contentList = useBoardContentList(channel_id)
   const boardChannelMutation = useBoardChannelMutation()
   const contentMutation = useBoardContentMutation()
+  const scaleType = useRescaleWindow()
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -31,8 +33,8 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
     });
   }, [navigation, route]);
   
-  const renderItem = useCallback(({item}:{item:BoardContent})=><CommonSection bodyStyle={{alignItems:'flex-start', paddingHorizontal:35}}>
-    <View style={{flexDirection:'row', width:'100%', justifyContent:'space-between'}}>
+  const renderItem = useCallback(({item}:{item:BoardContent})=><CommonSection bodyStyle={{alignItems:'flex-start', paddingHorizontal:'5%'}}>
+    <View style={{flexDirection:scaleType?'column': 'row', width:'100%', justifyContent:'space-between'}}>
       <View style={{flexDirection:'row'}}>
         <MaterialIcons size={38} style={{marginBottom: -3, marginRight:10 }} name='account-circle'/>
         <View>
@@ -40,18 +42,19 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
           <Text style={{fontSize:14, opacity: 0.4}}>{item.created.split('.')[0].replace('T', ' ')}</Text>
         </View>
       </View>
-      <View style={{flexDirection:'row', height:'80%'}}>
+      <View style={{flexDirection:'row', height:scaleType?'45%':'80%'}}>
         <CommonButton title={'edit'} onPress={()=>navigation.navigate("BoardEditScreen", {channel_id:item.channel, id:item.id})}/>
         <CommonButton title={'delete'} style={{marginHorizontal:5}} onPress={()=> contentMutation.delete(item.id)}/>
       </View>
     </View>
     <Text style={{fontSize:20}}>{item.board_set[0].title}</Text>
-    <Hyperlink linkDefault={ true } linkStyle={{color: '#12b886'}}>
+    {/* @ts-ignore */}
+    <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
       <Text style={{fontSize:14}}>{item.board_set[0].content}</Text>
     </Hyperlink>
-    {item.link_set.map((link, linkIndex)=><CommonSection key={linkIndex} bodyStyle={{padding:0}}>
+    {item.link_set.map((link, linkIndex)=><CommonSection key={linkIndex} containerStyle={{marginHorizontal:0}} bodyStyle={{padding:0}}>
       <TouchableOpacity onPress={()=>Linking.openURL(link.url)} style={{flexDirection:'row'}} containerStyle={{width:'100%'}}>
-          <Image source={{uri:link.image}} resizeMode="cover" style={{ width:'100%', maxWidth:160, maxHeight:160, borderWidth:1}}/>
+          <Image source={{uri:link.image}} resizeMode="cover" style={{ width:'100%', maxWidth:scaleType?120:150, maxHeight:scaleType?120:150, borderWidth:1}}/>
           <View style={{flex:1, marginHorizontal:20}}>
             <Text style={{fontSize:20}}>{link.title}</Text>
             <Text style={{fontSize:14}}>{link.description}</Text>
@@ -61,7 +64,7 @@ export default function BoardScreen({navigation, route}: StackScreenProps<any, '
       </CommonSection>
     )}
   </CommonSection>
-  , [navigation, contentMutation])
+  , [navigation, contentMutation, scaleType])
   
   const back = ()=>{
     if(navigation.canGoBack())
