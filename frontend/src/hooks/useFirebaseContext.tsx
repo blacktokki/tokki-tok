@@ -3,14 +3,15 @@ import firebase from "firebase/app";
 import "firebase/messaging";
 //@ts-ignore
 import {FCM_PUBLIC_VAPID_KEY} from "@env"
-import { Auth } from "./useAuthContext";
 import { Notification as NotificationType, UserMembership } from "../types";
 import { getNotification, postNotification, putNotification } from "../apis/notification";
-import useWebsocketContext from "./useWebsocketContext";
-
 const firebaseConfig = require("../../web/firebase-config.js")
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+const key = firebaseConfig.messagingSenderId
+//encode
+// console.log((firebaseConfig.apiKey as string).split('').map((v, i)=> (v.charCodeAt(0) ^ key.charCodeAt(i)).toString(16).padStart(2, '0')).join(''))
+const apiKey = ((firebaseConfig.encrypted as string).match(/.{1,2}/g) || []).map((v, i)=> String.fromCharCode(parseInt(v, 16) ^ key.charCodeAt(i))).join('')
+const app = firebase.initializeApp({...firebaseConfig, apiKey});
 // const analytics = getAnalytics(app);
 const messaging = firebase.messaging(app);
 

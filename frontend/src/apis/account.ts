@@ -1,21 +1,19 @@
 
 import { User, UserMembership } from '../types';
-import axios, { refreshToken } from './axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, { getToken, setToken } from './axios';
 
 export const login = async(username:string, password:string) => {
     if(username.endsWith('.guest') && password.length == 0)
         password = 'guest'
     const r = await axios.post("/api-token-auth/", {username, password});
     if(r.status == 200){
-        await AsyncStorage.setItem("Authorization", r.data)
+        await setToken(r.data)
         return await checkLogin()
     }
 }
 
 export const logout = async() => {
-    axios.defaults.headers['Authorization'] = ''
-    await AsyncStorage.removeItem("Authorization")
+    await setToken(null)
     return await axios.get("/api-auth/logout/")
 }
 
@@ -23,8 +21,7 @@ export const guestLogin =  async() => {
     return await login('guest', 'guest')
 }
 
-const checkLoginToken = async (token:string)=>{
-    axios.defaults.headers['Authorization'] = `JWT ${token}`
+const checkLoginToken = async ()=>{
     const value = (await axios.get("/api/v1/users/memberships/?_self=true"))?.data
     if (value && value.length){
         return value[0] as UserMembership
@@ -33,28 +30,24 @@ const checkLoginToken = async (token:string)=>{
 }
 
 export const checkLogin = async() => {
-    const token = await AsyncStorage.getItem("Authorization")
+    const token = await getToken()
     if (token === null)
         return null
     try{
-       return await checkLoginToken(token)
+       return await checkLoginToken()
     }
     catch(e:any){
+        let error = e
         if(e.response !== undefined && e.response.status==401){
-            const newToken = await refreshToken(token)
-            if (newToken){
-                try{
-                    return await checkLoginToken(newToken)
-                }
-                catch(e){
-                    throw {error:e, isOffline:false}
-                }
+            try{
+                return await checkLoginToken()
+            }
+            catch(e2){
+                error = e2
             }
         }
-        throw {
-            error:e,
-            isOffline:((e as any).code == "ERR_NETWORK" || (e as any).message && ((e as any).message as string).startsWith("Cannot read"))
-        }
+        const isOffline = ((error as any).code == "ERR_NETWORK" || (error as any).message && ((error as any).message as string).startsWith("Cannot read"))
+        throw {error, isOffline}
     }
 }
 
