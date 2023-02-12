@@ -1,1 +1,0 @@
-"serviceWorker"in navigator&&window.addEventListener("load",(function(){navigator.serviceWorker.register("SW_PUBLIC_URL/expo-service-worker.js",{scope:"SW_PUBLIC_SCOPE"}).register("SW_PUBLIC_URL/firebase-messaging-sw.js",{scope:"SW_PUBLIC_SCOPE"}).then((function(e){})).catch((function(e){console.info("Failed to register service-worker",e)}))}));
