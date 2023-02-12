@@ -55,7 +55,7 @@ function headerLeft(navigation:any, route:any, windowType:string){
         else if (canGOBackScreen)
             navigation.replace('HomeScreen')
     }
-    if (windowType=='portrait' && (navigation.canGoBack()  || canGOBackScreen))
+    if (windowType=='portrait' && canGOBackScreen)
         return <TouchableOpacity onPress={goBack}><Ionicons size={24} style={{marginHorizontal:20 }} name="arrow-back"/></TouchableOpacity>
     return null
 }
