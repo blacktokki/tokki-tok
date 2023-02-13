@@ -17,7 +17,8 @@ Main modules are available below:
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
 Screenshot from the architecture below:
-![제목 없는 다이어그램 drawio](https://user-images.githubusercontent.com/39031723/214096215-32210842-d719-46a8-aff2-4fdcfff1e5a3.png)
+![제목 없는 다이어그램 drawio](https://user-images.githubusercontent.com/39031723/218319322-17abaf36-cc65-4cb7-94b8-966d7a54990e.png)
+
 
 ## Installation
 ### Install account server
