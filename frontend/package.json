@@ -16,7 +16,8 @@
     "desktop:mac": "electron-webpack && electron-builder --dir -c.compression=store -c.mac.identity=null",
     "desktop:windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --dir -c.compression=store",
     "mac": "electron-webpack && electron-builder --mac -c.compression=store",
-    "windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --win -c.compression=store"
+    "windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --win -c.compression=store",
+    "bot": "scripts/bot.js"
   },
   "jest": {
     "preset": "jest-expo"
