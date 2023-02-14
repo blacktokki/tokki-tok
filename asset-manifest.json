@@ -1,7 +1,7 @@
 {
   "files": {
-    "app.js": "/kiblack-tok/static/js/app.409a97d9.chunk.js",
-    "app.js.map": "/kiblack-tok/static/js/app.409a97d9.chunk.js.map",
+    "app.js": "/kiblack-tok/static/js/app.eb53bd43.chunk.js",
+    "app.js.map": "/kiblack-tok/static/js/app.eb53bd43.chunk.js.map",
     "runtime~app.js": "/kiblack-tok/static/js/runtime~app.eb408d0f.js",
     "runtime~app.js.map": "/kiblack-tok/static/js/runtime~app.eb408d0f.js.map",
     "static/js/2.0911023a.chunk.js": "/kiblack-tok/static/js/2.0911023a.chunk.js",
@@ -23,9 +23,9 @@
     "favicon-16.png": "/kiblack-tok/favicon-16.png",
     "favicon-32.png": "/kiblack-tok/favicon-32.png",
     "favicon.ico": "/kiblack-tok/favicon.ico",
+    "firebase-config.js": "/kiblack-tok/firebase-config.js",
+    "firebase-messaging-sw.js": "/kiblack-tok/firebase-messaging-sw.js",
     "index.html": "/kiblack-tok/index.html",
-    "kiblack-tok/firebase-config.js": "/kiblack-tok/kiblack-tok/firebase-config.js",
-    "kiblack-tok/firebase-messaging-sw.js": "/kiblack-tok/kiblack-tok/firebase-messaging-sw.js",
     "manifest.json": "/kiblack-tok/manifest.json",
     "serve.json": "/kiblack-tok/serve.json",
     "static/js/2.0911023a.chunk.js.LICENSE.txt": "/kiblack-tok/static/js/2.0911023a.chunk.js.LICENSE.txt"
@@ -33,6 +33,6 @@
   "entrypoints": [
     "static/js/runtime~app.eb408d0f.js",
     "static/js/2.0911023a.chunk.js",
-    "static/js/app.409a97d9.chunk.js"
+    "static/js/app.eb53bd43.chunk.js"
   ]
 }
