@@ -1,8 +1,9 @@
 importScripts("https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/8.7.1/firebase-messaging.js");
 importScripts('./firebase-config.js');
+const encrypted = location.search.slice(1)
 const key = firebaseConfig.messagingSenderId
-const apiKey = (firebaseConfig.encrypted.match(/.{1,2}/g) || []).map((v, i)=> String.fromCharCode(parseInt(v, 16) ^ key.charCodeAt(i))).join('')
+const apiKey = (encrypted.match(/.{1,2}/g) || []).map((v, i)=> String.fromCharCode(parseInt(v, 16) ^ key.charCodeAt(i))).join('')
 firebase.initializeApp({...firebaseConfig, apiKey});
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
