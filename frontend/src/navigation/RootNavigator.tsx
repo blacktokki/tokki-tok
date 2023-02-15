@@ -1,6 +1,6 @@
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
-import React, {useMemo} from 'react';
-import { View } from 'react-native';
+import React, {useMemo, useState, useEffect} from 'react';
+import { Dimensions, Platform, View } from 'react-native';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Ionicons } from '@expo/vector-icons';
 import useResizeWindow from '../hooks/useResizeWindow';
@@ -13,6 +13,7 @@ import HeaderRight from '../components/HeaderRight'
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import useFirebase, { FirebaseProvider } from '../hooks/useFirebaseContext';
+import useIsMobile from '../hooks/useIsMobile';
 
 const Root = createStackNavigator();
 
@@ -20,7 +21,20 @@ const queryClient = new QueryClient();
 
 export default function RootNavigator() {
     const windowType = useResizeWindow();
+    const isMobile = useIsMobile()
+    const [height, setHeight] = useState(Dimensions.get("window").height + 1)
+    useEffect(()=>{
+        if(isMobile && Platform.OS == 'web'){
+            const onScroll = (e:any)=>{
+                console.log(Dimensions.get("window"), Dimensions.get("screen"))
+                setHeight(Dimensions.get("window").height + 1)
+            }
+            window.addEventListener("touchmove", onScroll)
+            return () => window.removeEventListener("touchmove", onScroll)
+        }
+    }, [windowType, isMobile])
     return (
+        <View style={{height:isMobile?height:'100%'}}>
             <AuthProvider>
                 <QueryClientProvider client={queryClient}>
                     {/* devtools */}
@@ -42,12 +56,13 @@ export default function RootNavigator() {
                         </Root.Navigator>
                 </QueryClientProvider>
             </AuthProvider>
+        </View>
     );
 }
 
 const Main = createStackNavigator();
 
-function headerLeft(navigation:any, route:any, windowType:string){
+function headerLeft(navigation:any, route:any, windowType:string, isMobile:boolean){
     const canGOBackScreen = ['HomeScreen', 'LoginScreen'].findIndex(v=>v == route.name) == -1
     const goBack = ()=>{
         if (navigation.canGoBack())
@@ -56,12 +71,13 @@ function headerLeft(navigation:any, route:any, windowType:string){
             navigation.replace('HomeScreen')
     }
     if (windowType=='portrait' && canGOBackScreen)
-        return <TouchableOpacity onPress={goBack}><Ionicons size={24} style={{marginHorizontal:20 }} name="arrow-back"/></TouchableOpacity>
+        return <TouchableOpacity onPress={goBack}><Ionicons size={isMobile?18:24} style={{marginHorizontal:isMobile?15:20 }} name="arrow-back"/></TouchableOpacity>
     return null
 }
 
 function MainNavigator(){
     const windowType = useResizeWindow();
+    const isMobile = useIsMobile()
     const {auth} = useAuthContext()
     const entries = useMemo(()=>{
         if (auth.user === undefined)
@@ -76,9 +92,9 @@ function MainNavigator(){
                 <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                     <Main.Navigator
                         screenOptions={({navigation, route})=>({
-                            headerStyle:{backgroundColor:Colors.header},
+                            headerStyle:{backgroundColor:Colors.header, height:isMobile?48:undefined},
                             headerTitleStyle:{color:'white'},
-                            headerLeft:()=>headerLeft(navigation, route, windowType),
+                            headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
                             headerRight:()=><HeaderRight/>,
                             headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
                             cardStyle:{flexShrink:1},

@@ -2,16 +2,14 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 import firebase from "firebase/app";
 import "firebase/messaging";
 //@ts-ignore
-import {FCM_PUBLIC_VAPID_KEY, FCM_API_KEY_ENCRYPTED} from "@env"
+import {FCM_PUBLIC_VAPID_KEY, FCM_API_KEY} from "@env"
 import { Notification as NotificationType, UserMembership } from "../types";
 import { getNotification, postNotification, putNotification } from "../apis/notification";
 const firebaseConfig = require("../../web/firebase-config.js")
 // Initialize Firebase
 const key = firebaseConfig.messagingSenderId
-//encode
-// console.log((firebaseConfig.apiKey as string).split('').map((v, i)=> (v.charCodeAt(0) ^ key.charCodeAt(i)).toString(16).padStart(2, '0')).join(''))
-const apiKey = ((FCM_API_KEY_ENCRYPTED as string).match(/.{1,2}/g) || []).map((v, i)=> String.fromCharCode(parseInt(v, 16) ^ key.charCodeAt(i))).join('')
-const app = firebase.initializeApp({...firebaseConfig, apiKey});
+const apiKeyEncrypted = (FCM_API_KEY as string).split('').map((v, i)=> (v.charCodeAt(0) ^ key.charCodeAt(i)).toString(16).padStart(2, '0')).join('')
+const app = firebase.initializeApp({...firebaseConfig, apiKey:FCM_API_KEY});
 // const analytics = getAnalytics(app);
 const messaging = firebase.messaging(app);
 
@@ -30,7 +28,7 @@ const FirebaseContext = createContext<{enable:boolean, setEnable:(enable:boolean
 const requestToken = async()=>{
   const permission = await Notification.requestPermission();
   if (permission === 'granted') {
-    const serviceWorkerRegistration = await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${FCM_API_KEY_ENCRYPTED}`)
+    const serviceWorkerRegistration = await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${apiKeyEncrypted}`)
     console.log('[SW]: SCOPE: ', serviceWorkerRegistration.scope);
     const currentToken = await messaging.getToken({serviceWorkerRegistration, vapidKey: FCM_PUBLIC_VAPID_KEY })
     if (currentToken)

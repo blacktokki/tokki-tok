@@ -17,7 +17,8 @@
     "desktop:windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --dir -c.compression=store",
     "mac": "electron-webpack && electron-builder --mac -c.compression=store",
     "windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --win -c.compression=store",
-    "bot": "scripts/bot.js"
+    "bot": "scripts/bot.js",
+    "env": "scripts/env.js"
   },
   "jest": {
     "preset": "jest-expo"
@@ -52,7 +53,8 @@
     "react-native-tab-view": "^3.3.0",
     "react-native-web": "^0.17.1",
     "react-query": "^3.39.2",
-    "react-use-websocket": "^4.2.0"
+    "react-use-websocket": "^4.2.0",
+    "use-mobile-detect-hook": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
