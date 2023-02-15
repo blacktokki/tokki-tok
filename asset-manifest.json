@@ -1,7 +1,7 @@
 {
   "files": {
-    "app.js": "/kiblack-tok/static/js/app.4a118af9.chunk.js",
-    "app.js.map": "/kiblack-tok/static/js/app.4a118af9.chunk.js.map",
+    "app.js": "/kiblack-tok/static/js/app.379c1479.chunk.js",
+    "app.js.map": "/kiblack-tok/static/js/app.379c1479.chunk.js.map",
     "runtime~app.js": "/kiblack-tok/static/js/runtime~app.eb408d0f.js",
     "runtime~app.js.map": "/kiblack-tok/static/js/runtime~app.eb408d0f.js.map",
     "static/js/2.10208bf5.chunk.js": "/kiblack-tok/static/js/2.10208bf5.chunk.js",
@@ -33,6 +33,6 @@
   "entrypoints": [
     "static/js/runtime~app.eb408d0f.js",
     "static/js/2.10208bf5.chunk.js",
-    "static/js/app.4a118af9.chunk.js"
+    "static/js/app.379c1479.chunk.js"
   ]
 }
