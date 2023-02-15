@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/kiblack-tok/static/js/app.2b856ec8.chunk.js",
-    "app.js.map": "/kiblack-tok/static/js/app.2b856ec8.chunk.js.map",
+    "app.js": "/kiblack-tok/static/js/app.789e4eea.chunk.js",
+    "app.js.map": "/kiblack-tok/static/js/app.789e4eea.chunk.js.map",
     "runtime~app.js": "/kiblack-tok/static/js/runtime~app.eb408d0f.js",
     "runtime~app.js.map": "/kiblack-tok/static/js/runtime~app.eb408d0f.js.map",
-    "static/js/2.38b0af46.chunk.js": "/kiblack-tok/static/js/2.38b0af46.chunk.js",
-    "static/js/2.38b0af46.chunk.js.map": "/kiblack-tok/static/js/2.38b0af46.chunk.js.map",
+    "static/js/2.a7a78fb8.chunk.js": "/kiblack-tok/static/js/2.a7a78fb8.chunk.js",
+    "static/js/2.a7a78fb8.chunk.js.map": "/kiblack-tok/static/js/2.a7a78fb8.chunk.js.map",
     "fonts/AntDesign.ttf": "/kiblack-tok/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/kiblack-tok/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/kiblack-tok/./fonts/Feather.ttf",
@@ -28,11 +28,11 @@
     "index.html": "/kiblack-tok/index.html",
     "manifest.json": "/kiblack-tok/manifest.json",
     "serve.json": "/kiblack-tok/serve.json",
-    "static/js/2.38b0af46.chunk.js.LICENSE.txt": "/kiblack-tok/static/js/2.38b0af46.chunk.js.LICENSE.txt"
+    "static/js/2.a7a78fb8.chunk.js.LICENSE.txt": "/kiblack-tok/static/js/2.a7a78fb8.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime~app.eb408d0f.js",
-    "static/js/2.38b0af46.chunk.js",
-    "static/js/app.2b856ec8.chunk.js"
+    "static/js/2.a7a78fb8.chunk.js",
+    "static/js/app.789e4eea.chunk.js"
   ]
 }
