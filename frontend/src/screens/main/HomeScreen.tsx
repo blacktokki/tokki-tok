@@ -33,7 +33,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   return windowType == 'landscape'?
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
       <View style={{width:'80%', height:'80%'}}>
-        <StyledText style={{fontSize:32}}>Kiblack Tok</StyledText>
+        <StyledText style={{fontSize:32}}>Tokki Tok</StyledText>
         <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
         <View style={{flex:1, alignItems:'flex-start'}}>
           <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger & board for teams.</Text>

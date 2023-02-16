@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
-  "name": "kiblack-tok",
+  "name": "tokki-tok",
   "main": "node_modules/expo/AppEntry.js",
-  "homepage": "http://blacktokki.github.io/kiblack-tok",
+  "homepage": "http://blacktokki.github.io/tokki-tok",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",

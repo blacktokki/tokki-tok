@@ -23,7 +23,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   return (
     <NavigationContainer
       ref={navigationRef}
-      documentTitle={{formatter: (options, route) => {return `KIBLACK TOK`}}}
+      documentTitle={{formatter: (options, route) => {return `TOKKI TOK`}}}
       linking={(process.versions && process.versions['electron'])?undefined:LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <RootNavigator />

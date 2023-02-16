@@ -1,4 +1,4 @@
-# kiblack-tok
+# tokki-tok
 [![Python](https://img.shields.io/badge/python-3.6.9-blue.svg?style=flat-square)](https://www.python.org/downloads/release/python-362/)
 [![Django](https://img.shields.io/badge/django-3.2.16-blue.svg?style=flat-square)](https://www.djangoproject.com/)
 [![Django Rest Framework](https://img.shields.io/badge/django_rest_framework-3.11.0-blue.svg?style=flat-square)](http://www.django-rest-framework.org/)
@@ -13,7 +13,7 @@
 
 Main modules are available below:
 
-+ Messenger server(Django + React Native): [https://github.com/blacktokki/kiblack-tok](https://github.com/blacktokki/kiblack-tok)
++ Messenger server(Django + React Native): [https://github.com/blacktokki/tokki-tok](https://github.com/blacktokki/tokki-tok)
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
 Screenshot from the architecture below:
