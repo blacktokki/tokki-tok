@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { View, Text, TextProps, StyleProp } from 'react-native';
+import useResizeWindow from '../hooks/useResizeWindow';
 
 type Props = {
   name: string,
@@ -10,15 +11,15 @@ type Props = {
 }
 
 export default function RowField(props:Props) {
+  const windowType = useResizeWindow()
+  const rowStyle = useMemo(()=>windowType=='landscape'?
+    {flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}:
+    {flexDirection:'column', alignItems:'flex-start'} as any
+  , [windowType])
   return (
-    <View style={{flexDirection:'row', alignItems: 'center', justifyContent:'space-between', paddingVertical:5}}>
-        <Text style={[{flex:1, paddingHorizontal: 15, fontSize:16}, props.textStyle]}>{props.name}</Text>
-        <View style={{
-        // backgroundColor: '#171717',
-        flex: 6,
-        justifyContent: 'center',
-        paddingHorizontal: 15,
-        }}>
+    <View style={[{paddingVertical:5, width:'100%'}, rowStyle]}>
+        <Text style={[windowType=='landscape'?{flex:1}:{width:'100%'},{paddingHorizontal: 15, fontSize:16}, props.textStyle]}>{props.name}</Text>
+        <View style={[windowType=='landscape'?{flex:6}:{width:'100%'},{paddingHorizontal: 15}]}>
           <View style={{width:props.width}}>
             {props.children}
           </View>
