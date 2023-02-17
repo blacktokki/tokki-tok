@@ -59,7 +59,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         const isSelf = auth.user?.id == content.user
         const dayChanged = next==undefined || date != next.created.slice(0, 10)
         if (isSystem)
-          return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%'}}>
+          return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
             <Text>{content.message_set[0].content}</Text>
           </View>
         return <View key={content.id}>
@@ -97,7 +97,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         data={data?.pages}
         renderItem={renderItem}
         onScroll={(e)=>{
-          if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current == 0)
+          if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current < 1)
             fetchNextPage()
         }}
         onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
