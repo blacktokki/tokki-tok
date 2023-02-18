@@ -1,4 +1,4 @@
-# kiblack-tok
+# tokki-tok
 [![Python](https://img.shields.io/badge/python-3.6.9-blue.svg?style=flat-square)](https://www.python.org/downloads/release/python-362/)
 [![Django](https://img.shields.io/badge/django-3.2.16-blue.svg?style=flat-square)](https://www.djangoproject.com/)
 [![Django Rest Framework](https://img.shields.io/badge/django_rest_framework-3.11.0-blue.svg?style=flat-square)](http://www.django-rest-framework.org/)
@@ -13,11 +13,12 @@
 
 Main modules are available below:
 
-+ Messenger server(Django + React Native): [https://github.com/blacktokki/kiblack-tok](https://github.com/blacktokki/kiblack-tok)
++ Messenger server(Django + React Native): [https://github.com/blacktokki/tokki-tok](https://github.com/blacktokki/tokki-tok)
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
 Screenshot from the architecture below:
-![제목 없는 다이어그램 drawio](https://user-images.githubusercontent.com/39031723/214096215-32210842-d719-46a8-aff2-4fdcfff1e5a3.png)
+![제목 없는 다이어그램 drawio](https://user-images.githubusercontent.com/39031723/218319322-17abaf36-cc65-4cb7-94b8-966d7a54990e.png)
+
 
 ## Installation
 ### Install account server

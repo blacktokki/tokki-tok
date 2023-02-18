@@ -45,18 +45,18 @@ export default function BoardEditScreen({navigation, route}: StackScreenProps<an
       <Text style={{fontSize:20}}>Edit Board</Text>
     </View>
     <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={{width:'50%'}}>
+    <View style={{width:'100%'}}>
       <TextField name='Channel' disabled={true} value={channel?.name || ''} width={'100%'}/>
       <TextField name='Title' value={title} setValue={setTitle} width={'100%'}/>
       <TextField name='Content' value={content} setValue={setContent} multiline width={'100%'} minHeight={300}/>
     </View>
-    <View style={[styles.field, {justifyContent:'flex-end'}]}>
+    <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>
       <CommonButton title={'save'} onPress={()=>{
         const newBoard:Board = {id:board?.id, title, content};
         id?boardContentMutation.update(newBoard):boardContentMutation.create({...newBoard, user:auth.user?.id, channel:channel_id})
         navigate("Main", {screen:"BoardScreen", params: {id:channel_id}})
       }}/>
-      <CommonButton title={'cancel'} onPress={back}/>
+      <CommonButton title={'cancel'} style={{marginHorizontal:5}} onPress={back}/>
     </View>
   </CommonSection>
 }

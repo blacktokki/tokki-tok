@@ -59,7 +59,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         const isSelf = auth.user?.id == content.user
         const dayChanged = next==undefined || date != next.created.slice(0, 10)
         if (isSystem)
-          return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%'}}>
+          return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
             <Text>{content.message_set[0].content}</Text>
           </View>
         return <View key={content.id}>
@@ -67,7 +67,8 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
           <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
             {isFirst && !isSelf?<MaterialIcons size={38} style={{marginBottom: -3, marginRight:10 }} name='account-circle'/>:<View style={{width:48}}/>}
             <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
-              <Hyperlink linkDefault={ true }>
+              {/* @ts-ignore */}
+              <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
                 <Text>{content.message_set[0].content}</Text>
               </Hyperlink>
             </CommonSection>
@@ -96,7 +97,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         data={data?.pages}
         renderItem={renderItem}
         onScroll={(e)=>{
-          if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current == 0)
+          if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current < 1)
             fetchNextPage()
         }}
         onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}

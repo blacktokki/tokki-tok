@@ -39,11 +39,11 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
     <Text style={{fontSize:20}}>Edit Channel - {type}</Text>
     </View>
     <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={{width:'50%'}}>
-      <TextField name='Name' value={name} setValue={setName} width={'100%'}/>
-      <TextField name='Description' value={description} setValue={setDescription} multiline width={'100%'}/>
+    <View style={{width:'100%'}}>
+      <TextField name='Channel Name' value={name} setValue={setName} width={'60%'}/>
+      <TextField name='Description' value={description} setValue={setDescription} multiline width={'60%'}/>
     </View>
-    <View style={[styles.field, {justifyContent:'flex-end'}]}>
+    <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>
       <CommonButton title={'save'} onPress={()=>{
         if(auth?.user?.id && auth.groupId){
           const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
@@ -53,7 +53,7 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
           }))
         }
       }}/>
-      <CommonButton title={'cancel'} onPress={back}/>
+      <CommonButton title={'cancel'} style={{marginHorizontal:5}} onPress={back}/>
     </View>
   </CommonSection>
 }

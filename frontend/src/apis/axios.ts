@@ -28,19 +28,28 @@ _axios.interceptors.response.use(
     },
     error => {
         if (error.response.status === 401) {
-            AsyncStorage.getItem("Authorization").then(refreshToken)
+            getToken().then(async(token)=>{
+                const r = await _axios.post("/api-token-refresh/", {token}, {headers:{'Authorization':''}})
+                if (r.status == 200 && r.data !== ''){
+                    setToken(r.data)
+                }
+            })
         }
         return Promise.reject(error)
     }
 )
 
-export const refreshToken = async(token:string|null)=>{
-    const r = await _axios.post("/api-token-refresh/", {token}, {headers:{'Authorization':''}})
-    if (r.status == 200 && r.data !== ''){
-        await AsyncStorage.setItem("Authorization", r.data)
-        return r.data
-    }
-    return ''
+export const setToken = async (token:string|null)=>{
+    _axios.defaults.headers['Authorization'] = `JWT ${token}`
+    if (token)
+        await AsyncStorage.setItem("Authorization", token)
+    else
+        AsyncStorage.removeItem("Authorization")
+}
+export const getToken = async ()=>{
+    const token = await AsyncStorage.getItem("Authorization")
+    _axios.defaults.headers['Authorization'] = `JWT ${token}`
+    return token
 }
 
 export default _axios

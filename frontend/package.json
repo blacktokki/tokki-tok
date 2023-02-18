@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
-  "name": "kiblack-tok",
+  "name": "tokki-tok",
   "main": "node_modules/expo/AppEntry.js",
-  "homepage": "http://blacktokki.github.io/kiblack-tok",
+  "homepage": "http://blacktokki.github.io/tokki-tok",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -12,12 +12,13 @@
     "eject": "expo eject",
     "test": "jest --watchAll",
     "mobile:android": "expo build:android",
-    "github": "gh-pages -d web-build",
-    "pregithub": "expo build:web && copyfiles --flat src/404.html web-build",
+    "github": "expo build:web && gh-pages -d web-build",
     "desktop:mac": "electron-webpack && electron-builder --dir -c.compression=store -c.mac.identity=null",
     "desktop:windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --dir -c.compression=store",
     "mac": "electron-webpack && electron-builder --mac -c.compression=store",
-    "windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --win -c.compression=store"
+    "windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --win -c.compression=store",
+    "bot": "scripts/bot.js",
+    "env": "scripts/env.js"
   },
   "jest": {
     "preset": "jest-expo"
@@ -52,7 +53,8 @@
     "react-native-tab-view": "^3.3.0",
     "react-native-web": "^0.17.1",
     "react-query": "^3.39.2",
-    "react-use-websocket": "^4.2.0"
+    "react-use-websocket": "^4.2.0",
+    "use-mobile-detect-hook": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -62,7 +64,6 @@
     "@types/react": "~16.9.35",
     "@types/react-native": "~0.63.2",
     "concurrently": "^6.2.1",
-    "copyfiles": "^2.4.1",
     "electron": "^9.4.0",
     "electron-builder": "^22.11.7",
     "gh-pages": "^3.2.2",

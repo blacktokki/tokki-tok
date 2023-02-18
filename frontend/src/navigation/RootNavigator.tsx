@@ -12,7 +12,9 @@ import { WebSocketProvider } from '../hooks/useWebsocketContext';
 import HeaderRight from '../components/HeaderRight'
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import useFirebase, { FirebaseProvider } from '../hooks/useFirebaseContext';
+import { FirebaseProvider } from '../hooks/useFirebaseContext';
+import useIsMobile from '../hooks/useIsMobile';
+import MobileSafeAreaView from '../components/MobileSafeAreaView';
 
 const Root = createStackNavigator();
 
@@ -21,6 +23,7 @@ const queryClient = new QueryClient();
 export default function RootNavigator() {
     const windowType = useResizeWindow();
     return (
+        <MobileSafeAreaView windowType={windowType}>
             <AuthProvider>
                 <QueryClientProvider client={queryClient}>
                     {/* devtools */}
@@ -42,12 +45,13 @@ export default function RootNavigator() {
                         </Root.Navigator>
                 </QueryClientProvider>
             </AuthProvider>
+        </MobileSafeAreaView>
     );
 }
 
 const Main = createStackNavigator();
 
-function headerLeft(navigation:any, route:any){
+function headerLeft(navigation:any, route:any, windowType:string, isMobile:boolean){
     const canGOBackScreen = ['HomeScreen', 'LoginScreen'].findIndex(v=>v == route.name) == -1
     const goBack = ()=>{
         if (navigation.canGoBack())
@@ -55,12 +59,14 @@ function headerLeft(navigation:any, route:any){
         else if (canGOBackScreen)
             navigation.replace('HomeScreen')
     }
-    if (navigation.canGoBack()  || canGOBackScreen)
-        return <TouchableOpacity onPress={goBack}><Ionicons size={24} style={{marginHorizontal:20 }} name="arrow-back"/></TouchableOpacity>
+    if (windowType=='portrait' && canGOBackScreen)
+        return <TouchableOpacity onPress={goBack}><Ionicons size={isMobile?20:24} style={{marginHorizontal:isMobile?16:20 }} name="arrow-back"/></TouchableOpacity>
     return null
 }
 
 function MainNavigator(){
+    const windowType = useResizeWindow();
+    const isMobile = useIsMobile()
     const {auth} = useAuthContext()
     const entries = useMemo(()=>{
         if (auth.user === undefined)
@@ -75,12 +81,14 @@ function MainNavigator(){
                 <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                     <Main.Navigator
                         screenOptions={({navigation, route})=>({
-                            headerStyle:{backgroundColor:Colors.header},
+                            headerStyle:{backgroundColor:Colors.header, height:isMobile?50:undefined},
                             headerTitleStyle:{color:'white'},
-                            headerLeft:()=>headerLeft(navigation, route),
+                            headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
                             headerRight:()=><HeaderRight/>,
                             headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
-                            cardStyle:{flexShrink:1}
+                            cardStyle:{flexShrink:1},
+                            animationEnabled:windowType=='portrait',
+                            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
                         })}
                     >
                         {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}

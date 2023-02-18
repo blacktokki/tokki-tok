@@ -20,7 +20,7 @@ export default function useMessengerContentList(channel_id:number){
           data.pages[data.pages.length - 2].next = data.pages[data.pages.length - 1]
         return data;
       },
-      getNextPageParam:(lastPage)=>lastPage.current.length?lastPage.current[lastPage.current.length - 1].id:undefined,
+      getNextPageParam:(lastPage)=>lastPage?.current.length?lastPage.current[lastPage.current.length - 1].id:undefined,
       refetchOnReconnect:false,
       refetchOnWindowFocus:false
     }
