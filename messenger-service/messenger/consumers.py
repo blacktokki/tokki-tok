@@ -10,36 +10,46 @@ from channels.generic.websocket import WebsocketConsumer
 USER_PREFIX = 'user-'
 CHANNEL_PREFIX = 'channel-'
 
-
-class MessengerConsumer(WebsocketConsumer):    
-    def connect(self):
+def connect(func):
+   def func_wrapper(self):
         self.accept("Authorization")
         self.user = self.scope["user"]
-        self.channel_ids = set(Channel.objects.filter(messengermember__user_id=self.user.id).values_list('id', flat=True))
-        
         async_to_sync(self.channel_layer.group_add)(
             f"{USER_PREFIX}{self.user.id}",
             self.channel_name
         )
-        for channel_id in self.channel_ids:
-            async_to_sync(self.channel_layer.group_add)(
-                f"{CHANNEL_PREFIX}{channel_id}",
-                self.channel_name
-            )
-
+        func(self)
         # response to client, that we are connected.
         self.send(text_data=json.dumps({
             'type': 'connection',
             'data': {
                 'message': "Connected"
             }
-        }))
+        }))   
+   return func_wrapper
 
-    def disconnect(self, code):
+def disconnect(func):
+    def func_wrapper(self, code):
+        func(self, code)
         async_to_sync(self.channel_layer.group_discard)(
             f"{USER_PREFIX}{self.user.id}",
             self.channel_name
         )
+    return func_wrapper
+
+
+class MessengerConsumer(WebsocketConsumer):    
+    @connect
+    def connect(self):
+        self.channel_ids = set(Channel.objects.filter(messengermember__user_id=self.user.id).values_list('id', flat=True))
+        for channel_id in self.channel_ids:
+            async_to_sync(self.channel_layer.group_add)(
+                f"{CHANNEL_PREFIX}{channel_id}",
+                self.channel_name
+            )
+
+    @disconnect
+    def disconnect(self, code):
         for channel_id in self.channel_ids:
             # self.channel_ids.remove(room_id)
             async_to_sync(self.channel_layer.group_discard)(
