@@ -8,8 +8,10 @@
 ## Overview
 
 + Separated backend and frontend; Rest API; Micro service
-+ Full cross-platform support(Desktop, Web, Mobile)
++ Full cross-platform support
 + Documented with swagger
++ Real-time chat functionality using websocket
++ User authentication using JWT
 
 Main modules are available below:
 
@@ -47,11 +49,14 @@ $ bash scripts/runserver.sh eureka_client
 # cd into frontend directory
 $ cd frontend
 
+# generate .env and web/firebase-config.js file
+$ npm run env
+
 # run client development
 $ npm run android
-npm run ios
-npm run web
-npm run desktop
+$ npm run ios
+$ npm run web
+$ npm run desktop
 ```
 
 ## Screenshots
