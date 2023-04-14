@@ -3,6 +3,7 @@
 const fs = require('fs')
 
 const env = `API_URL="https://blacktokki.com"
+USE_PROXY=1
 FCM_PUBLIC_VAPID_KEY=""
 FCM_API_KEY=""
 `
