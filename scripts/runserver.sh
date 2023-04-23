@@ -2,8 +2,9 @@
 
 # Usage:
 # bash scripts/runserver.sh [param]...
-# bash ../scripts/runserver.sh [param]...
 # * param: service name (gunicorn|eureka_client)
+
+BASE_DIR="$( cd "$( dirname "$0" )" && pwd -P )/.."
 
 for var in "$@"
 do
@@ -12,7 +13,7 @@ do
     then
         echo "=====$var is running at" $PID
     else
-        DIR=`find ../ -name messenger-service -type d`
+        DIR=$BASE_DIR/messenger-service
         if [ "$var" == "gunicorn" ]
         then
             echo "=====$var isn't running====="
