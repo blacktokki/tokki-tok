@@ -41,12 +41,14 @@ echo "DATABASE_PASS=$3" >> $PROPERTY_FILE
 echo "SECRET_KEY=$3" >> $PROPERTY_FILE
 
 ## setup kurento
-# sudo apt-get --assume-yes install gnupg
-# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5AFA7A83
-# echo "deb [arch=amd64] http://ubuntu.openvidu.io/6.16.0 bionic kms6" | sudo tee /etc/apt/sources.list.d/kurento.list
-# sudo apt-get update
-# sudo apt-get --assume-yes install kurento-media-server
-
+WEBRTC_CONFIG_FILE=/etc/kurento/modules/kurento/WebRtcEndpoint.conf.ini
+sudo apt-get --assume-yes install gnupg
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5AFA7A83
+echo "deb [arch=amd64] http://ubuntu.openvidu.io/6.16.0 bionic kms6" | sudo tee /etc/apt/sources.list.d/kurento.list
+sudo apt-get --assume-yes install kurento-media-server
+echo "stunServerAddress=172.217.213.127" | sudo tee -a $COTURN_CONFIG_FILE
+echo "stunServerPort=19302" | sudo tee -a $COTURN_CONFIG_FILE
+sudo systemctl restart kurento-media-server.service
 
 ## setup coturn
 # EXTERNAL_IP=$4

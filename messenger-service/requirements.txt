@@ -17,3 +17,4 @@ djangorestframework-jwt
 websockets
 pyfcm==1.5.4
 opengraph_parse
+pyforkurento
