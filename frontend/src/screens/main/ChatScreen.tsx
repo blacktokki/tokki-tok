@@ -13,12 +13,12 @@ import { navigate } from '../../navigation';
 import Colors from '../../constants/Colors';
 import Hyperlink from 'react-native-hyperlink'
 import useMessengerChannelList from '../../hooks/lists/useMessengerChannelList';
-
-const marginBottom = 65
+import LocalCam from '../../lib/react-native-webrtc/LocalCam';
 
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
   const channel_id = route?.params?.id
   const height = useRef(0)
+  const inputRef = useRef<TextInput>(null)
   const {auth} = useAuthContext()
   const channel = useMessengerChannelList(auth)?.find(v=>v.id==parseInt(channel_id))
   const {data, fetchNextPage } = useMessengerContentList(channel_id)
@@ -26,10 +26,14 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const member_id = useMemo(()=>memberList?.find(v=>v.user == auth.user?.id)?.id, [auth, memberList])
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
+  const [autoFocus, setAutoFocus] = useState(true)
+  const [camera, setCamera] = useState(false)
   const postValue = ()=>{
     contentMutation.create({channel:channel_id, user:auth.user?.id, content:value})
     setValue('')
+    setAutoFocus(true)
   }
+  const changeCamera = ()=>setCamera(!camera)
   const contentMutation = useMessengerContentMutation()
 
   useLayoutEffect(() => {
@@ -89,23 +93,36 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     if (!(channel_id))
       back()
   }, [])
+  useEffect(()=>{
+    if(autoFocus){
+      (inputRef.current as any).focus()
+      setAutoFocus(false)
+    }
+  }, [autoFocus])
 
   return <View style={{flex:1, alignItems:'center'}}>
-    <FlatList
-        style={{width:'100%', flexDirection: 'column-reverse', marginBottom}}
-        contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
-        data={data?.pages}
-        renderItem={renderItem}
-        onScroll={(e)=>{
-          if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current < 1)
-            fetchNextPage()
-        }}
-        onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
-      />
+      <View style={{width:'100%', flex:1}}>
+        <FlatList
+          style={{width:'100%', flexDirection: 'column-reverse'}}
+          contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
+          data={data?.pages}
+          renderItem={renderItem}
+          onScroll={(e)=>{
+            if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current < 1)
+              fetchNextPage()
+          }}
+          onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
+        />
+        <View style={{position:'absolute', bottom:0, right:0, maxWidth:320, maxHeight:240}}>
+          <LocalCam isPlay={camera}/>
+        </View>
+      </View>
       <View style={{width:'100%'}}>
-        <View style={{position:'absolute', top:-marginBottom, width:'100%', backgroundColor:'white', alignItems:'center'}}>
+        <View style={{bottom:0, width:'100%', backgroundColor:'white', alignItems:'center'}}>
           <View style={{width:'100%',flexDirection:'row', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
-            <TextInput value={value} onChangeText={setValue} style={{flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor}} onSubmitEditing={postValue}/><CommonButton title={'write'} onPress={postValue}/>
+            <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor}} onSubmitEditing={postValue} blurOnSubmit={true}/>
+            <CommonButton title={'💬'} onPress={postValue}/>
+            <CommonButton title={'📹'} onPress={changeCamera}/>
           </View>
         </View>
       </View>

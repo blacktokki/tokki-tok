@@ -18,6 +18,9 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      "@config-plugins/react-native-webrtc"
+    ],
     "ios": {
       "supportsTablet": true
     },
