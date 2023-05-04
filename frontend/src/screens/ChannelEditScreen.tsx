@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import CommonSection from '../components/CommonSection';
 import { View, Text } from '../components/Themed';
 import CommonButton from '../components/CommonButton';
-import useBoardChannelList, { useBoardChannelMutation } from '../hooks/lists/useBoardChannelList';
+// import useBoardChannelList, { useBoardChannelMutation } from '../hooks/lists/useBoardChannelList';
 import useAuthContext from '../hooks/useAuthContext';
 import { navigate } from '../navigation';
 import { Channel } from '../types';
@@ -16,8 +16,8 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
   const id = route?.params?.id
   const type = route?.params?.type
   const {auth} = useAuthContext()
-  const channelList = type=='messenger'?useMessengerChannelList(auth):useBoardChannelList(auth)
-  const channelMutation = type=='messenger'?useMessengerChannelMutation():useBoardChannelMutation()
+  const channelList = useMessengerChannelList(auth)
+  const channelMutation = useMessengerChannelMutation()
   const channel = channelList?.find(v=>v.id==id)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')

@@ -1,7 +1,7 @@
 import React from "react"
 import { View, Text } from "react-native"
 import CommonItem from "../components/CommonItem"
-import useBoardChannelList from "../hooks/lists/useBoardChannelList"
+// import useBoardChannelList from "../lib/blacktokki-board/useBoardChannelList"
 import useMessengerChannelList from "../hooks/lists/useMessengerChannelList"
 import useAuthContext from "../hooks/useAuthContext"
 import { navigate } from "../navigation"
@@ -19,9 +19,9 @@ export default {
         const channelList = useMessengerChannelList(auth);
         return <DrawerTab data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
     },
-    Board:()=>{
-        const {auth} = useAuthContext()
-        const channelList = useBoardChannelList(auth);
-        return <DrawerTab data={(channelList || []).map(item=>({...item, onPress:()=>navigate("BoardScreen", {id:item.id})}))}/>
-    },
+    // Board:()=>{
+    //     const {auth} = useAuthContext()
+    //     const channelList = useBoardChannelList(auth);
+    //     return <DrawerTab data={(channelList || []).map(item=>({...item, onPress:()=>navigate("BoardScreen", {id:item.id})}))}/>
+    // },
 }

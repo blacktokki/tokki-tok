@@ -42,7 +42,7 @@ export type UserMembership =  User & {
 export type Channel = {
   id?: number,
   name: string,
-  type: "board"| "messenger",
+  type: string,
   description?: string,
   is_archive?: boolean,
   owner: number,
@@ -58,13 +58,12 @@ export type MessengerChannel = Channel & {
   }
 }
 
-export type Board = {
+export type Message = {
   id?: number,
-  title:string,
   content: string,
 }
 
-export type EditBoard = Board & {
+export type EditMessage = Message & {
   channel:number
   user?:number
 }
@@ -74,27 +73,6 @@ type Link = {
   title:string,
   description:string,
   image:string,
-}
-
-export type BoardContent = {
-  id: number,
-  board_set:Board[],
-  link_set:Link[],
-  user: number,
-  channel: number
-  created: string,
-  updated: string,
-  name: string
-}
-
-export type Message = {
-  id?: number,
-  content: string,
-}
-
-export type EditMessage = Message & {
-  channel:number
-  user?:number
 }
 
 export type MessengerContent = {

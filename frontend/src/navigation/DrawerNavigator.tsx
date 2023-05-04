@@ -59,7 +59,12 @@ export default ({user}:{user:UserMembership})=> {
           <TextButton title='+' textStyle={{fontSize:20}} style={{borderRadius:20}} onPress={onAddList[index]}/>
       </View>
       <View accessibilityRole="tablist" style={styles.content}>
-        <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>
+        {Object.keys(drawerTabs).length>1 ? 
+          <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>: 
+          <View style={{borderTopWidth:1, flex:1, borderColor:colors.border}}>            
+            {Object.values(drawerTabs).map(drawerTab=>{const Tab = drawerTab.component; return <Tab key={drawerTab.title}/>})}
+          </View>
+        }
       </View>
     </View>:<View style={{width:0}}></View>
 }

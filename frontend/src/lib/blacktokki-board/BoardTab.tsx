@@ -1,10 +1,10 @@
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons"
 import React from "react"
 import { Text, View } from "react-native"
-import CommonItem from "../components/CommonItem"
-import useBoardChannelList from "../hooks/lists/useBoardChannelList"
-import useAuthContext from "../hooks/useAuthContext"
-import { navigate } from "../navigation"
+import CommonItem from "../../components/CommonItem"
+import useBoardChannelList from "./useBoardChannelList"
+import useAuthContext from "../../hooks/useAuthContext"
+import { navigate } from "../../navigation"
 
 export default ()=>{
     const {auth} = useAuthContext()

@@ -1,15 +1,16 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
-import CommonSection from '../components/CommonSection';
-import { View, Text } from '../components/Themed';
-import CommonButton from '../components/CommonButton';
-import useBoardChannelList from '../hooks/lists/useBoardChannelList';
-import useAuthContext from '../hooks/useAuthContext';
-import { navigate } from '../navigation';
-import useBoardContentList, { useBoardContentMutation } from '../hooks/lists/useBoardContentList';
-import { Board } from '../types';
-import TextField from '../components/TextField';
+import CommonSection from '../../components/CommonSection';
+import { View, Text } from '../../components/Themed';
+import CommonButton from '../../components/CommonButton';
+import TextField from '../../components/TextField';
+import useAuthContext from '../../hooks/useAuthContext';
+import { navigate } from '../../navigation';
+import useBoardContentList, { useBoardContentMutation } from './useBoardContentList';
+import useBoardChannelList from './useBoardChannelList';
+import { Board } from './types';
+
 
 
 export default function BoardEditScreen({navigation, route}: StackScreenProps<any, 'BoardEdit'>) {

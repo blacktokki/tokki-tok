@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { deleteChannel, getBoardChannelList, postChannel, putChannel } from "../../apis";
-import { Auth } from "../useAuthContext";
+import { deleteChannel, postChannel, putChannel } from "../../apis";
+import { Auth } from "../../hooks/useAuthContext";
+import { getBoardChannelList } from "./apis"
+
 
 export default function useBoardChannelList(auth?:Auth){
   const { data } = useQuery(["BoardChannelList", auth?.groupId] , async()=>auth?.groupId?(await getBoardChannelList(auth?.groupId)):[])

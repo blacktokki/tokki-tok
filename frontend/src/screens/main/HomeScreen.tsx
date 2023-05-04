@@ -19,7 +19,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const options = [
     {title:'member', headerRight:()=><HeaderRight/>},
     {title:'messenger', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>navigate("ChannelEditScreen", {type:"messenger"})}]}/>},
-    {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>navigate("ChannelEditScreen", {type:"board"})}]}/>},
+    // {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>navigate("ChannelEditScreen", {type:"board"})}]}/>},
     {title:'config', headerRight:()=><HeaderRight/>}
   ]
   
@@ -36,11 +36,11 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
         <StyledText style={{fontSize:32}}>Tokki Tok</StyledText>
         <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
         <View style={{flex:1, alignItems:'flex-start'}}>
-          <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger & board for teams.</Text>
+          <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger for teams.</Text>
           <Text style={{fontSize:24}}> </Text>
           <Text style={{fontSize:24, fontWeight:'500'}}>Quick Start</Text>
           <TextButton title='+ New Messenger' textStyle={{fontSize:20}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>navigate("ChannelEditScreen", {type:"messenger"})}/>
-          <TextButton title='+ New Board' textStyle={{fontSize:20}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>navigate("ChannelEditScreen", {type:"board"})}/>
+          {/* <TextButton title='+ New Board' textStyle={{fontSize:20}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>navigate("ChannelEditScreen", {type:"board"})}/> */}
         </View>
       </View>
     </View>:

@@ -2,8 +2,8 @@ import LoginScreen from "./main/LoginScreen";
 import ChatScreen from "./main/ChatScreen";
 import HomeScreen from "./main/HomeScreen";
 import TabOneScreen from "./main/TabOneScreen";
-import BoardScreen from "./main/BoardScreen";
-import BoardEditScreen from "./BoardEditScreen";
+// import BoardScreen from "../lib/blacktokki-board/BoardScreen";
+// import BoardEditScreen from "../lib/blacktokki-board/BoardEditScreen";
 import ChannelEditScreen from "./ChannelEditScreen"
 import { Screens } from "../types";
 import InviteScreen from "./InviteScreen";
@@ -20,11 +20,11 @@ export const main = {
         component:ChatScreen,
         path:'chat'
     },
-    BoardScreen:{
-        title:'board',
-        component:BoardScreen,
-        path:'board'
-    },
+    // BoardScreen:{
+    //     title:'board',
+    //     component:BoardScreen,
+    //     path:'board'
+    // },
     TabOneScreen:{
         title:'tab one',
         component:TabOneScreen,
@@ -41,11 +41,11 @@ export const login = {
 } as Screens
 
 export const modal = {
-    BoardEditScreen:{
-        title:'board',
-        component:BoardEditScreen,
-        path:'modal/board'
-    },
+    // BoardEditScreen:{
+    //     title:'board',
+    //     component:BoardEditScreen,
+    //     path:'modal/board'
+    // },
     ChannelEditScreen:{
         title:'channel',
         component:ChannelEditScreen,
