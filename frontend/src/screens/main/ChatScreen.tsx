@@ -27,13 +27,12 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
   const [autoFocus, setAutoFocus] = useState(true)
-  const [camera, setCamera] = useState(false)
+  const [videoMode, setVideoMode] = useState<'camera'|'display'|null>(null)
   const postValue = ()=>{
     contentMutation.create({channel:channel_id, user:auth.user?.id, content:value})
     setValue('')
     setAutoFocus(true)
   }
-  const changeCamera = ()=>setCamera(!camera)
   const contentMutation = useMessengerContentMutation()
 
   useLayoutEffect(() => {
@@ -101,7 +100,6 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   }, [autoFocus])
 
   return <View style={{flex:1, alignItems:'center'}}>
-      <View style={{width:'100%', flex:1}}>
         <FlatList
           style={{width:'100%', flexDirection: 'column-reverse'}}
           contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
@@ -113,16 +111,20 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
           }}
           onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
         />
-        <View style={{position:'absolute', bottom:0, right:0, maxWidth:320, maxHeight:240}}>
-          <LocalCam isPlay={camera}/>
-        </View>
-      </View>
       <View style={{width:'100%'}}>
+        <View style={[
+          {flexDirection: 'row', justifyContent:'center', borderColor:Colors.borderColor, borderRadius:10, paddingTop:10, backgroundColor:'white'},
+          videoMode!==null?{borderTopWidth:1}:{}]}>
+          <View style={{maxWidth:'33%', flexDirection: 'row', marginHorizontal:10, flex:1}}>
+            <LocalCam mode={videoMode}/>
+          </View>
+        </View>
         <View style={{bottom:0, width:'100%', backgroundColor:'white', alignItems:'center'}}>
           <View style={{width:'100%',flexDirection:'row', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
             <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor}} onSubmitEditing={postValue} blurOnSubmit={true}/>
             <CommonButton title={'💬'} onPress={postValue}/>
-            <CommonButton title={'📹'} onPress={changeCamera}/>
+            <CommonButton title={'📹'} onPress={()=>setVideoMode(videoMode!='camera'?'camera':null)}/>
+            <CommonButton title={'🖥️'} onPress={()=>setVideoMode(videoMode!='display'?'display':null)}/>
           </View>
         </View>
       </View>

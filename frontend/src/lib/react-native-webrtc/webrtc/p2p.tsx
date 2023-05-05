@@ -16,6 +16,9 @@ export const sessionConstraints = {
 		VoiceActivityDetection: true
 	}
 };
+
+const mediaConstraints = {audio:true, video:{framerate:30}}
+
 //@ts-ignore
 export {MediaStream, RTCPeerConnection, RTCSessionDescription} from "react-native-webrtc-web-shim";
 
@@ -62,20 +65,30 @@ const createOffer = async(pcRefCurrent:{pc?:typeof RTCPeerConnection, user?:{id:
 }
 
 export const useLocalCam = (sendMessage:(data:any)=>void)=>{
-	const pcRef = useRef<{pc?:typeof RTCPeerConnection, user?:{id:number}}>({})
+	const pcRef = useRef<Record<number,{pc:typeof RTCPeerConnection, user:{id:number}}>>({})
 	const [_stream, setStream] = useState<MediaStream>()
 	const isPlay = useMemo(()=>_stream?true:false, [_stream])
 	// const [_mirrorStream, setMirrorStream] = useState<MediaStream>()
-	const renderRTCView = useCallback((style:any)=>_stream && <RTCView stream={_stream} style={style} /> , [_stream])
+	const renderRTCView = useCallback((style:any)=>_stream && <RTCView stream={_stream} style={style} videoProps={{style:{height:'100%'}}} /> , [_stream])
 	// const renderMirrorView = useCallback((style)=>_mirrorStream && <RTCView stream={_mirrorStream} style={style} /> , [_mirrorStream])
-	const start = useCallback(async(owner:{username:string}, stream?:typeof MediaStream)=>{
+	const start = useCallback(async(owner:{username:string}, stream?:typeof MediaStream, mode?:'camera'|'display')=>{
 		console.log("start");
-		if (!_stream) {
+		if (!_stream || mode!==undefined) {
 			try {
-				const newStream = stream || await mediaDevices.getUserMedia({audio:true, video:true}).catch((e:any)=>mediaDevices.getDisplayMedia({audio:true, video:{framerate:30}}));
+				let newStream:typeof MediaStream;
+				if(mode == 'camera'){
+					newStream = await mediaDevices.getUserMedia(mediaConstraints)
+				}
+				else if (mode == 'display'){
+					newStream = await mediaDevices.getDisplayMedia(mediaConstraints)
+				}
+				else{
+					newStream = stream || await mediaDevices.getUserMedia(mediaConstraints).catch((e:any)=>mediaDevices.getDisplayMedia(mediaConstraints));
+				}
 				setStream(newStream)
-				if (pcRef.current.pc)
-					createOffer(pcRef.current, sendMessage, newStream, 'guest', owner)
+				Object.entries(pcRef.current).map(([k, v])=>{
+					createOffer(v, sendMessage, newStream, 'guest', owner)
+				})
 			} catch (e) {
 				console.error(e);
 			}
@@ -97,20 +110,22 @@ export const useLocalCam = (sendMessage:(data:any)=>void)=>{
 			  console.log('1 start')
 			  const peerConnection = new RTCPeerConnection( peerConstraints );
 			  peerConnection.addEventListener( 'icecandidate', (event:any) => sendICEcandidate(event, sendMessage, response.sender, 'guest'));
-			  pcRef.current.pc = peerConnection
-			  pcRef.current.user = {id:response.sender}
+			  pcRef.current[response.sender] = {pc:peerConnection, user: {id:response.sender}}
 			  createOffer(pcRef.current, sendMessage, _stream, 'guest', owner)
 			}
 			
 			if (type == "answer" && response.data.target == 'host'){
 			  console.log('3 answer')
+			  const peerConnection = pcRef.current[response.sender].pc
 			  const answerDescription = new RTCSessionDescription(response.data.rtcMessage);
-			  await pcRef.current.pc.setRemoteDescription( answerDescription );
+			  await peerConnection.setRemoteDescription( answerDescription );
 			  // const streams = pcRef.current.pc.getRemoteStreams()
 			  // setMirrorStream(streams[streams.length - 1])
 			}
-			if (type == "ICEcandidate" && response.data.target=='host')
-			  onICEcandidate(pcRef.current.pc, response)
+			if (type == "ICEcandidate" && response.data.target=='host'){
+				const peerConnection = pcRef.current[response.sender].pc
+				onICEcandidate(peerConnection, response)
+			}
 		},
 		renderRTCView,
 		isPlay,
@@ -121,7 +136,7 @@ export const useLocalCam = (sendMessage:(data:any)=>void)=>{
 export const useRemoteCam = (sendMessage:(data:any)=>void)=>{
 	const pcRef = useRef<{pc?:RTCPeerConnection, user?:{username:string, id?:number}, statsInterval?:any}>({})
 	const [_stream, setStream] = useState<MediaStream>()
-	const renderRTCView = useCallback((style:any)=>_stream && <RTCView stream={_stream} style={style} /> , [_stream])
+	const renderRTCView = useCallback((style:any)=>_stream && <RTCView stream={_stream} videoProps={{style}} /> , [_stream])
 	const isPlay = useMemo(()=>_stream?true:false, [_stream])
 	const start = useCallback((username:string)=>{
 		console.log("start");

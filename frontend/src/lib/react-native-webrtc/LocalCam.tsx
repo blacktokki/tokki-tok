@@ -6,8 +6,7 @@ import useWebsocketContext from "./useWebsocketContext";
 import { useLocalCam, camStyle} from "./webrtc";
 
 
-export default (props:{isPlay?:boolean})=>{
-  console.log(props.isPlay)
+export default React.memo((props:{mode?:'camera'|'display'|null})=>{
   const {auth} = useAuthContext()
   const {lastJsonMessage, sendJsonMessage} = useWebsocketContext()
   const {start, stop, websocketOnMessage, renderRTCView, isPlay} = useLocalCam(sendJsonMessage)
@@ -15,25 +14,25 @@ export default (props:{isPlay?:boolean})=>{
     auth.user && lastJsonMessage && websocketOnMessage(lastJsonMessage, auth.user)
   }, [lastJsonMessage, auth])
   useEffect(()=>{
-    if(props.isPlay){
-      auth.user && start(auth.user)
+    if(props.mode){
+      auth.user && start(auth.user, undefined, props.mode)
     }
-    else if(props.isPlay!==undefined && props.isPlay==false){
+    else if(props.mode===null){
       stop()
     }
-  }, [auth, props.isPlay])
+  }, [auth, props.mode])
   return (
     <View style={camStyle.container}>
       {renderRTCView(camStyle.cam)}
       <View style={camStyle.bottonContainer}>
-        <View style={camStyle.buttonBar}>
-          {/* <Text style={{flex:1}}>Username: {auth.user?.username}</Text> */}
+        <View style={camStyle.buttonBar}>  
         </View>
+        {(props.mode === undefined || isPlay) &&<View style={{flexDirection:'row'}}><Text style={camStyle.label}>{auth.user?.name}</Text></View>}
         <View style={camStyle.buttonBar}>
-          {props.isPlay === undefined && !isPlay && <Button title="Start" onPress={()=>auth.user && start(auth.user)} />}
-          {props.isPlay === undefined && isPlay && <Button title="Stop" onPress={stop} />}
+          {props.mode === undefined && !isPlay && <Button title="Start" onPress={()=>auth.user && start(auth.user)} />}
+          {props.mode === undefined && isPlay && <Button title="Stop" onPress={stop} />}
         </View>
       </View>
     </View>
   );
-}
+})
