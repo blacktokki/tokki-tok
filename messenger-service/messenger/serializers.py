@@ -14,6 +14,28 @@ def create_enter_message(channel_id, user):
     return Message.objects.create(channel_content=channel_content, content=f'{user.name} 입장')
 
 
+def attach_link(channel_content, validated_data):
+    link_set = set(re.findall(url_extract_pattern, validated_data['content']))
+    add_links = []
+    delete_link_ids = []
+    for link in channel_content.link_set.all():
+        if link.url not in link_set:
+            delete_link_ids.append(link.id)
+        else:
+            link_set.remove(link.url)
+    for url in link_set:
+        parsed_og_tags = parse_page(url, ["og:url", "og:title", "og:image", "og:description"])
+        add_links.append(Link(
+            channel_content=channel_content,
+            url=parsed_og_tags.get("og:url"),
+            title=parsed_og_tags.get("og:title"),
+            image=parsed_og_tags.get("og:image"),
+            description=parsed_og_tags.get("og:description")
+        ))
+    Link.objects.filter(id__in=delete_link_ids).delete()
+    Link.objects.bulk_create(add_links)
+
+
 class ChannelSerializer(serializers.ModelSerializer):
     enter_message_id = serializers.CharField(read_only=True)
 
@@ -63,6 +85,7 @@ class MessageSerializer(serializers.ModelSerializer):
         user = validated_data.pop("user", None)
         channel = validated_data.pop("channel")
         validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel)
+        attach_link(validated_data['channel_content'], validated_data)
         return super().create(validated_data)
 
     class Meta:
@@ -85,34 +108,13 @@ class BoardSerializer(serializers.ModelSerializer):
         user = validated_data.pop("user")
         channel = validated_data.pop("channel")
         validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel)
-        self.attach_link(validated_data['channel_content'], validated_data)
+        attach_link(validated_data['channel_content'], validated_data)
         return super().create(validated_data)
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        self.attach_link(instance.channel_content, validated_data)
+        attach_link(instance.channel_content, validated_data)
         return super().update(instance, validated_data)
-
-    def attach_link(self, channel_content, validated_data):
-        link_set = set(re.findall(url_extract_pattern, validated_data['content']))
-        add_links = []
-        delete_link_ids = []
-        for link in channel_content.link_set.all():
-            if link.url not in link_set:
-                delete_link_ids.append(link.id)
-            else:
-                link_set.remove(link.url)
-        for url in link_set:
-            parsed_og_tags = parse_page(url, ["og:url", "og:title", "og:image", "og:description"])
-            add_links.append(Link(
-                channel_content=channel_content,
-                url=parsed_og_tags.get("og:url"),
-                title=parsed_og_tags.get("og:title"),
-                image=parsed_og_tags.get("og:image"),
-                description=parsed_og_tags.get("og:description")
-            ))
-        Link.objects.filter(id__in=delete_link_ids).delete()
-        Link.objects.bulk_create(add_links)
 
     class Meta:
         model = Board
@@ -121,6 +123,7 @@ class BoardSerializer(serializers.ModelSerializer):
 
 class MessengerContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
+    link_set = LinkSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True)
     channel_name = serializers.CharField(read_only=True)
     class Meta:
