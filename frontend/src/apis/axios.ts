@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import {API_URL} from './proxy'
+// @ts-ignore
+import {API_URL} from "@env"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const baseURL =  `${API_URL}/messenger/`
 const defaultOption:AxiosRequestConfig = {

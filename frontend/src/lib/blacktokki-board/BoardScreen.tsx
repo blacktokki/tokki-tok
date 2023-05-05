@@ -3,13 +3,13 @@ import {FlatList, Image, Linking } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink'
-import useBoardContentList, { useBoardContentMutation } from '../../hooks/lists/useBoardContentList';
+import useBoardContentList, { useBoardContentMutation } from './useBoardContentList';
 import CommonSection from '../../components/CommonSection';
 import { View, Text } from '../../components/Themed';
 import CommonButton from '../../components/CommonButton';
-import { BoardContent } from '../../types';
+import { BoardContent } from './types';
 import HeaderRight from '../../components/HeaderRight';
-import useBoardChannelList, { useBoardChannelMutation } from '../../hooks/lists/useBoardChannelList';
+import useBoardChannelList, { useBoardChannelMutation } from './useBoardChannelList';
 import useAuthContext from '../../hooks/useAuthContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import useIsMobile from '../../hooks/useIsMobile';

@@ -13,12 +13,12 @@ import { navigate } from '../../navigation';
 import Colors from '../../constants/Colors';
 import Hyperlink from 'react-native-hyperlink'
 import useMessengerChannelList from '../../hooks/lists/useMessengerChannelList';
-
-const marginBottom = 65
+import LocalCam from '../../lib/react-native-webrtc/LocalCam';
 
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
   const channel_id = route?.params?.id
   const height = useRef(0)
+  const inputRef = useRef<TextInput>(null)
   const {auth} = useAuthContext()
   const channel = useMessengerChannelList(auth)?.find(v=>v.id==parseInt(channel_id))
   const {data, fetchNextPage } = useMessengerContentList(channel_id)
@@ -26,9 +26,12 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const member_id = useMemo(()=>memberList?.find(v=>v.user == auth.user?.id)?.id, [auth, memberList])
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
+  const [autoFocus, setAutoFocus] = useState(true)
+  const [videoMode, setVideoMode] = useState<'camera'|'display'|null>(null)
   const postValue = ()=>{
     contentMutation.create({channel:channel_id, user:auth.user?.id, content:value})
     setValue('')
+    setAutoFocus(true)
   }
   const contentMutation = useMessengerContentMutation()
 
@@ -89,23 +92,39 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     if (!(channel_id))
       back()
   }, [])
+  useEffect(()=>{
+    if(autoFocus){
+      (inputRef.current as any).focus()
+      setAutoFocus(false)
+    }
+  }, [autoFocus])
 
   return <View style={{flex:1, alignItems:'center'}}>
-    <FlatList
-        style={{width:'100%', flexDirection: 'column-reverse', marginBottom}}
-        contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
-        data={data?.pages}
-        renderItem={renderItem}
-        onScroll={(e)=>{
-          if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current < 1)
-            fetchNextPage()
-        }}
-        onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
-      />
+        <FlatList
+          style={{width:'100%', flexDirection: 'column-reverse'}}
+          contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
+          data={data?.pages}
+          renderItem={renderItem}
+          onScroll={(e)=>{
+            if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current < 1)
+              fetchNextPage()
+          }}
+          onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
+        />
       <View style={{width:'100%'}}>
-        <View style={{position:'absolute', top:-marginBottom, width:'100%', backgroundColor:'white', alignItems:'center'}}>
+        <View style={[
+          {flexDirection: 'row', justifyContent:'center', borderColor:Colors.borderColor, borderRadius:10, paddingTop:10, backgroundColor:'white'},
+          videoMode!==null?{borderTopWidth:1}:{}]}>
+          <View style={{maxWidth:'33%', flexDirection: 'row', marginHorizontal:10, flex:1}}>
+            <LocalCam mode={videoMode}/>
+          </View>
+        </View>
+        <View style={{bottom:0, width:'100%', backgroundColor:'white', alignItems:'center'}}>
           <View style={{width:'100%',flexDirection:'row', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
-            <TextInput value={value} onChangeText={setValue} style={{flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor}} onSubmitEditing={postValue}/><CommonButton title={'write'} onPress={postValue}/>
+            <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor}} onSubmitEditing={postValue} blurOnSubmit={true}/>
+            <CommonButton title={'💬'} onPress={postValue}/>
+            <CommonButton title={'📹'} onPress={()=>setVideoMode(videoMode!='camera'?'camera':null)}/>
+            <CommonButton title={'🖥️'} onPress={()=>setVideoMode(videoMode!='display'?'display':null)}/>
           </View>
         </View>
       </View>

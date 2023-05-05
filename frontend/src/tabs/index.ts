@@ -3,7 +3,7 @@ import MemberTab, {MemberIcon} from "./MemberTab";
 import OneTab, {ConfigIcon} from "./OneTab";
 import DrawerTab  from './DrawerTab';
 import MessengerTab, {MessengerIcon} from "./MessengerTab";
-import BoardTab, {BoardIcon}  from "./BoardTab";
+// import BoardTab, {BoardIcon}  from "../lib/blacktokki-board/BoardTab";
 
 export const bottomTabs = {
     OneTab:{
@@ -16,11 +16,11 @@ export const bottomTabs = {
         component:MessengerTab,
         icon:MessengerIcon
     },
-    ThreeTab:{
-        title:'board',
-        component:BoardTab,
-        icon:BoardIcon
-    },
+    // ThreeTab:{
+    //     title:'board',
+    //     component:BoardTab,
+    //     icon:BoardIcon
+    // },
     // FourTab:{
     //     title:'config',
     //     component:OneTab,
@@ -34,9 +34,9 @@ export const drawerTabs = {
         component:DrawerTab.Messenger,
         icon:MessengerIcon
     },
-    ThreeTab:{
-        title:'board',
-        component:DrawerTab.Board,
-        icon:BoardIcon
-    }
+    // ThreeTab:{
+    //     title:'board',
+    //     component:DrawerTab.Board,
+    //     icon:BoardIcon
+    // }
 } as Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}>
