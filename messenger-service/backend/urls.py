@@ -3,7 +3,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import redirect
 from django.urls import path
 from django.conf.urls import url, include
-from django.middleware.csrf import get_token as csrf_token
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -31,6 +30,5 @@ urlpatterns = api_patterns + staticfiles_urlpatterns() + [
     url(r'^api/v1/doc/', include_docs_urls(title='Messenger API', public=False, patterns=api_patterns)),
     url(r'^api-token-auth/', csrf_exempt(require_POST(lambda request: HttpResponse(sso_token(request))))),
     url(r'^api-token-refresh/', csrf_exempt(require_POST(lambda request: HttpResponse(sso_refresh(request))))),
-    url(r'^csrf/', lambda request: HttpResponse(csrf_token(request))),
     url(r'^', lambda request: redirect('/api/v1/'))
 ]
