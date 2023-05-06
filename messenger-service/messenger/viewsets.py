@@ -6,18 +6,16 @@ from rest_framework.decorators import action
 from messenger.consumers import send_enter, send_leave, send_next_message
 from notifications import send_notification_message
 from .serializers import (
-    BoardContentSerializer, 
     ChannelSerializer,
     MessengerChannelSerializer, 
     MessengerContentSerializer, 
     MessengerMemberSerializer,
     MessengerUserBulkSerializer, 
     MessengerUserSerializer, 
-    BoardSerializer,
     MessageSerializer
 )
 from .filtersets import ChannelFilterSet, ChannelContentFilterSet, MessengerMemberFilterSet
-from .models import Board, Message, Channel, MessengerMember, ChannelContent
+from .models import Message, Channel, MessengerMember, ChannelContent
 
 ANNOTATE_MESSENGER_CONTENT = {
     'name': models.F('user__last_name'), 
@@ -85,31 +83,12 @@ class MessengerContentViewset(viewsets.ModelViewSet):
         return response
 
     @action(detail=True, methods=['patch'],
-        queryset=Board.objects.all(),
+        queryset=Message.objects.all(),
         serializer_class=MessageSerializer,
         filter_backends=[])
     def message(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
 
-
-class BoardContentViewset(viewsets.ModelViewSet):
-    serializer_class = BoardContentSerializer
-    filterset_class = ChannelContentFilterSet
-    queryset = ChannelContent.objects.filter(channel__type='board').annotate(name=models.F('user__last_name')).order_by('-id')
-
-    @action(detail=False, methods=['post'], 
-        queryset=Board.objects.all(),
-        serializer_class=BoardSerializer)
-    def boards(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
-
-    @action(detail=True, methods=['patch'],
-        queryset=Board.objects.all(),
-        serializer_class=BoardSerializer,
-        filter_backends=[])
-    def board(self, request, *args, **kwargs):
-        return super().partial_update(request, *args, **kwargs)
-    
 
 class MessengerMemberViewset(viewsets.ModelViewSet):
     serializer_class = MessengerMemberSerializer

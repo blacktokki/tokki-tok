@@ -3,7 +3,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import redirect
 from django.urls import path
 from django.conf.urls import url, include
-from django.middleware.csrf import get_token as csrf_token
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -12,13 +11,14 @@ from rest_framework.documentation import include_docs_urls
 from accounts.backends import sso_token, sso_refresh
 import accounts.viewsets as accounts_api
 import messenger.viewsets as messenger_api
+import board.viewsets as board_api
 import notifications.viewsets as notification_api
 
 router = routers.DefaultRouter()
 router.register('users', accounts_api.UserViewSet)
 router.register('channels', messenger_api.ChannelViewSet)
 router.register('messengercontents', messenger_api.MessengerContentViewset, 'messengercontents')
-router.register('boardcontents', messenger_api.BoardContentViewset)
+router.register('boardcontents', board_api.BoardContentViewset)
 router.register('messengermembers', messenger_api.MessengerMemberViewset)
 router.register('notifications', notification_api.NotificationViewSet)
 
@@ -31,6 +31,5 @@ urlpatterns = api_patterns + staticfiles_urlpatterns() + [
     url(r'^api/v1/doc/', include_docs_urls(title='Messenger API', public=False, patterns=api_patterns)),
     url(r'^api-token-auth/', csrf_exempt(require_POST(lambda request: HttpResponse(sso_token(request))))),
     url(r'^api-token-refresh/', csrf_exempt(require_POST(lambda request: HttpResponse(sso_refresh(request))))),
-    url(r'^csrf/', lambda request: HttpResponse(csrf_token(request))),
     url(r'^', lambda request: redirect('/api/v1/'))
 ]
