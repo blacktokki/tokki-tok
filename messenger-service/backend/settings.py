@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'accounts',
     'notifications',
     'messenger',
+    'board'
 ]
 
 MIDDLEWARE = [

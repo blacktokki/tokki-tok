@@ -4,7 +4,7 @@ from django.db import transaction
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
-from .models import Board, Channel, MessengerMember, Message, ChannelContent, Link
+from .models import Channel, MessengerMember, Message, ChannelContent, Link
 
 url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
 
@@ -99,43 +99,11 @@ class LinkSerializer(serializers.ModelSerializer):
         exclude = ['channel_content', 'parent_content']
 
 
-class BoardSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(write_only=True, queryset=User.objects.all())
-    channel = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Channel.objects.filter(type='board'))
-
-    @transaction.atomic
-    def create(self, validated_data):
-        user = validated_data.pop("user")
-        channel = validated_data.pop("channel")
-        validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel)
-        attach_link(validated_data['channel_content'], validated_data)
-        return super().create(validated_data)
-
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        attach_link(instance.channel_content, validated_data)
-        return super().update(instance, validated_data)
-
-    class Meta:
-        model = Board
-        exclude = ['channel_content']
-
-
 class MessengerContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
     link_set = LinkSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True)
     channel_name = serializers.CharField(read_only=True)
-    class Meta:
-        model = ChannelContent
-        fields = '__all__'
-
-
-class BoardContentSerializer(serializers.ModelSerializer):
-    board_set = BoardSerializer(many=True, read_only=True)
-    message_set = MessageSerializer(many=True, read_only=True)
-    link_set = LinkSerializer(many=True, read_only=True)
-    name = serializers.CharField(read_only=True)
     class Meta:
         model = ChannelContent
         fields = '__all__'
