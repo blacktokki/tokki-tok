@@ -68,7 +68,7 @@ export type EditMessage = Message & {
   user?:number
 }
 
-type Link = {
+export type Link = {
   url:string,
   title:string,
   description:string,
@@ -78,6 +78,7 @@ type Link = {
 export type MessengerContent = {
   id: number,
   message_set:Message[]
+  link_set:Link[],
   user: number,
   channel: number
   created: string,

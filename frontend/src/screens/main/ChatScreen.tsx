@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text,  View, Image, Linking} from 'react-native';
 import CommonSection from '../../components/CommonSection';
 import { MaterialIcons } from '@expo/vector-icons';
-import { FlatList, TextInput } from 'react-native-gesture-handler';
+import { FlatList, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import CommonButton from '../../components/CommonButton';
 import useMessengerContentList, { MessengerContentPage, useMessengerContentMutation } from '../../hooks/lists/useMessengerContent.List';
 import useAuthContext from '../../hooks/useAuthContext';
@@ -14,10 +14,13 @@ import Colors from '../../constants/Colors';
 import Hyperlink from 'react-native-hyperlink'
 import useMessengerChannelList from '../../hooks/lists/useMessengerChannelList';
 import LocalCam from '../../lib/react-native-webrtc/LocalCam';
+import useIsMobile from '../../hooks/useIsMobile';
+import LinkPreview from '../../components/LinkPreview';
 
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
   const channel_id = route?.params?.id
   const height = useRef(0)
+  const isMobile = useIsMobile()
   const inputRef = useRef<TextInput>(null)
   const {auth} = useAuthContext()
   const channel = useMessengerChannelList(auth)?.find(v=>v.id==parseInt(channel_id))
@@ -74,6 +77,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
               <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
                 <Text>{content.message_set[0].content}</Text>
               </Hyperlink>
+              {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}
             </CommonSection>
           </View>
         </View>
