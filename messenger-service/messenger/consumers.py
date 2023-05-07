@@ -7,15 +7,12 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from channels.generic.websocket import WebsocketConsumer
 
-USER_PREFIX = 'user-'
-CHANNEL_PREFIX = 'channel-'
-
 def connect(func):
    def func_wrapper(self):
         self.accept("Authorization")
         self.user = self.scope["user"]
         async_to_sync(self.channel_layer.group_add)(
-            f"{USER_PREFIX}{self.user.id}",
+            f"{self.USER_PREFIX}{self.user.id}",
             self.channel_name
         )
         func(self)
@@ -32,19 +29,21 @@ def disconnect(func):
     def func_wrapper(self, code):
         func(self, code)
         async_to_sync(self.channel_layer.group_discard)(
-            f"{USER_PREFIX}{self.user.id}",
+            f"{self.USER_PREFIX}{self.user.id}",
             self.channel_name
         )
     return func_wrapper
 
 
-class MessengerConsumer(WebsocketConsumer):    
+class MessengerConsumer(WebsocketConsumer):
+    USER_PREFIX = 'user-'
+    CHANNEL_PREFIX = 'channel-'
     @connect
     def connect(self):
         self.channel_ids = set(Channel.objects.filter(messengermember__user_id=self.user.id).values_list('id', flat=True))
         for channel_id in self.channel_ids:
             async_to_sync(self.channel_layer.group_add)(
-                f"{CHANNEL_PREFIX}{channel_id}",
+                f"{self.CHANNEL_PREFIX}{channel_id}",
                 self.channel_name
             )
 
@@ -53,7 +52,7 @@ class MessengerConsumer(WebsocketConsumer):
         for channel_id in self.channel_ids:
             # self.channel_ids.remove(room_id)
             async_to_sync(self.channel_layer.group_discard)(
-                f"{CHANNEL_PREFIX}{channel_id}",
+                f"{self.CHANNEL_PREFIX}{channel_id}",
                 self.channel_name
             )
 
@@ -75,7 +74,7 @@ class MessengerConsumer(WebsocketConsumer):
         self.channel_ids.add(channel_id)
         self.send(text_data=json.dumps(event))
         async_to_sync(self.channel_layer.group_add)(
-            f"{CHANNEL_PREFIX}{channel_id}",
+            f"{self.CHANNEL_PREFIX}{channel_id}",
             self.channel_name
         )
 
@@ -84,7 +83,7 @@ class MessengerConsumer(WebsocketConsumer):
 
         self.channel_ids.remove(channel_id)
         async_to_sync(self.channel_layer.group_discard)(
-            f"{CHANNEL_PREFIX}{channel_id}",
+            f"{self.CHANNEL_PREFIX}{channel_id}",
             self.channel_name
         )
         # self.send(text_data=json.dumps(event))
@@ -95,14 +94,14 @@ class MessengerConsumer(WebsocketConsumer):
 
 def send_enter(channel, user_id):
     channel_data = ChannelSerializer(instance=channel).data
-    async_to_sync(get_channel_layer().group_send)(f"{USER_PREFIX}{user_id}", {"type": "enter", "data": channel_data})
+    async_to_sync(get_channel_layer().group_send)(f"{MessengerConsumer.USER_PREFIX}{user_id}", {"type": "enter", "data": channel_data})
 
 
 def send_leave(channel_id, user_id=None):
     if user_id is None:
-        async_to_sync(get_channel_layer().group_send)(f"{CHANNEL_PREFIX}{channel_id}", {"type": "leave", "data": {"channel_id": channel_id}})
-    async_to_sync(get_channel_layer().group_send)(f"{USER_PREFIX}{user_id}", {"type": "leave", "data": {"channel_id": channel_id}})
+        async_to_sync(get_channel_layer().group_send)(f"{MessengerConsumer.CHANNEL_PREFIX}{channel_id}", {"type": "leave", "data": {"channel_id": channel_id}})
+    async_to_sync(get_channel_layer().group_send)(f"{MessengerConsumer.USER_PREFIX}{user_id}", {"type": "leave", "data": {"channel_id": channel_id}})
 
 
 def send_next_message(channel_id, data):
-    async_to_sync(get_channel_layer().group_send)(f"{CHANNEL_PREFIX}{channel_id}", {"type": "next_message", "data": data})
+    async_to_sync(get_channel_layer().group_send)(f"{MessengerConsumer.CHANNEL_PREFIX}{channel_id}", {"type": "next_message", "data": data})

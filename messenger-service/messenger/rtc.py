@@ -3,16 +3,62 @@ from django.contrib.auth import get_user_model
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync, sync_to_async
 from pyforkurento import client
-from messenger.consumers import connect, disconnect, USER_PREFIX
+from messenger.consumers import connect, disconnect
 
 
-class P2PConsumer(WebsocketConsumer):    
+class BroadcastMixin:
+    def receive_broadcast(self, channel_id):
+        self.channel_id = channel_id
+        async_to_sync(self.channel_layer.group_send)(
+            f"{self.CHANNEL_PREFIX}{channel_id}", 
+            {
+                "type": "broadcast",
+                "username": self.user.username, 
+                "data":{"channel_name": self.channel_name, "name": self.user.name, "target": "guest"}
+            }
+        )
+        async_to_sync(self.channel_layer.group_add)(
+            f"{self.CHANNEL_PREFIX}{channel_id}",
+            self.channel_name
+        )
+
+    def broadcast(self, event):
+        if event['data']['target'] == 'guest':
+            async_to_sync(self.channel_layer.send)(
+                event['data']['channel_name'], 
+                {
+                    "type": "broadcast",
+                    "username": self.user.username, 
+                    "data":{"channel_name":self.channel_name, "name": self.user.name, "target": "host"}
+                }
+            )
+        self.send(text_data=json.dumps(event))
+
+    def disconnect_broadcast(self):
+        async_to_sync(self.channel_layer.group_discard)(
+            f"{self.CHANNEL_PREFIX}{self.channel_id}",
+            self.channel_name
+        )
+        async_to_sync(self.channel_layer.group_send)(
+            f"{self.CHANNEL_PREFIX}{self.channel_id}", 
+            {
+                "type": "broadcast",
+                "username": self.user.username, 
+                "data":{"channel_name":self.channel_name, "target":"disconnect"}}
+        )
+
+
+class P2PConsumer(BroadcastMixin, WebsocketConsumer):    
+    USER_PREFIX='rtc-user'
+    CHANNEL_PREFIX = 'rtc-channel-'
+
     @connect
     def connect(self):
         pass
 
     @disconnect
     def disconnect(self, close_code):
+        self.disconnect_broadcast()
         pass
 
     # Receive message from client WebSocket
@@ -20,18 +66,20 @@ class P2PConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         data = text_data_json['data']
         message_type = text_data_json['type']
+        if message_type == 'broadcast':
+            self.receive_broadcast(data["channel_id"])
+            return
         if 'username' in text_data_json:
             user = get_user_model().objects.get_by_natural_key(text_data_json['username']).id
         else:
             user = text_data_json['user']
         print(self.user.id, "send", message_type, "to", user)
-        async_to_sync(self.channel_layer.group_send)(f"{USER_PREFIX}{user}", {
+        async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
             'type': 'send_message',
             'message': {'sender': self.user.id, 'type':message_type, 'data': data}
         })
 
     def send_message(self, event):
-        event['message']['cn'] = self.channel_name
         self.send(text_data=json.dumps(event['message']))
 
 
@@ -56,6 +104,8 @@ class KurentoMemoryMixin:
 
 
 class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):    
+    USER_PREFIX='rtc-user'
+    CHANNEL_PREFIX = 'rtc-channel-'
     BAND_WIDTH = 8000
 
     @connect
@@ -71,7 +121,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
     def _guest_sendICE(self, user):
         def _func(resp):
             ice = resp["payload"]["candidate"]
-            async_to_sync(self.channel_layer.group_send)(f"{USER_PREFIX}{user}", {
+            async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
                 'type': 'send_message',
                 'message': {
                     'sender': self.user.id, 
@@ -110,7 +160,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
         self.setVideoSendBandwidth(guest, self.BAND_WIDTH)
         self.set_endpoint(guest_id, guest)
         host.guests_func[guest.elem_id] = self._guest_sendICE(guest_id)
-        async_to_sync(self.channel_layer.group_send)(f"{USER_PREFIX}{guest_id}", {
+        async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{guest_id}", {
             'type': 'send_message',
             'message': {'sender': self.user.id, 'type':'start', 'data': {'username': self.user.username}}
         })
@@ -126,7 +176,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
         print('@@@', self.user.id, "send", message_type, "to", user)
         message = {'sender': self.user.id, 'type':message_type, 'data': data}
         if message_type in ["start", "end"] or data.get("target") == 'host':
-            async_to_sync(self.channel_layer.group_send)(f"{USER_PREFIX}{user}", {
+            async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
                 'type': 'receive_host',
                 'host': user,
                 'guest': self.user.id,
@@ -139,7 +189,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
                 'message': message
             })
         else:
-            async_to_sync(self.channel_layer.group_send)(f"{USER_PREFIX}{user}", {
+            async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
                 'type': 'send_message',
                 'message': {'sender': self.user.id, 'type':message_type, 'data': data}
             })
@@ -177,7 +227,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
                 offer = data["rtcMessage"]
                 answer_sdp = guest.process_offer(offer['sdp'])
                 host.connect(guest)
-                async_to_sync(self.channel_layer.group_send)(f"{USER_PREFIX}{event['guest']}", {
+                async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{event['guest']}", {
                     'type': 'send_message',
                     'message': {'sender': self.user.id, 'type':'answer', "data": {"target": "guest", "rtcMessage": {"type": "answer", "sdp": answer_sdp}}}
                 })
