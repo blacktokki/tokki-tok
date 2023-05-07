@@ -69,7 +69,7 @@ export const useLocalCam = (sendMessage:(data:any)=>void)=>{
 	const [_stream, setStream] = useState<MediaStream>()
 	const isPlay = useMemo(()=>_stream?true:false, [_stream])
 	// const [_mirrorStream, setMirrorStream] = useState<MediaStream>()
-	const renderRTCView = useCallback((style:any)=>_stream && <RTCView stream={_stream} style={style} videoProps={{style:{height:'100%'}}} /> , [_stream])
+	const CustomRTCView = useCallback(React.memo(({style}:{style:any})=>(_stream?<RTCView stream={_stream} style={style} videoProps={{height:'100%'}} />:<></>)) , [_stream])
 	// const renderMirrorView = useCallback((style)=>_mirrorStream && <RTCView stream={_mirrorStream} style={style} /> , [_mirrorStream])
 	const start = useCallback(async(owner:{username:string}, stream?:typeof MediaStream, mode?:'camera'|'display')=>{
 		console.log("start");
@@ -127,7 +127,7 @@ export const useLocalCam = (sendMessage:(data:any)=>void)=>{
 				onICEcandidate(peerConnection, response)
 			}
 		},
-		renderRTCView,
+		CustomRTCView,
 		isPlay,
 		// renderMirrorView,
 	}
@@ -136,7 +136,7 @@ export const useLocalCam = (sendMessage:(data:any)=>void)=>{
 export const useRemoteCam = (sendMessage:(data:any)=>void)=>{
 	const pcRef = useRef<{pc?:RTCPeerConnection, user?:{username:string, id?:number}, statsInterval?:any}>({})
 	const [_stream, setStream] = useState<MediaStream>()
-	const renderRTCView = useCallback((style:any)=>_stream && <RTCView stream={_stream} videoProps={{style}} /> , [_stream])
+	const CustomRTCView = useCallback(React.memo((style:any)=>_stream?<RTCView stream={_stream} style={style} videoProps={{height:'100%'}} />:<></>), [_stream])
 	const isPlay = useMemo(()=>_stream?true:false, [_stream])
 	const start = useCallback((username:string)=>{
 		console.log("start");
@@ -235,7 +235,7 @@ export const useRemoteCam = (sendMessage:(data:any)=>void)=>{
 			if (type == "ICEcandidate" && response.data.target=='guest' && pcRef.current?.user?.id == response.sender)
 			  onICEcandidate(pcRef.current.pc, response)
 		},
-		renderRTCView,
+		CustomRTCView,
 		isPlay
 	}
 }

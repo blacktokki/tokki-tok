@@ -3,10 +3,10 @@ import {Button,Text, TextInput, View} from "react-native";
 import useWebsocketContext from "./useWebsocketContext";
 import { useRemoteCam, camStyle} from "./webrtc";
 
-export default React.memo((props:{user?:{username:string, name:string}})=>{
+export default (props:{user?:{username:string, name:string}})=>{
   const [username, setUsername] = useState('')
   const {lastJsonMessage, sendJsonMessage} = useWebsocketContext()
-  const {start, stop, websocketOnMessage, renderRTCView, isPlay} = useRemoteCam(sendJsonMessage)
+  const {start, stop, websocketOnMessage, CustomRTCView, isPlay} = useRemoteCam(sendJsonMessage)
   useEffect(()=>{
     lastJsonMessage && websocketOnMessage(lastJsonMessage)
   }, [lastJsonMessage])
@@ -18,7 +18,7 @@ export default React.memo((props:{user?:{username:string, name:string}})=>{
   }, [props.user])
   return (
     <View style={camStyle.container}>
-      {renderRTCView(camStyle.cam)}
+      <CustomRTCView style={camStyle.cam}/>
       <View style={camStyle.bottonContainer}>
         <View style={camStyle.buttonBar}>
         </View>
@@ -38,5 +38,5 @@ export default React.memo((props:{user?:{username:string, name:string}})=>{
       </View>
     </View>
   );
-})
+}
 

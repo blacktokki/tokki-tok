@@ -9,7 +9,7 @@ import { useLocalCam, camStyle} from "./webrtc";
 export default (props:{mode?:'camera'|'display'|null})=>{
   const {auth} = useAuthContext()
   const {lastJsonMessage, sendJsonMessage} = useWebsocketContext()
-  const {start, stop, websocketOnMessage, renderRTCView, isPlay} = useLocalCam(sendJsonMessage)
+  const {start, stop, websocketOnMessage, CustomRTCView, isPlay} = useLocalCam(sendJsonMessage)
   useEffect(()=>{
     auth.user && lastJsonMessage && websocketOnMessage(lastJsonMessage, auth.user)
   }, [lastJsonMessage, auth])
@@ -23,7 +23,7 @@ export default (props:{mode?:'camera'|'display'|null})=>{
   }, [auth, props.mode])
   return (
     <View style={camStyle.container}>
-      {renderRTCView(camStyle.cam)}
+      <CustomRTCView style={camStyle.cam}/>
       <View style={camStyle.bottonContainer}>
         <View style={camStyle.buttonBar}>  
         </View>
