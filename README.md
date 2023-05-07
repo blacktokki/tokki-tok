@@ -62,8 +62,6 @@ $ npm run desktop
 ## Screenshots
 ### Messenger Screen
 ![제목 없음2](https://user-images.githubusercontent.com/39031723/214096452-1061190e-c738-422f-bfc1-b0a8ec9edeaf.png)
-### Board Screen
-![제목 없음22](https://user-images.githubusercontent.com/39031723/214096456-15c7c147-fb68-4b42-8346-af43b0ae4892.png)
 
 
 <!-- ### Read More -->
