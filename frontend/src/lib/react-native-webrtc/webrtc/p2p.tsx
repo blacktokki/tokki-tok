@@ -111,7 +111,7 @@ export const useLocalCam = (sendMessage:(data:any)=>void)=>{
 			  const peerConnection = new RTCPeerConnection( peerConstraints );
 			  peerConnection.addEventListener( 'icecandidate', (event:any) => sendICEcandidate(event, sendMessage, response.sender, 'guest'));
 			  pcRef.current[response.sender] = {pc:peerConnection, user: {id:response.sender}}
-			  createOffer(pcRef.current, sendMessage, _stream, 'guest', owner)
+			  createOffer(pcRef.current[response.sender], sendMessage, _stream, 'guest', owner)
 			}
 			
 			if (type == "answer" && response.data.target == 'host'){

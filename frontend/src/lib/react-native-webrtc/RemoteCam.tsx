@@ -3,33 +3,40 @@ import {Button,Text, TextInput, View} from "react-native";
 import useWebsocketContext from "./useWebsocketContext";
 import { useRemoteCam, camStyle} from "./webrtc";
 
-export default ()=>{
+export default React.memo((props:{user?:{username:string, name:string}})=>{
   const [username, setUsername] = useState('')
   const {lastJsonMessage, sendJsonMessage} = useWebsocketContext()
   const {start, stop, websocketOnMessage, renderRTCView, isPlay} = useRemoteCam(sendJsonMessage)
   useEffect(()=>{
     lastJsonMessage && websocketOnMessage(lastJsonMessage)
   }, [lastJsonMessage])
-
+  useEffect(()=>{
+    if(props.user){
+      start(props.user.username)
+    }
+    return ()=>stop()
+  }, [props.user])
   return (
     <View style={camStyle.container}>
       {renderRTCView(camStyle.cam)}
       <View style={camStyle.bottonContainer}>
         <View style={camStyle.buttonBar}>
-          {isPlay?
-            <Text style={{borderWidth:1, flex:1}}>Username:{username}</Text>:
+        </View>
+        {(props.user ===undefined || isPlay) &&
+          <View style={{flexDirection:'row'}}>{
+            (props.user || isPlay)?
+            <Text style={camStyle.label}>{props.user?.name||username}</Text>:
             <>
               <Text style={{borderWidth:1}}>Username:&nbsp;</Text>
               <TextInput style={{borderWidth:1, flex:1}} value={username} onChangeText={setUsername}/>
-            </>
-          }
-        </View>
+            </> 
+          }</View>}
         <View style={camStyle.buttonBar}>
-          <Button title="Start" onPress={()=>start(username)} />
-          <Button title="Stop" onPress={stop} />
+          {props.user === undefined && !isPlay && <Button title="Start" onPress={()=>start(username)} />}
+          {props.user === undefined && isPlay && <Button title="Stop" onPress={stop} />}
         </View>
       </View>
     </View>
   );
-}
+})
 

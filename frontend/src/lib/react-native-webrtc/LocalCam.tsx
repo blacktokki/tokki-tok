@@ -6,7 +6,7 @@ import useWebsocketContext from "./useWebsocketContext";
 import { useLocalCam, camStyle} from "./webrtc";
 
 
-export default React.memo((props:{mode?:'camera'|'display'|null})=>{
+export default (props:{mode?:'camera'|'display'|null})=>{
   const {auth} = useAuthContext()
   const {lastJsonMessage, sendJsonMessage} = useWebsocketContext()
   const {start, stop, websocketOnMessage, renderRTCView, isPlay} = useLocalCam(sendJsonMessage)
@@ -18,7 +18,7 @@ export default React.memo((props:{mode?:'camera'|'display'|null})=>{
       auth.user && start(auth.user, undefined, props.mode)
     }
     else if(props.mode===null){
-      stop()
+      isPlay && stop()
     }
   }, [auth, props.mode])
   return (
@@ -35,4 +35,4 @@ export default React.memo((props:{mode?:'camera'|'display'|null})=>{
       </View>
     </View>
   );
-})
+}
