@@ -22,34 +22,28 @@ import RemoteCam from '../../lib/react-native-webrtc/RemoteCam';
 type VideoCallProps = {channel_id:number, videoMode:'camera'|'display'|null}
 
 const VideoCallContainer = ({channel_id, videoMode}:VideoCallProps)=>{
-  const [guests, setGuests] = useState<{username:string, name:string, channel_name:string}[]>([])
+  const [guests, setGuests] = useState<string[]>([])
   const { lastJsonMessage, sendJsonMessage } = useRtcContext()
   useEffect(()=>{
     if(lastJsonMessage !=null){
       if(lastJsonMessage['type']=='connection'){
         sendJsonMessage({'type':'broadcast', 'data':{'channel_id':channel_id}})
       }
-      if(lastJsonMessage['type']=='broadcast'){
-        const target = lastJsonMessage['data']['target']
-        const channel_name = lastJsonMessage['data']['channel_name']
-        if(target == 'host' || target == 'guest')
-          setGuests([...guests, {
-            username:lastJsonMessage['username'], 
-            name:lastJsonMessage['data']['name'],
-            channel_name
-          }])
-        if(target == 'disconnect'){
-          const exist = guests.find(v=>v.channel_name == channel_name)
-          exist && setGuests(guests.filter(v=>v.channel_name != channel_name))
-        }
-       }
+      if(lastJsonMessage['type']=='broadcast_guest' || lastJsonMessage['type']=='broadcast_host'){
+        setGuests([...guests, lastJsonMessage['sender']])
+      }
+      if(lastJsonMessage['type']=='broadcast_disconnect'){
+        const channel_name = lastJsonMessage['sender']
+        const exist = guests.find(v=>v == channel_name)
+        exist && setGuests(guests.filter(v=>v != channel_name))
+      }
     }
   }, [lastJsonMessage])
   return lastJsonMessage !==undefined ?<View style={[
       {flexDirection: 'row', justifyContent:'center', borderColor:Colors.borderColor, borderRadius:10, paddingTop:10, backgroundColor:'white'},
       videoMode!==null?{borderTopWidth:1}:{}]}>
-      {guests.map((user, i)=><View key={i} style={{maxWidth:'33%', flexDirection: 'row', marginHorizontal:10, flex:1}}>
-        <RemoteCam user={user}/>
+      {guests.map((receiver, i)=><View key={i} style={{maxWidth:'33%', flexDirection: 'row', marginHorizontal:10, flex:1}}>
+        <RemoteCam receiver={receiver}/>
       </View>)}
       <View style={{maxWidth:'33%', flexDirection: 'row', marginHorizontal:10, flex:1}}>
         <LocalCam mode={videoMode}/>
