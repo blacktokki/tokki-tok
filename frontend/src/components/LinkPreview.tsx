@@ -10,7 +10,7 @@ import { Link } from "../types"
 export default ({link, isMobile}:{link:Link, isMobile:boolean})=>{
     return <CommonSection containerStyle={{marginHorizontal:0}} bodyStyle={{padding:0}}>
     <TouchableOpacity onPress={()=>Linking.openURL(link.url)} style={{flexDirection:'row'}} containerStyle={{width:'100%'}}>
-        <Image source={{uri:link.image}} resizeMode="cover" style={{ width:'100%', maxWidth:isMobile?120:150, maxHeight:isMobile?120:150, borderWidth:1}}/>
+        {link.image && <Image source={{uri:link.image}} resizeMode="cover" style={{ width:'100%', maxWidth:isMobile?120:150, maxHeight:isMobile?120:150, borderWidth:1}}/>}
         <View style={{flex:1, marginHorizontal:20}}>
         <Text style={{fontSize:20}}>{link.title}</Text>
         <Text style={{fontSize:14}}>{link.description}</Text>

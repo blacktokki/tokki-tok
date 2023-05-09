@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer, useMemo, Dispatch } from "react"
 import { checkLogin, login, logout } from "../apis"
+import { getNotification, putNotification } from "../apis/notification"
 import { UserMembership } from "../types"
 
 type AuthAction = {type:string, username?:string, password?:string, user?:UserMembership|null}
@@ -73,7 +74,11 @@ export const AuthProvider = ({children}:{children:React.ReactNode})=>{
       })
     }
     else if(authState.user && authState.request===null){
-      logout().then(()=>dispatch({type:"LOGOUT_SUCCESS"}))
+      getNotification(authState.user.id).then(noti=>{
+        noti && putNotification({...noti, token:''}).then(()=>{
+          logout().then(()=>dispatch({type:"LOGOUT_SUCCESS"}))
+        })
+      })
     }
   }, [authState])
   return <AuthContext.Provider value={{auth, dispatch}}>

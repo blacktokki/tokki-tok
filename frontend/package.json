@@ -78,13 +78,13 @@
     "typescript": "~4.0.0"
   },
   "build": {
-    "appId": "com.electron.react-native-practice",
+    "appId": "com.electron.tokkitok",
     "mac": {
       "target": "default",
       "category": "public.app-category.business"
     },
     "dmg": {
-      "title": "react-native-practice"
+      "title": "tokki-tok"
     },
     "win": {
       "target": [
