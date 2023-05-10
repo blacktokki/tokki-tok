@@ -8,7 +8,7 @@ import { UserMembership } from "../types"
 import { navigate } from "../navigation"
 
 export const renderMemberItem = (item:UserMembership, onPress?:(item:UserMembership)=>void)=> (
-    <CommonItem key={item.id} bodyStyle={{flexDirection:'row', justifyContent:'flex-start'}} onPress={onPress?()=>onPress(item):undefined}>
+    <CommonItem key={item.id} bodyStyle={{backgroundColor:'white', flexDirection:'row', justifyContent:'flex-start'}} onPress={onPress?()=>onPress(item):undefined}>
         <MaterialIcons size={38} style={{ marginBottom: -3, marginRight:10 }} name='account-circle'/>
         <Text style={{fontSize:20, fontWeight:'400'}}>{item.name}</Text>
     </CommonItem>

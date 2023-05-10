@@ -8,15 +8,16 @@ import ChannelEditScreen from "./ChannelEditScreen"
 import { Screens } from "../types";
 import InviteScreen from "./InviteScreen";
 import ProfileScreen from "./ProfileScreen";
+import lang from "../lang"
 
 export const main = {
     HomeScreen:{
-        title:'home',
+        title:lang('home'),
         component:HomeScreen,
         path:'home',
     },
     ChatScreen:{
-        title:'chat',
+        title:lang('chat'),
         component:ChatScreen,
         path:'chat'
     },
@@ -35,7 +36,7 @@ export const main = {
 export const login = {
     LoginScreen:{
         path: 'login',
-        title: '로그인',
+        title: lang('Sign in'),
         component:LoginScreen
     },
 } as Screens
@@ -47,17 +48,17 @@ export const modal = {
     //     path:'modal/board'
     // },
     ChannelEditScreen:{
-        title:'channel',
+        title:lang('channel'),
         component:ChannelEditScreen,
         path:'modal/channel'
     },
     InviteScreen:{
-        title:'invite',
+        title:lang('invite'),
         component:InviteScreen,
         path:'modal/invite'
     },
     ProfileScreen:{
-        title:'profile',
+        title:lang('profile'),
         component:ProfileScreen,
         path:'modal/profile'
     }

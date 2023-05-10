@@ -72,7 +72,7 @@ export type Link = {
   url:string,
   title:string,
   description:string,
-  image:string,
+  image:string|null,
 }
 
 export type MessengerContent = {

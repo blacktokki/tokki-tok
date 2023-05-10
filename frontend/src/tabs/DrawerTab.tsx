@@ -1,12 +1,12 @@
 import React from "react"
-import { View, Text } from "react-native"
+import { View, Text } from "../components/Themed"
 import CommonItem from "../components/CommonItem"
 // import useBoardChannelList from "../lib/blacktokki-board/useBoardChannelList"
 import useMessengerChannelList from "../hooks/lists/useMessengerChannelList"
 import useAuthContext from "../hooks/useAuthContext"
 import { navigate } from "../navigation"
 
-const DrawerTab = (props:{data:{name:string, onPress?:()=>void}[]})=><View style={{flex:1, backgroundColor:'white'}}>
+const DrawerTab = (props:{data:{name:string, onPress?:()=>void}[]})=><View style={{flex:1}}>
     {props.data.map((item, index)=><CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={item.onPress}>
         <Text style={{marginLeft:20}}>{item.name}</Text>
     </CommonItem>

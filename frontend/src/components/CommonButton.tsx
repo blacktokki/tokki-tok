@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, Pressable, StyleProp, ViewStyle} from 'react-native';
 import Colors from '../constants/Colors';
+import useColorScheme from '../hooks/useColorScheme';
 import { CustomButtonProps } from '../types';
 
 const DefaultButton = (props:CustomButtonProps)=>{
@@ -23,15 +24,21 @@ const DefaultButton = (props:CustomButtonProps)=>{
 }
 
 export default (props:CustomButtonProps)=>{
+    const theme = useColorScheme()
     const _props = {
-        color:Colors.button.color,
+        color:Colors[theme].buttonColor,
         ...props,
         style:[
             styles.style,
+            {
+                backgroundColor:Colors[theme].buttonBackgroundColor
+            },
             props.style,
         ] as StyleProp<ViewStyle>,
         textStyle:[
-            styles.text, props.textStyle
+            styles.text, 
+            {color:Colors[theme].text},
+            props.textStyle
         ]
     }
     return <DefaultButton {..._props}/>
@@ -42,10 +49,8 @@ const styles = StyleSheet.create({
         borderRadius:6, 
         borderColor:Colors.button.borderColor, 
         borderWidth:1, 
-        backgroundColor:Colors.button.backgroundColor
     },
     text:{
-        color:'black', 
         textAlign:'center', 
         fontWeight:'600'
     }

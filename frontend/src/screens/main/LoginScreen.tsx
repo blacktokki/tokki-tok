@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {
   Text,
   TextInput,
@@ -8,14 +8,20 @@ import {
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import useAuthContext from '../../hooks/useAuthContext';
+import lang from '../../lang'
 
 export default function LoginScreen({
-  navigation
+  navigation, route
 }: StackScreenProps<any, 'Login'>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const {dispatch} = useAuthContext()
   const _login = ()=>dispatch({type:'LOGIN_REQUEST', username, password})
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: undefined
+    });
+  }, [navigation, route]);
 
   return (
     <View style={Styles.login_wrapper}>
@@ -23,7 +29,7 @@ export default function LoginScreen({
         <TextInput
           style={Styles.form_input}
           value={username}
-          placeholder={'Username'}
+          placeholder={lang('Username')}
           onChangeText={(text) => setUsername(text)}
           autoCapitalize={'none'}
           keyboardType={'email-address'}
@@ -32,26 +38,26 @@ export default function LoginScreen({
         <TextInput
           style={Styles.form_input}
           value={password}
-          placeholder={'Password'}
+          placeholder={lang('Password')}
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
           onSubmitEditing={_login}
         />
         <TouchableOpacity onPress={_login}>
           <View style={Styles.button}>
-            <Text style={Styles.button_label}>{'Sign in'}</Text>
+            <Text style={Styles.button_label}>{lang('Sign in')}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => dispatch({type:"LOGIN_GUEST"})}>
           <Text style={Styles.guest_footer_text}>
-            {"Sign in as guest"}
+            {lang("Sign in as guest")}
           </Text>
         </TouchableOpacity>
       </View>
       <View style={Styles.login_social}>
         <View style={Styles.login_social_separator}>
           <View style={Styles.login_social_separator_line} />
-          <Text style={Styles.login_social_separator_text}>{'text'}</Text>
+          <Text style={Styles.login_social_separator_text}>{'*'}</Text>
           <View style={Styles.login_social_separator_line} />
         </View>
         <View style={Styles.login_social_buttons}>

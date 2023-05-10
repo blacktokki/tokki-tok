@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { View, Text, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { StyleProp, ViewStyle, TextStyle } from 'react-native';
 
 import { TextInput } from 'react-native-gesture-handler';
+import Colors from '../constants/Colors';
+import useColorScheme from '../hooks/useColorScheme';
 import RowField from './RowField';
 
 type Props = {
@@ -20,6 +22,7 @@ type Props = {
 export default function TextField(props:Props) {
   const [contentHeight, setContentHeight] = useState<number>()
   const minHeight = props.minHeight || 30
+  const theme = useColorScheme()
   return (
     <RowField name={props.name} width={props.width} textStyle={props.textStyle}>
       <TextInput style={[{
@@ -29,7 +32,8 @@ export default function TextField(props:Props) {
           borderRadius:6, 
           paddingHorizontal:10, 
           paddingVertical:3, 
-          backgroundColor:props.disabled?'#EEE':undefined,
+          backgroundColor:props.disabled?Colors[theme].background:undefined,
+          color:Colors[theme].text,
           height:props.multiline?contentHeight:minHeight,
         }, props.style]} editable={!props.disabled} value={props.value} onChangeText={props.setValue}
         onContentSizeChange={props.multiline?(e) => setContentHeight(Math.max(e.nativeEvent.contentSize.height, minHeight) + 2):undefined} 

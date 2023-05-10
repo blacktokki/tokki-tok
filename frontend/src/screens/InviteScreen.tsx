@@ -9,7 +9,7 @@ import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
 import { renderMemberItem } from '../tabs/MemberTab';
 import { navigate } from '../navigation';
-
+import lang from  '../lang'
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
@@ -51,16 +51,18 @@ export default function InviteScreen({navigation, route}: StackScreenProps<any, 
   }
 
   return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
+    <View style={{backgroundColor:'white', 'width': '50%'}}>
     {data?.map((item, index)=><InviteItem key={index} item={item} selectedRef={selectedRef}/>)}
+    </View>
     <View style={[{width:'50%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
-      <CommonButton title={'save'} onPress={()=>{
+      <CommonButton title={lang('invite')} onPress={()=>{
         messengerMemberMutation.invite({
           channel_id:id,
           user_ids:[...selectedRef.current]
         })
         back()
       }}/>
-      <CommonButton title={'cancel'} onPress={back}/>
+      <CommonButton title={lang('cancel')} onPress={back}/>
     </View>
   </CommonSection>
 }
