@@ -19,7 +19,7 @@ Main modules are available below:
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
 Screenshot from the architecture below:
-![제목 없는 다이어그램 drawio](https://user-images.githubusercontent.com/39031723/218319322-17abaf36-cc65-4cb7-94b8-966d7a54990e.png)
+![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/554a84c4-b587-41f6-8c0f-78193feb69dc)
 
 
 ## Installation
