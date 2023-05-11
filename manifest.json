@@ -2,8 +2,8 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "lang": "en",
-  "name": "react-native-practice",
-  "short_name": "react-native-practice",
+  "name": "tokki-tok",
+  "short_name": "tokki-tok",
   "start_url": "/?utm_source=web_app_manifest",
   "orientation": "portrait",
   "related_applications": [
