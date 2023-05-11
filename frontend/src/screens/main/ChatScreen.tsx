@@ -21,6 +21,7 @@ import LinkPreview from '../../components/LinkPreview';
 import {default as useRtcContext, WebSocketProvider as RtcProvider} from "../../lib/react-native-webrtc/useWebsocketContext";
 import RemoteCam from '../../lib/react-native-webrtc/RemoteCam';
 import lang from '../../lang'
+import Avatar from '../../components/Avatar';
 
 type VideoCallProps = {channel_id:number, videoMode:'camera'|'display'|null}
 
@@ -85,7 +86,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
         return <View key={content.id}>
           {dayChanged?<View style={{flexDirection:'row', justifyContent:'center', width:'100%'}}><Text>{date}</Text></View>:undefined}
           <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
-            {isFirst && !isSelf?<MaterialIcons size={38} style={{marginBottom: -3, marginRight:10 }} name='account-circle'/>:<View style={{width:48}}/>}
+            {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
             <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
               {/* @ts-ignore */}
               <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>

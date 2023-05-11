@@ -45,6 +45,11 @@ const authReducer =(initialState:AuthState, action:AuthAction)=>{
             user:null,
             request:undefined
           }
+      case 'REFRESH':
+        return {
+          ...initialState,
+          user:undefined
+        }
       default:
           throw new Error( `Unhandled action type: ${action.type}`)
   }

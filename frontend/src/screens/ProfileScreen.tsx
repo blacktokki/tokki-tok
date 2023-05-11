@@ -31,7 +31,7 @@ export default function ProfileScreen({
   }, [userList])
   return user?<View style={{padding:10}}>
     
-    <Profile username={user?.username} name={user?.name} />
+    <Profile username={user.username} name={user.name} userId={user.id} />
     <CommonButton title={lang('create messenger')} onPress={()=>{
       if(auth?.user?.id && auth.groupId){
         const newChannel:Channel = {name:`${auth.user.name}, ${user.name}`, type:'messenger', owner:auth?.user?.id, group:auth.groupId};

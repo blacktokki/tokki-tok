@@ -14,9 +14,27 @@ export type CustomButtonProps = ButtonProps & {
   onPress:()=>void
 }
 
+export type CustomTextInputProps = {
+  value: any,
+  setValue?: (value:any)=>void
+  disabled?:boolean
+  multiline?:boolean
+  minHeight?:number
+  style?:StyleProp<TextStyle>
+  onEndEditing?:(value:string)=>void,
+  onBlur?:(value:string)=>void
+}
+
 export type ProfileProps = {
+  userId:number,
   name:string,
   username:string
+}
+
+export type AvatarProps = {
+  userId:number,
+  name:string,
+  size:number
 }
 
 export type User = {

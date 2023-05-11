@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 // @ts-ignore
 import {API_URL} from "@env"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+export const accountURL =  `${API_URL}/account/`
 const baseURL =  `${API_URL}/messenger/`
 const defaultOption:AxiosRequestConfig = {
     baseURL,
@@ -29,7 +30,7 @@ _axios.interceptors.response.use(
     error => {
         if (error.response.status === 401) {
             getToken().then(async(token)=>{
-                const r = await _axios.post("/api-token-refresh/", {token}, {headers:{'Authorization':''}})
+                const r = await _axios.post("/api/v1/user/sso/refresh/", {token}, {headers:{'Authorization':''}, baseURL: accountURL})
                 if (r.status == 200 && r.data !== ''){
                     setToken(r.data)
                 }
@@ -48,7 +49,7 @@ export const setToken = async (token:string|null)=>{
 }
 export const getToken = async ()=>{
     const token = await AsyncStorage.getItem("Authorization")
-    _axios.defaults.headers['Authorization'] = `JWT ${token}`
+    _axios.defaults.headers['Authorization'] = token?`JWT ${token}`:null
     return token
 }
 
