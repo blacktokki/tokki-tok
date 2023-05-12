@@ -76,6 +76,10 @@ export type MessengerChannel = Channel & {
   }
 }
 
+export type DirectChannel = Channel & {
+  counterpart: number
+}
+
 export type Message = {
   id?: number,
   content: string,

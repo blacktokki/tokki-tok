@@ -20,8 +20,8 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const theme = useColorScheme()
   const color = Colors[theme].text
   const options = [
-    {title:'member', headerRight:()=><HeaderRight/>},
-    {title:'messenger', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>navigate("ChannelEditScreen", {type:"messenger"})}]}/>},
+    {title:lang('member'), headerRight:()=><HeaderRight/>},
+    {title:lang('messenger'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>navigate("ChannelEditScreen", {type:"messenger"})}]}/>},
     // {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>navigate("ChannelEditScreen", {type:"board"})}]}/>},
     {title:'config', headerRight:()=><HeaderRight/>}
   ]

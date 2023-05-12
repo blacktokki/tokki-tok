@@ -2,7 +2,7 @@ import React from "react"
 import { View, Text } from "../components/Themed"
 import CommonItem from "../components/CommonItem"
 // import useBoardChannelList from "../lib/blacktokki-board/useBoardChannelList"
-import useMessengerChannelList from "../hooks/lists/useMessengerChannelList"
+import { useMessengerChannelSorted } from "../hooks/lists/useMessengerChannelList"
 import useAuthContext from "../hooks/useAuthContext"
 import { navigate } from "../navigation"
 
@@ -16,7 +16,7 @@ const DrawerTab = (props:{data:{name:string, onPress?:()=>void}[]})=><View style
 export default {
     Messenger:()=>{
         const {auth} = useAuthContext()
-        const channelList = useMessengerChannelList(auth);
+        const channelList = useMessengerChannelSorted(auth);
         return <DrawerTab data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
     },
     // Board:()=>{

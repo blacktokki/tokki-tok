@@ -11,5 +11,5 @@ messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
   // Customize notification here
   const message_set = JSON.parse(payload.data['message_set'])[0]
-  self.registration.showNotification(payload.data.channel_name, { body: `${payload.data.name}: ${message_set.content}` })
+  payload.data.name && self.registration.showNotification(payload.data.channel_name, { body: `${payload.data.name}: ${message_set.content}` })
 });
