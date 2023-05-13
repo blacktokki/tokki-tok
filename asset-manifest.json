@@ -26,9 +26,17 @@
     "firebase-config.js": "/tokki-tok/firebase-config.js",
     "firebase-messaging-sw.js": "/tokki-tok/firebase-messaging-sw.js",
     "index.html": "/tokki-tok/index.html",
+    "main.1e3f3892.js": "/tokki-tok/main.1e3f3892.js",
+    "main.1e3f3892.js.LICENSE.txt": "/tokki-tok/main.1e3f3892.js.LICENSE.txt",
+    "main.b2f30060.css": "/tokki-tok/main.b2f30060.css",
+    "main.b2f30060.css.map": "/tokki-tok/main.b2f30060.css.map",
     "manifest.json": "/tokki-tok/manifest.json",
     "serve.json": "/tokki-tok/serve.json",
-    "static/js/2.05534022.chunk.js.LICENSE.txt": "/tokki-tok/static/js/2.05534022.chunk.js.LICENSE.txt"
+    "static/js/2.05534022.chunk.js.LICENSE.txt": "/tokki-tok/static/js/2.05534022.chunk.js.LICENSE.txt",
+    "virtual.html": "/tokki-tok/virtual.html",
+    "virtual/css/main.b2f30060.css.map": "/tokki-tok/virtual/css/main.b2f30060.css.map",
+    "virtual/js/main.1e3f3892.js.LICENSE.txt": "/tokki-tok/virtual/js/main.1e3f3892.js.LICENSE.txt",
+    "virtual/js/main.1e3f3892.js.map": "/tokki-tok/virtual/js/main.1e3f3892.js.map"
   },
   "entrypoints": [
     "static/js/runtime~app.2b88ed0a.js",
