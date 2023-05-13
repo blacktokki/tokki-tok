@@ -22,8 +22,9 @@ import {default as useRtcContext, WebSocketProvider as RtcProvider} from "../../
 import RemoteCam from '../../lib/react-native-webrtc/RemoteCam';
 import lang from '../../lang'
 import Avatar from '../../components/Avatar';
-
-type VideoCallProps = {channel_id:number, videoMode:'camera'|'display'|null}
+import VirtualCam from '../../lib/react-native-webrtc/VirtualCam';
+type VideoType = 'camera'|'display'|'virtual'
+type VideoCallProps = {channel_id:number, videoMode:VideoType|null}
 
 const VideoCallContainer = ({channel_id, videoMode}:VideoCallProps)=>{
   const [guests, setGuests] = useState<string[]>([])
@@ -50,7 +51,7 @@ const VideoCallContainer = ({channel_id, videoMode}:VideoCallProps)=>{
         <RemoteCam receiver={receiver}/>
       </View>)}
       <View style={{maxWidth:'33%', flexDirection: 'row', marginHorizontal:10, flex:1}}>
-        <LocalCam mode={videoMode}/>
+        {videoMode=='virtual'?<VirtualCam mode={'virtual'}/>:<LocalCam mode={videoMode}/>}
       </View>
     </View>:<></>
 }
@@ -113,7 +114,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
   const [autoFocus, setAutoFocus] = useState(true)
-  const [videoMode, setVideoMode] = useState<'camera'|'display'|null>(null)
+  const [videoMode, setVideoMode] = useState<VideoType|null>(null)
   const theme = useColorScheme()
   const postValue = ()=>{
     if (value.length>0){
@@ -122,7 +123,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       setAutoFocus(true)
     }
   }
-  const toggleVideoMode = (mode:'camera'|'display')=>{
+  const toggleVideoMode = (mode:VideoType)=>{
     setVideoMode(videoMode!=mode?mode:null)
   }
   const contentMutation = useMessengerContentMutation()
@@ -182,6 +183,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
             <CommonButton title={'💬'} onPress={postValue}/>
             <CommonButton title={'📹'} onPress={()=>toggleVideoMode('camera')}/>
             <CommonButton title={'🖥️'} onPress={()=>toggleVideoMode('display')}/>
+            <CommonButton title={'🐰'} onPress={()=>toggleVideoMode('virtual')}/>
           </View>
         </View>
       </ThemedView>

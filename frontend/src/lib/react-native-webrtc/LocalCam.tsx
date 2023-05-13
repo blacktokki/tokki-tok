@@ -14,16 +14,16 @@ export default (props:{mode?:'camera'|'display'|null})=>{
     auth.user && lastJsonMessage && websocketOnMessage(lastJsonMessage, auth.user)
   }, [lastJsonMessage, auth])
   useEffect(()=>{
-    if(props.mode){
+    if(props.mode && !isPlay){
       auth.user && start(auth.user, undefined, props.mode)
     }
-    else if(props.mode===null){
-      isPlay && stop()
+    else if(props.mode===null && isPlay){
+      stop()
     }
-  }, [auth, props.mode])
+  }, [isPlay, auth, props.mode])
   useEffect(()=>{
     return ()=>{isPlay && stop()}
-  })
+  }, [isPlay])
   return (
     <View style={camStyle.container}>
       <CustomRTCView style={camStyle.cam}/>

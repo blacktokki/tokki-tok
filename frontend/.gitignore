@@ -11,6 +11,8 @@ data/
 web-build/
 .env
 web/firebase-config.js
+web/virtual.*
+web/main.*
 
 # macOS
 .DS_Store
