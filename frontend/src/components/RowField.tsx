@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
-import { View, Text, TextProps, StyleProp } from 'react-native';
+import { TextProps, StyleProp } from 'react-native';
+import {View, Text } from './Themed'
 import useResizeWindow from '../hooks/useResizeWindow';
 
 type Props = {

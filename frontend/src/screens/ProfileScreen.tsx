@@ -1,14 +1,14 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, { useEffect } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { StyleSheet, Text, Button, View} from 'react-native';
+import { View} from '../components/Themed';
 import Profile from '../components/Profile';
 import useAuthContext from '../hooks/useAuthContext';
 import useUserMembershipList from '../hooks/lists/useUserMembershipList';
 import { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import CommonButton from '../components/CommonButton';
-import { Channel } from '../types';
+import { DirectChannel } from '../types';
 import { navigate } from '../navigation';
-
+import lang from '../lang'
 
 export default function ProfileScreen({
   navigation, route
@@ -31,11 +31,11 @@ export default function ProfileScreen({
   }, [userList])
   return user?<View style={{padding:10}}>
     
-    <Profile username={user?.username} name={user?.name} />
-    <CommonButton title={'create messenger'} onPress={()=>{
+    <Profile username={user.username} name={user.name} userId={user.id} />
+    <CommonButton title={lang('create messenger')} onPress={()=>{
       if(auth?.user?.id && auth.groupId){
-        const newChannel:Channel = {name:`${auth.user.name}, ${user.name}`, type:'messenger', owner:auth?.user?.id, group:auth.groupId};
-        channelMutation.create(newChannel).then(v=>navigate("Main", {screen:"MessengerScreen", params: {id:v.id}}))
+        const newChannel:DirectChannel = {name:auth.user.id!=user.id?`${auth.user.name}, ${user.name}`:auth.user.name, type:'messenger', owner:auth?.user?.id, group:auth.groupId, counterpart:user.id};
+        channelMutation.direct(newChannel).then(v=>navigate("Main", {screen:"ChatScreen", params: {id:v.id}}))
       }
     }}/>
   </View>:<></>

@@ -8,6 +8,9 @@ export default {
     tint: tintColorLight,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
+    header:'#24292f',
+    buttonColor:'rgb(242,242,242)',
+    buttonBackgroundColor: '#f6f8fa', //'rgba(9,30,66,0.08)',//rgb(242,242,242)
   },
   dark: {
     text: '#fff',
@@ -15,13 +18,14 @@ export default {
     tint: tintColorDark,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
+    header:'#dbd6d1',
+    buttonColor:'rgb(14,14,14)',
+    buttonBackgroundColor: '#080604',
   },
   button:{
-    color:'rgb(242,242,242)',
     borderColor:'rgba(27,31,36,0.15)',
-    backgroundColor:'#f6f8fa', //'rgba(9,30,66,0.08)',//rgb(242,242,242)
   },
   borderColor:'#d0d7de',
-  header:'#24292f',
+  
   focus:'#0065A4',
 };

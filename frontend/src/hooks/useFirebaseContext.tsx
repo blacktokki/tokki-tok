@@ -31,6 +31,10 @@ const requestToken = async()=>{
     const serviceWorkerRegistration = await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${apiKeyEncrypted}`)
     console.log('[SW]: SCOPE: ', serviceWorkerRegistration.scope);
     const currentToken = await messaging.getToken({serviceWorkerRegistration, vapidKey: FCM_PUBLIC_VAPID_KEY })
+    window.addEventListener('beforeunload', (event:any) => {
+      event.preventDefault();
+      serviceWorkerRegistration.unregister()
+    });
     if (currentToken)
       return currentToken
   }
@@ -51,13 +55,13 @@ export const FirebaseProvider = ({children, user}:{user?:UserMembership|null, ch
   
   useEffect(()=>{
     let isMount = true;
+    const setNotificationInternal = (n?:NotificationType)=>{
+      if (isMount)setNotification(n)
+    }
     if(user){
       requestToken().then((t)=>{
         tokenRef.current = t
         getNotification(user.id).then(noti=>{
-          const setNotificationInternal = (n:NotificationType)=>{
-            if (isMount)setNotification(n)
-          }
           const token = t==undefined?null:t
           if (noti == undefined)
             postNotification({user:user.id, type:'WEB', token}).then(setNotificationInternal)
@@ -66,8 +70,11 @@ export const FirebaseProvider = ({children, user}:{user?:UserMembership|null, ch
         })
       })
     }
+    else{
+      setNotificationInternal(undefined)
+    }
     return ()=>{isMount=false}
-  },[])
+  }, [user])
   return !user?<>{children}</>:<FirebaseContext.Provider value={{enable, setEnable}}>
     {children}
   </FirebaseContext.Provider>

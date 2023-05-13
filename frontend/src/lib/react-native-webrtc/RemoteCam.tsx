@@ -3,37 +3,37 @@ import {Button,Text, TextInput, View} from "react-native";
 import useWebsocketContext from "./useWebsocketContext";
 import { useRemoteCam, camStyle} from "./webrtc";
 
-export default (props:{user?:{username:string, name:string}})=>{
-  const [username, setUsername] = useState('')
+export default (props:{receiver?:string})=>{
+  const [receiver, setReceiver] = useState('')
   const {lastJsonMessage, sendJsonMessage} = useWebsocketContext()
-  const {start, stop, websocketOnMessage, CustomRTCView, isPlay} = useRemoteCam(sendJsonMessage)
+  const {start, stop, websocketOnMessage, CustomRTCView, isPlay, user} = useRemoteCam(sendJsonMessage)
   useEffect(()=>{
     lastJsonMessage && websocketOnMessage(lastJsonMessage)
   }, [lastJsonMessage])
   useEffect(()=>{
-    if(props.user){
-      start(props.user.username)
+    if(props.receiver){
+      start(props.receiver)
     }
     return ()=>stop()
-  }, [props.user])
+  }, [props.receiver])
   return (
     <View style={camStyle.container}>
       <CustomRTCView style={camStyle.cam}/>
       <View style={camStyle.bottonContainer}>
         <View style={camStyle.buttonBar}>
         </View>
-        {(props.user ===undefined || isPlay) &&
+        {(props.receiver ===undefined || isPlay) &&
           <View style={{flexDirection:'row'}}>{
-            (props.user || isPlay)?
-            <Text style={camStyle.label}>{props.user?.name||username}</Text>:
+            (props.receiver || isPlay)?
+            <Text style={camStyle.label}>{user?.name}</Text>:
             <>
-              <Text style={{borderWidth:1}}>Username:&nbsp;</Text>
-              <TextInput style={{borderWidth:1, flex:1}} value={username} onChangeText={setUsername}/>
+              <Text style={{borderWidth:1}}>Receiver:&nbsp;</Text>
+              <TextInput style={{borderWidth:1, flex:1}} value={receiver} onChangeText={setReceiver}/>
             </> 
           }</View>}
         <View style={camStyle.buttonBar}>
-          {props.user === undefined && !isPlay && <Button title="Start" onPress={()=>start(username)} />}
-          {props.user === undefined && isPlay && <Button title="Stop" onPress={stop} />}
+          {props.receiver === undefined && !isPlay && <Button title="Start" onPress={()=>start(receiver)} />}
+          {props.receiver === undefined && isPlay && <Button title="Stop" onPress={stop} />}
         </View>
       </View>
     </View>

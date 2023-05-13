@@ -14,9 +14,27 @@ export type CustomButtonProps = ButtonProps & {
   onPress:()=>void
 }
 
+export type CustomTextInputProps = {
+  value: any,
+  setValue?: (value:any)=>void
+  disabled?:boolean
+  multiline?:boolean
+  minHeight?:number
+  style?:StyleProp<TextStyle>
+  onEndEditing?:(value:string)=>void,
+  onBlur?:(value:string)=>void
+}
+
 export type ProfileProps = {
+  userId:number,
   name:string,
   username:string
+}
+
+export type AvatarProps = {
+  userId:number,
+  name:string,
+  size:number
 }
 
 export type User = {
@@ -58,6 +76,10 @@ export type MessengerChannel = Channel & {
   }
 }
 
+export type DirectChannel = Channel & {
+  counterpart: number
+}
+
 export type Message = {
   id?: number,
   content: string,
@@ -72,7 +94,7 @@ export type Link = {
   url:string,
   title:string,
   description:string,
-  image:string,
+  image:string|null,
 }
 
 export type MessengerContent = {

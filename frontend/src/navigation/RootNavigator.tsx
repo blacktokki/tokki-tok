@@ -15,6 +15,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FirebaseProvider } from '../hooks/useFirebaseContext';
 import useIsMobile from '../hooks/useIsMobile';
 import MobileSafeAreaView from '../components/MobileSafeAreaView';
+import useColorScheme from '../hooks/useColorScheme';
 
 const Root = createStackNavigator();
 
@@ -68,6 +69,7 @@ function MainNavigator(){
     const windowType = useResizeWindow();
     const isMobile = useIsMobile()
     const {auth} = useAuthContext()
+    const theme = useColorScheme()
     const entries = useMemo(()=>{
         if (auth.user === undefined)
             return []
@@ -81,7 +83,7 @@ function MainNavigator(){
                 <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                     <Main.Navigator
                         screenOptions={({navigation, route})=>({
-                            headerStyle:{backgroundColor:Colors.header, height:isMobile?50:undefined},
+                            headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
                             headerTitleStyle:{color:'white'},
                             headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
                             headerRight:()=><HeaderRight/>,

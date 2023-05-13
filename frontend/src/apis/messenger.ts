@@ -1,4 +1,4 @@
-import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel } from '../types';
+import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel, DirectChannel } from '../types';
 import axios from './axios';
 
 export const getMessengerChannelList = async (user_id:number)=>{
@@ -7,6 +7,10 @@ export const getMessengerChannelList = async (user_id:number)=>{
 
 export const postChannel = async(channel:Channel)=>{
     return (await axios.post(`/api/v1/channels/`, channel)).data as Channel
+}
+
+export const postDirectChannel = async(channel:DirectChannel)=>{
+    return (await axios.post(`/api/v1/channels/direct/`, channel)).data as Channel
 }
 
 export const putChannel = async(channel:Channel)=>{

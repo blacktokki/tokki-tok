@@ -10,7 +10,7 @@ import { navigate } from '../navigation';
 import { Channel } from '../types';
 import useMessengerChannelList, { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import TextField from '../components/TextField';
-
+import lang from '../lang'
 
 export default function ChannelEditScreen({navigation, route}: StackScreenProps<any, 'ChannelEdit'>) {
   const id = route?.params?.id
@@ -36,15 +36,15 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
   }, [channel])
   return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
     <View style={{justifyContent:'space-around'}}>
-    <Text style={{fontSize:20}}>Edit Channel - {type}</Text>
+    <Text style={{fontSize:20}}>{lang('Channel')}</Text>
     </View>
     <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     <View style={{width:'100%'}}>
-      <TextField name='Channel Name' value={name} setValue={setName} width={'60%'}/>
-      <TextField name='Description' value={description} setValue={setDescription} multiline width={'60%'}/>
+      <TextField name={lang('Channel Name')} value={name} setValue={setName} width={'60%'}/>
+      <TextField name={lang('Description')} value={description} setValue={setDescription} multiline width={'60%'}/>
     </View>
     <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>
-      <CommonButton title={'save'} onPress={()=>{
+      <CommonButton title={lang('save')} onPress={()=>{
         if(auth?.user?.id && auth.groupId){
           const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
           (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
@@ -53,7 +53,7 @@ export default function ChannelEditScreen({navigation, route}: StackScreenProps<
           }))
         }
       }}/>
-      <CommonButton title={'cancel'} style={{marginHorizontal:5}} onPress={back}/>
+      <CommonButton title={lang('cancel')} style={{marginHorizontal:5}} onPress={back}/>
     </View>
   </CommonSection>
 }

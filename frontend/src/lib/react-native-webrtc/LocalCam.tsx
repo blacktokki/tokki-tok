@@ -21,6 +21,9 @@ export default (props:{mode?:'camera'|'display'|null})=>{
       isPlay && stop()
     }
   }, [auth, props.mode])
+  useEffect(()=>{
+    return ()=>{isPlay && stop()}
+  })
   return (
     <View style={camStyle.container}>
       <CustomRTCView style={camStyle.cam}/>

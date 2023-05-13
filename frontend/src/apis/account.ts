@@ -1,6 +1,6 @@
 
 import { User, UserMembership } from '../types';
-import axios, { getToken, setToken } from './axios';
+import axios, { getToken, setToken, accountURL as baseURL } from './axios';
 
 export const login = async(username:string, password:string) => {
     if(username.endsWith('.guest') && password.length == 0)
@@ -55,11 +55,10 @@ export const getUserList = async (group_id:number)=>{
     return (await axios.get(`/api/v1/users/?group_id=${group_id}`) ).data as User[]
 }
 
+export const patchUser = async (user:{id:number, name:string})=>{
+    await axios.patch(`/api/v1/user/`, {ids:[user.id], updated: {name:user.name}}, {baseURL})
+}
+
 export const getUserMembershipList = async (group_id:number)=>{
     return (await axios.get(`/api/v1/users/memberships/?group_id=${group_id}`) ).data as UserMembership[]
 }
-
-// export const getGroup = async (user:User)=>{
-//     return (await) axios.get(``)
-// }
-
