@@ -20,7 +20,7 @@ def connect(func):
         self.send(text_data=json.dumps({
             'type': 'connection',
             'data': {
-                'message': "Connected"
+                'channel_name': self.channel_name
             }
         }))   
    return func_wrapper

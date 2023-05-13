@@ -9,43 +9,36 @@ from messenger.consumers import connect, disconnect
 class BroadcastMixin:
     def receive_broadcast(self, channel_id):
         self.channel_id = channel_id
-        async_to_sync(self.channel_layer.group_send)(
-            f"{self.CHANNEL_PREFIX}{channel_id}", 
-            {
-                "type": "broadcast",
-                "username": self.user.username, 
-                "data":{"channel_name": self.channel_name, "name": self.user.name, "target": "guest"}
-            }
-        )
+        async_to_sync(self.channel_layer.group_send)(f"{self.CHANNEL_PREFIX}{channel_id}", {"type": "broadcast", "message": {
+            "type": "broadcast_guest",
+            "sender": self.channel_name, 
+            "data":{}
+        }})
         async_to_sync(self.channel_layer.group_add)(
             f"{self.CHANNEL_PREFIX}{channel_id}",
             self.channel_name
         )
 
-    def broadcast(self, event):
-        if event['data']['target'] == 'guest':
-            async_to_sync(self.channel_layer.send)(
-                event['data']['channel_name'], 
-                {
-                    "type": "broadcast",
-                    "username": self.user.username, 
-                    "data":{"channel_name":self.channel_name, "name": self.user.name, "target": "host"}
-                }
-            )
-        self.send(text_data=json.dumps(event))
-
     def disconnect_broadcast(self):
-        async_to_sync(self.channel_layer.group_discard)(
-            f"{self.CHANNEL_PREFIX}{self.channel_id}",
-            self.channel_name
-        )
-        async_to_sync(self.channel_layer.group_send)(
-            f"{self.CHANNEL_PREFIX}{self.channel_id}", 
-            {
-                "type": "broadcast",
-                "username": self.user.username, 
-                "data":{"channel_name":self.channel_name, "target":"disconnect"}}
-        )
+        if hasattr(self, 'channel_id'):
+            async_to_sync(self.channel_layer.group_discard)(
+                f"{self.CHANNEL_PREFIX}{self.channel_id}",
+                self.channel_name
+            )
+            async_to_sync(self.channel_layer.group_send)(f"{self.CHANNEL_PREFIX}{self.channel_id}", {"type": "broadcast", "message": {
+                "type": "broadcast_disconnect",
+                "sender":self.channel_name,
+                "data":{}
+            }})
+
+    def broadcast(self, event):
+        if event['message']['type'] == 'broadcast_guest':
+            async_to_sync(self.channel_layer.send)(event['message']['sender'], {"type": "broadcast", "message": {
+                "type": "broadcast_host",
+                "sender":self.channel_name,
+                "data":{}
+            }})
+        self.send(text_data=json.dumps(event['message']))
 
 
 class P2PConsumer(BroadcastMixin, WebsocketConsumer):    
@@ -69,14 +62,11 @@ class P2PConsumer(BroadcastMixin, WebsocketConsumer):
         if message_type == 'broadcast':
             self.receive_broadcast(data["channel_id"])
             return
-        if 'username' in text_data_json:
-            user = get_user_model().objects.get_by_natural_key(text_data_json['username']).id
-        else:
-            user = text_data_json['user']
-        print(self.user.id, "send", message_type, "to", user)
-        async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
+        receiver = text_data_json['receiver']
+        print(f"{self.channel_name}(id: {self.user.id})", "send", message_type, "to", receiver)
+        async_to_sync(self.channel_layer.send)(receiver, {
             'type': 'send_message',
-            'message': {'sender': self.user.id, 'type':message_type, 'data': data}
+            'message': {'sender': self.channel_name, 'type':message_type, 'data': data}
         })
 
     def send_message(self, event):

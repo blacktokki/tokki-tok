@@ -1,6 +1,6 @@
 import re
 from opengraph_parse import parse_page
-from django.db import transaction
+from django.db import models, transaction
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
@@ -24,7 +24,7 @@ def attach_link(channel_content, validated_data):
         else:
             link_set.remove(link.url)
     for url in link_set:
-        parsed_og_tags = parse_page(url, ["og:url", "og:title", "og:image", "og:description"])
+        parsed_og_tags = parse_page(url, ["og:url", "og:title", "og:image", "og:description"], fallback_tags={'og:title': 'title'})
         add_links.append(Link(
             channel_content=channel_content,
             url=parsed_og_tags.get("og:url"),
@@ -43,8 +43,43 @@ class ChannelSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
         if instance.type == 'messenger':
+            print('@@@')
             MessengerMember.objects.create(user_id=validated_data['owner'].id, channel_id=instance.id)
             instance.enter_message_id = create_enter_message(instance.id, validated_data['owner']).id
+        return instance
+    
+    class Meta:
+        model = Channel
+        fields = '__all__'
+
+
+class DirectChannelSerializer(ChannelSerializer):
+    counterpart = serializers.PrimaryKeyRelatedField(required=True, queryset=User.objects.all())
+    counterpart_message_id = serializers.CharField(read_only=True)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        counterpart = validated_data.pop('counterpart')
+        is_self = (validated_data['owner'].id==counterpart.id)
+        owner_channel_ids = set(MessengerMember.objects.filter(user=validated_data['owner']).values_list('channel_id', flat=True))
+        counterpart_channel_ids = set(MessengerMember.objects.filter(user=counterpart).values_list('channel_id', flat=True))
+        instance = Channel.objects.filter(id__in=(owner_channel_ids & counterpart_channel_ids)).annotate(
+            member_count=models.Subquery( Channel.objects.filter(id=models.OuterRef('id')).annotate(member_count=models.Count('messengermember')).values('member_count')[:1]),
+        ).filter(member_count=1 if is_self else 2).last()
+        if instance:
+            instance.owner = validated_data['owner']
+            instance.enter_message_id = None
+            instance.counterpart = None
+            instance.counterpart_message_id = None
+        else:
+            instance = super().create(validated_data)
+            if not is_self:
+                MessengerMember.objects.create(user_id=counterpart.id, channel_id=instance.id)
+                instance.counterpart = counterpart.id
+                instance.counterpart_message_id = create_enter_message(instance.id, counterpart).id
+            else:
+                instance.counterpart = None
+                instance.counterpart_message_id = None
         return instance
     
     class Meta:

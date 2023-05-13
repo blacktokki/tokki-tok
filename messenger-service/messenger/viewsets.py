@@ -7,6 +7,7 @@ from messenger.consumers import send_enter, send_leave, send_next_message
 from notifications import send_notification_message
 from .serializers import (
     ChannelSerializer,
+    DirectChannelSerializer,
     MessengerChannelSerializer, 
     MessengerContentSerializer, 
     MessengerMemberSerializer,
@@ -54,11 +55,20 @@ class ChannelViewSet(viewsets.ModelViewSet):
     def messenger(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    @action(detail=False, methods=['post'], url_path='direct', serializer_class=DirectChannelSerializer)
+    def direct_messenger(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         serializer.save()
         if serializer.data['type'] == 'messenger':
-            send_enter(serializer.instance, serializer.data["owner"])
-            post_create_message(serializer.data["id"], [serializer.data['enter_message_id']])
+            print(serializer.data)
+            if serializer.data.get('enter_message_id'):
+                send_enter(serializer.instance, serializer.data["owner"])
+                post_create_message(serializer.data["id"], [serializer.data['enter_message_id']])
+            if serializer.data.get('counterpart_message_id'):
+                send_enter(serializer.instance, serializer.data["counterpart"])
+                post_create_message(serializer.data["id"], [serializer.data['counterpart_message_id']])
 
 
     def perform_destroy(self, instance):
