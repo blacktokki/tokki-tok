@@ -99,7 +99,7 @@ export default (props:{mode?:'virtual'|null})=>{
     }
   }, [])
   return <View style={camStyle.container}>
-    <View style={[camStyle.cam, {minWidth:320}]}>
+    <View style={[camStyle.cam, {width:'100%'}]}>
       {active?(
         Platform.OS == 'web'?
           <iframe ref={webViewRef} src={PATH} allow='camera *;microphone *' height="100%" width="100%"/>:

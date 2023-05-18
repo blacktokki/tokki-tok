@@ -14,14 +14,14 @@ import lang from  '../lang'
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
   return <View style={selected?{borderWidth:1, borderColor:'blue'}:{}}>
-    {renderMemberItem(props.item, (item)=>{
+    {renderMemberItem(props.item, ()=>{
       if (selected){
         setSelected(false)
-        props.selectedRef.current.delete(item.id)
+        props.selectedRef.current.delete(props.item.id)
       }
       else{
         setSelected(true)
-        props.selectedRef.current.add(item.id)
+        props.selectedRef.current.add(props.item.id)
       }
     })}
   </View>
