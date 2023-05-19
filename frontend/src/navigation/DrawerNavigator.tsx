@@ -39,7 +39,7 @@ const onAddList = [
   ()=>navigate("ChannelEditScreen", {type:"board"})
 ]
 
-export default ({user}:{user:UserMembership})=> {
+export default React.memo(({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
   const windowType = useResizeWindow();
   const [index, setIndex] = useState(0);
@@ -67,7 +67,7 @@ export default ({user}:{user:UserMembership})=> {
         }
       </View>
     </View>:<View style={{width:0}}></View>
-}
+})
 
 {/*<Text style={[styles.label, { color: d.isFocused ? colors.primary : '#222' }]}></Text> */}
 

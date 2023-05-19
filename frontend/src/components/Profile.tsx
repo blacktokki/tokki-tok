@@ -18,7 +18,6 @@ export default (props:ProfileProps)=>{
             dispatch({type:"REFRESH"})
         })
     }
-    console.log(props)
     return <View style={{width:'100%', height:135, justifyContent:'space-evenly', alignItems:'center'}}>
         <Avatar {...props} size={75}/>
         {name===undefined?

@@ -33,20 +33,24 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
       headerRight: ()=><HeaderRight/>
     });
   }, [navigation, route, windowType]);
-  return windowType == 'landscape'?
-    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-      <View style={{width:'80%', height:'80%'}}>
-        <StyledText style={{fontSize:32, color}}>Tokki Tok</StyledText>
-        <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
-        <View style={{flex:1, alignItems:'flex-start'}}>
-          {/* <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger for teams.</Text>*/}
-          <Text style={{fontSize:24}}> </Text>
-          <Text style={{fontSize:24, fontWeight:'500', color}}>{lang('Quick Start')}</Text>
-          <TextButton title={lang('+ New Messenger')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>navigate("ChannelEditScreen", {type:"messenger"})}/>
-          {/* <TextButton title='+ New Board' textStyle={{fontSize:20}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>navigate("ChannelEditScreen", {type:"board"})}/> */}
+  return <>
+    {windowType == 'landscape'?
+      <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+        <View style={{width:'80%', height:'80%'}}>
+          <StyledText style={{fontSize:32, color}}>Tokki Tok</StyledText>
+          <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
+          <View style={{flex:1, alignItems:'flex-start'}}>
+            {/* <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger for teams.</Text>*/}
+            <Text style={{fontSize:24}}> </Text>
+            <Text style={{fontSize:24, fontWeight:'500', color}}>{lang('Quick Start')}</Text>
+            <TextButton title={lang('+ New Messenger')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>navigate("ChannelEditScreen", {type:"messenger"})}/>
+            {/* <TextButton title='+ New Board' textStyle={{fontSize:20}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>navigate("ChannelEditScreen", {type:"board"})}/> */}
+          </View>
         </View>
+      </View>:<></>}
+      <View style={windowType == 'portrait'?{flex:1}:{width:0, flex:0}}>
+        <TabViewNavigator tabs={bottomTabs} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
       </View>
-    </View>:
-    <TabViewNavigator tabs={bottomTabs} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
+  </>
 }
 

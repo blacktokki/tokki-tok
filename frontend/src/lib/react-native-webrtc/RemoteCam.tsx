@@ -22,15 +22,14 @@ export default (props:{receiver?:string})=>{
       <View style={camStyle.bottonContainer}>
         <View style={camStyle.buttonBar}>
         </View>
-        {(props.receiver ===undefined || isPlay) &&
-          <View style={{flexDirection:'row'}}>{
-            (props.receiver || isPlay)?
-            <Text style={camStyle.label}>{user?.name}</Text>:
-            <>
-              <Text style={{borderWidth:1}}>Receiver:&nbsp;</Text>
-              <TextInput style={{borderWidth:1, flex:1}} value={receiver} onChangeText={setReceiver}/>
-            </> 
-          }</View>}
+        <View style={{flexDirection:'row'}}>{
+          (props.receiver || isPlay)?
+          <Text style={camStyle.label}>{user?.name || 'loading...'}</Text>:
+          <>
+            <Text style={{borderWidth:1}}>Receiver:&nbsp;</Text>
+            <TextInput style={{borderWidth:1, flex:1}} value={receiver} onChangeText={setReceiver}/>
+          </> 
+        }</View>
         <View style={camStyle.buttonBar}>
           {props.receiver === undefined && !isPlay && <Button title="Start" onPress={()=>start(receiver)} />}
           {props.receiver === undefined && isPlay && <Button title="Stop" onPress={stop} />}

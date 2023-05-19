@@ -1,12 +1,14 @@
 import React, { useCallback, useRef, useState, useMemo } from "react";
 //@ts-ignore
 import { RTCView, mediaDevices, RTCPeerConnection, MediaStream, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc-web-shim";
+// @ts-ignore
+import {TURN_SERVER} from "@env"
+
+
+console.log(TURN_SERVER?"use turn server": "use stun server")
+
 export const peerConstraints = {
-	iceServers: [
-		{
-			urls: 'stun:stun.l.google.com:19302'
-		}
-	]
+	iceServers: [TURN_SERVER?JSON.parse(TURN_SERVER):{urls: 'stun:stun.l.google.com:19302'}]
 };
 
 export const sessionConstraints = {
