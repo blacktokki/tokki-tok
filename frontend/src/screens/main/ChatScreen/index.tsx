@@ -18,12 +18,8 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import LinkPreview from '../../../components/LinkPreview';
 import lang from '../../../lang'
 import Avatar from '../../../components/Avatar';
-import VideoCallSection, { VideoType } from './VideoCallSection';
+import VideoCallSection from './VideoCallSection';
 import useResizeWindow from '../../../hooks/useResizeWindow';
-
-
-const isSamsungBrowser = navigator?.userAgent?.match(/SamsungBrowser/i)
-const allowVirtualCam = !isSamsungBrowser
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number})=>{
   const isMobile = useIsMobile()
@@ -77,7 +73,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
   const [autoFocus, setAutoFocus] = useState(true)
-  const [videoMode, setVideoMode] = useState<VideoType|null>(null)
+  const [videoMode, setVideoMode] = useState<boolean>(false)
   const theme = useColorScheme()
   const postValue = ()=>{
     if (value.length>0){
@@ -85,9 +81,6 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       setValue('')
       setAutoFocus(true)
     }
-  }
-  const toggleVideoMode = (mode:VideoType)=>{
-    setVideoMode(videoMode!=mode?mode:null)
   }
   const contentMutation = useMessengerContentMutation()
 
@@ -122,13 +115,8 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   }, [autoFocus])
 
   return <View style={{flex:1, alignItems:'center', flexDirection:windowType=='landscape'?'row-reverse':'column'}}>
-    <ThemedView style={[
-      {aspectRatio:videoMode!=null?16/9:0, borderColor:Colors.borderColor, borderRadius:10},
-      windowType=='landscape'?{flexShrink:0.5, height:'100%', borderLeftWidth:1, paddingBottom:65}:{maxHeight:'36%', width:'100%', borderBottomWidth:1}
-    ]}>
-      <VideoCallSection channel_id={channel_id} videoMode={videoMode}/>
-    </ThemedView>
-    <View style={[{flex:videoMode!=null?undefined:1, flexShrink:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
+    <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
+    <View style={[{flex:videoMode?undefined:1, flexShrink:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
       <FlatList
         style={{flexDirection: 'column-reverse'}}
         contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
@@ -145,9 +133,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
           flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text
         }} onSubmitEditing={postValue} blurOnSubmit={true}/>
         <CommonButton title={'💬'} onPress={postValue}/>
-        <CommonButton title={'📹'} onPress={()=>toggleVideoMode('camera')}/>
-        <CommonButton title={'🖥️'} onPress={()=>toggleVideoMode('display')}/>
-        {allowVirtualCam && <CommonButton title={'🐰'} onPress={()=>toggleVideoMode('virtual')}/>}
+        {!videoMode && <CommonButton title={'📹'} onPress={()=>setVideoMode(!videoMode)}/>}
       </ThemedView>
     </View>
   </View>

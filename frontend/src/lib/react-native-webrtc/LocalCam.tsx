@@ -17,17 +17,15 @@ export default (props:{user?:{name:string}|null, mode?:'camera'|'display'|null})
     else if(props.mode===null && isPlay){
       stop()
     }
-  }, [isPlay, props.user, props.mode])
-  useEffect(()=>{
     return ()=>{isPlay && stop()}
-  }, [isPlay])
+  }, [isPlay, props.user, props.mode])
   return (
     <View style={camStyle.container}>
       <CustomRTCView style={camStyle.cam}/>
       <View style={camStyle.bottonContainer}>
         <View style={camStyle.buttonBar}>  
         </View>
-        {(props.mode === undefined || isPlay) &&<View style={{flexDirection:'row'}}><Text style={camStyle.label}>{props.user?.name}</Text></View>}
+        <View style={{flexDirection:'row'}}><Text style={camStyle.label}>{props.user?.name}</Text></View>
         <View style={camStyle.buttonBar}>
           {props.mode === undefined && !isPlay && <Button title="Start" onPress={()=>props.user && start(props.user)} />}
           {props.mode === undefined && isPlay && <Button title="Stop" onPress={stop} />}

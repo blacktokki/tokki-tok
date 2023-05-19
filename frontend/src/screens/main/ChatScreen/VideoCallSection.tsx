@@ -1,18 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { View as ThemedView } from '../../../components/Themed' 
 import Colors from '../../../constants/Colors';
 import {default as useRtcContext, WebSocketProvider as RtcProvider} from "../../../lib/react-native-webrtc/useWebsocketContext";
 import LocalCam from '../../../lib/react-native-webrtc/LocalCam';
 import RemoteCam from '../../../lib/react-native-webrtc/RemoteCam';
-import VirtualCam from '../../../lib/react-native-webrtc/VirtualCam';
 import useResizeWindow from '../../../hooks/useResizeWindow';
 import useAuthContext from '../../../hooks/useAuthContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import CommonButton from '../../../components/TextButton';
-import { Text } from '../../../components/Themed';
+import CommonButton from '../../../components/CommonButton';
 
-export type VideoType = 'camera'|'display'|'virtual'
-type VideoCallProps = {channel_id:number, videoMode:VideoType|null}
+type VideoType = 'camera'|'display'|null
+type VideoCallProps = {channel_id:number, setDisable:(disable:boolean)=>void, disable?:boolean}
 
 
 const VideoView = (props:{
@@ -20,67 +19,71 @@ const VideoView = (props:{
   focusGuest?:string,
   setFocusGuest:(focusGuest?:string)=>void
   receiver?:string
-  useBackButton?:boolean,
   children:React.ReactNode
 })=>{
-  const activeBackButton = props.useBackButton && props.focusGuest!=undefined
-  const buttonStyle:StyleProp<ViewStyle> = [
-    {position:'absolute', right:0},
-    activeBackButton?{width:'10%', height:'10%', borderWidth:1}:{width:'100%', height:'100%'}
-  ]
-  return <View style={[{maxWidth:props.scale, maxHeight:props.scale, borderWidth:1, borderColor:Colors.borderColor, backgroundColor:'gray', flexDirection:'row'}, (props.focusGuest == undefined || props.focusGuest == props.receiver)?{}:{width:0, height:0}]}>
-      {props.children}
-      {/* {<CommonButton style={{position:'absolute', right:0}} title={"🔙"} onPress={()=>props.setFocusGuest(undefined)}/>} */}
-      <TouchableOpacity style={buttonStyle} containerStyle={buttonStyle} onPress={()=>props.setFocusGuest(props.focusGuest?undefined:props.receiver)}>
-        {activeBackButton && <Text style={{textAlign:'center', textAlignVertical:'center'}}>🔙</Text>}
-      </TouchableOpacity>
+  return <View style={[{maxWidth:props.scale, maxHeight:props.scale, borderWidth:1, borderColor:Colors.borderColor, backgroundColor:'gray', flexDirection:'row', flexGrow:1}, (props.focusGuest == undefined || props.focusGuest == props.receiver)?{}:{width:0, height:0}]}>
+    <TouchableOpacity style={{flex:1}} containerStyle={{flex:1, justifyContent:'center'}} onPress={()=>props.setFocusGuest(props.focusGuest?undefined:props.receiver)}>
+    {props.children}
+    </TouchableOpacity>
   </View>
+    
+  
 }
 
-const VideoCallContainer = ({channel_id, videoMode}:VideoCallProps)=>{
-    const {auth} = useAuthContext()
-    const [guests, setGuests] = useState<string[]>([])
-    const [focusGuest, setFocusGuest] = useState<string>()
-    const windowType = useResizeWindow()
-    const { lastJsonMessage, sendJsonMessage } = useRtcContext()
-    useEffect(()=>{
-      if(lastJsonMessage !=null){
-        if(lastJsonMessage['type']=='connection'){
-          sendJsonMessage({'type':'broadcast', 'data':{'channel_id':channel_id}})
-        }
-        if(lastJsonMessage['type']=='broadcast_guest' || lastJsonMessage['type']=='broadcast_host'){
-          setGuests([...guests, lastJsonMessage['sender']])
-        }
-        if(lastJsonMessage['type']=='broadcast_disconnect'){
-          const channel_name = lastJsonMessage['sender']
-          const exist = guests.find(v=>v == channel_name)
-          exist && setGuests(guests.filter(v=>v != channel_name))
-        }
+const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
+  const {auth} = useAuthContext()
+  const [videoMode, setVideoMode] = useState<VideoType>(null)
+  const [guests, setGuests] = useState<string[]>([])
+  const [focusGuest, setFocusGuest] = useState<string>()
+  const windowType = useResizeWindow()
+  const { lastJsonMessage, sendJsonMessage } = useRtcContext()
+  useEffect(()=>{
+    if(lastJsonMessage !=null){
+      if(lastJsonMessage['type']=='connection'){
+        sendJsonMessage({'type':'broadcast', 'data':{'channel_id':channel_id}})
       }
-    }, [lastJsonMessage])
-    const scale = focusGuest?'100%':`${100 / Math.max(2, Math.ceil(Math.sqrt(guests.length + 1)))}%`
-
-    return lastJsonMessage !==undefined ?<View style={[
-        {aspectRatio:16/9, backgroundColor:'white', flexWrap:'wrap', flexDirection:'row'},
-        windowType=='landscape'?{height:'100%'}:{maxHeight:'100%'}
-      ]}>
+      if(lastJsonMessage['type']=='broadcast_guest' || lastJsonMessage['type']=='broadcast_host'){
+        setGuests([...guests, lastJsonMessage['sender']])
+      }
+      if(lastJsonMessage['type']=='broadcast_disconnect'){
+        const channel_name = lastJsonMessage['sender']
+        const exist = guests.find(v=>v == channel_name)
+        exist && setGuests(guests.filter(v=>v != channel_name))
+      }
+    }
+  }, [lastJsonMessage])
+  const scale = focusGuest?'100%':`${100 / Math.max(2, Math.ceil(Math.sqrt(guests.length + 1)))}%`
+  const toggleVideoMode = (mode:VideoType)=>{
+    setVideoMode(videoMode!=mode?mode:null)
+  }
+  return lastJsonMessage !==undefined ?
+    <ThemedView style={[
+      {aspectRatio:!disable?16/9:0, borderColor:Colors.borderColor, borderRadius:10},
+      windowType=='landscape'?{flexShrink:0.5, height:'100%', borderLeftWidth:1, paddingBottom:65}:{maxHeight:'36%', width:'100%', borderBottomWidth:1}
+    ]}>
+      <View style={{aspectRatio:16/9, backgroundColor:'white', flexWrap:'wrap', flexDirection:'row', width:'100%', height:'100%'}}>
         {guests.map((receiver, i)=><VideoView scale={scale} focusGuest={focusGuest} setFocusGuest={setFocusGuest} receiver={receiver}>
-            <RemoteCam receiver={receiver}/>
-          </VideoView>
-          )}
-          <VideoView scale={scale} focusGuest={focusGuest} setFocusGuest={setFocusGuest} receiver={auth.user?.name} useBackButton>
-            {videoMode=='virtual'?<VirtualCam mode={'virtual'}/>:<LocalCam user={auth.user} mode={videoMode}/>}
-          </VideoView>
-      </View>:<></>
+          <RemoteCam receiver={receiver}/>
+        </VideoView>
+        )}
+        <VideoView scale={scale} focusGuest={focusGuest} setFocusGuest={setFocusGuest} receiver={auth.user?.name}>
+          <LocalCam user={auth.user} mode={videoMode}/>
+        </VideoView>
+      </View>
+      <ThemedView style={[
+          {position:'absolute', alignItems:'center', justifyContent:'flex-end', width:'100%',flexDirection:'row'},
+          windowType=='landscape'?{bottom:0, paddingVertical:15, paddingHorizontal:19}:{backgroundColor:'transparent'}
+        ]}>
+        <CommonButton title={'⏺️'} onPress={()=>toggleVideoMode('camera')}/>
+        <CommonButton title={'🖥️'} onPress={()=>toggleVideoMode('display')}/>
+        <CommonButton title={'📹'} onPress={()=>setDisable(true)}/>
+      </ThemedView>
+    </ThemedView>:
+  <></>
   }
   
-export default React.memo(({channel_id, videoMode}:VideoCallProps)=>{
-    return <RtcProvider disable={videoMode==null}>
-      <VideoCallContainer channel_id={channel_id} videoMode={videoMode}/>
-    </RtcProvider>
-  })
-  {/* <ScrollView style={{flex:1, padding:10, backgroundColor:'white'}} contentContainerStyle={{
-      flexWrap:'wrap',
-      width:'100%',
-      flexDirection:windowType=='landscape'?'column':'row'
-    }}></ScrollView> */}
+export default React.memo(({channel_id, disable, setDisable}:VideoCallProps)=>{
+  return <RtcProvider disable={disable}>
+    <VideoCallContainer channel_id={channel_id} disable={disable} setDisable={setDisable}/>
+  </RtcProvider>
+})

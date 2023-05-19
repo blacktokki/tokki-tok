@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import {Button, Platform, View, Text} from "react-native";
 import WebView from "react-native-webview";
-import useAuthContext from "../../hooks/useAuthContext";
 import useWebsocketContext from "./useWebsocketContext";
 import {useLocalCam, camStyle} from "./webrtc";
 import {MediaStream, RTCPeerConnection, RTCSessionDescription, peerConstraints, sessionConstraints} from "./webrtc/p2p"
+
+// const isSamsungBrowser = navigator?.userAgent?.match(/SamsungBrowser/i)
+// const allowVirtualCam = !isSamsungBrowser
 
 const useViatualCam = ()=>{
   const webViewRef = useRef(null)
@@ -68,11 +70,10 @@ const useViatualCam = ()=>{
 
 const PATH = `${process.env.PUBLIC_URL}/virtual.html`
 
-export default (props:{mode?:'virtual'|null})=>{
+export default (props:{user?:{name:string}|null, mode?:'virtual'|null})=>{
   const {webViewRef, stream, listener, virtualStop} = useViatualCam()
   const [active, setActive] = useState(props.mode == 'virtual')
   //localCam code
-  const {auth} = useAuthContext()
   const {lastJsonMessage, sendJsonMessage} = useWebsocketContext()
   const {start, stop, websocketOnMessage, isPlay} = useLocalCam(sendJsonMessage)
   const _stop = ()=>{
@@ -81,16 +82,16 @@ export default (props:{mode?:'virtual'|null})=>{
     setActive(false)
   }
   useEffect(()=>{
-    auth.user && lastJsonMessage && websocketOnMessage(lastJsonMessage, auth.user)
-  }, [lastJsonMessage, auth])
+    props.user && lastJsonMessage && websocketOnMessage(lastJsonMessage, props.user)
+  }, [lastJsonMessage, props.user])
   useEffect(()=>{
     if(props.mode && !isPlay){
-      auth.user && stream && start(auth.user, stream)
+      props.user && stream && start(props.user, stream)
     }
     else if(props.mode===null && isPlay){
       _stop()
     }
-  }, [isPlay, auth, props.mode, stream])
+  }, [isPlay, props.user, props.mode, stream])
   //localCam code end
   useEffect(()=>{
     if(Platform.OS == 'web'){
@@ -121,9 +122,9 @@ export default (props:{mode?:'virtual'|null})=>{
     <View style={camStyle.bottonContainer}>
       <View style={camStyle.buttonBar}>  
       </View>
-      {(props.mode === undefined || isPlay) &&<View style={{flexDirection:'row'}}><Text style={camStyle.label}>{auth.user?.name}</Text></View>}
+      {(props.mode === undefined || isPlay) &&<View style={{flexDirection:'row'}}><Text style={camStyle.label}>{props.user?.name}</Text></View>}
       <View style={camStyle.buttonBar}>
-        {props.mode === undefined && !isPlay && <Button title="Start" onPress={()=>auth.user && start(auth.user)} />}
+        {props.mode === undefined && !isPlay && <Button title="Start" onPress={()=>props.user && start(props.user)} />}
         {props.mode === undefined && isPlay && <Button title="Stop" onPress={stop} />}
       </View>
     </View>
