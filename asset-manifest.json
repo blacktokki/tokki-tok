@@ -1,7 +1,7 @@
 {
   "files": {
-    "app.js": "/tokki-tok/static/js/app.5e517e76.chunk.js",
-    "app.js.map": "/tokki-tok/static/js/app.5e517e76.chunk.js.map",
+    "app.js": "/tokki-tok/static/js/app.602f6799.chunk.js",
+    "app.js.map": "/tokki-tok/static/js/app.602f6799.chunk.js.map",
     "runtime~app.js": "/tokki-tok/static/js/runtime~app.2b88ed0a.js",
     "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.2b88ed0a.js.map",
     "static/js/2.3f93882f.chunk.js": "/tokki-tok/static/js/2.3f93882f.chunk.js",
@@ -39,6 +39,6 @@
   "entrypoints": [
     "static/js/runtime~app.2b88ed0a.js",
     "static/js/2.3f93882f.chunk.js",
-    "static/js/app.5e517e76.chunk.js"
+    "static/js/app.602f6799.chunk.js"
   ]
 }
