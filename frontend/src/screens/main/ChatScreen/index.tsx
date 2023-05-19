@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import CommonSection from '../../../components/CommonSection';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
@@ -21,6 +21,28 @@ import Avatar from '../../../components/Avatar';
 import VideoCallSection from './VideoCallSection';
 import useResizeWindow from '../../../hooks/useResizeWindow';
 
+function humanFileSize(size:number) {
+  var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+  return (size / Math.pow(1024, i)).toFixed(2) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+}
+
+function uploadFile(){
+  return new Promise<Blob|undefined>((resolve, reject)=>{
+    if (Platform.OS == 'web'){
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.onchange = e => { 
+        resolve((e.target as any).files[0])
+      }
+      input.onabort = reject
+      input.onerror = reject
+      input.click();
+    }
+    else
+      resolve(undefined)
+  })
+}
+
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number})=>{
   const isMobile = useIsMobile()
   let nextPage = props.next;
@@ -38,9 +60,10 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
         const isFirst = next==undefined || (content.user != next.user || created != next.created.slice(0, 16))
         const isSelf = props.ownerId == content.user
         const dayChanged = next==undefined || date != next.created.slice(0, 10)
+        const message = content.message_set[0]
         if (isSystem)
           return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
-            <Text>{content.message_set[0].content}</Text>
+            <Text>{message.content}</Text>
           </View>
         return <View key={content.id}>
           {dayChanged?<View style={{flexDirection:'row', justifyContent:'center', width:'100%'}}><Text>{date}</Text></View>:undefined}
@@ -49,9 +72,10 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
             <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
               {/* @ts-ignore */}
               <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                <Text>{content.message_set[0].content}</Text>
+                <Text selectable>{message.content}</Text>
               </Hyperlink>
               {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}
+              {message.file && message.filename && message.filesize && <LinkPreview link={{title:`📥 ${message.filename}`, url:message.file, description:humanFileSize(message.filesize), image:null}} hideUrl align='right' isMobile={isMobile}/>}
             </CommonSection>
           </View>
         </View>
@@ -133,6 +157,9 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
           flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text
         }} onSubmitEditing={postValue} blurOnSubmit={true}/>
         <CommonButton title={'💬'} onPress={postValue}/>
+        <CommonButton title={'📤'} onPress={()=>uploadFile().then(f=>{
+          contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', newFile:f})
+        })}/>
         {!videoMode && <CommonButton title={'📹'} onPress={()=>setVideoMode(!videoMode)}/>}
       </ThemedView>
     </View>
