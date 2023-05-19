@@ -1,3 +1,4 @@
+import os
 from django.db import models
 
 from accounts.models import Group, User
@@ -40,10 +41,27 @@ class ContentMixin:
         return self.channel_content.channel
 
 
-class Message(ContentMixin, models.Model):
+class MessageFileMixin:
+    @staticmethod
+    def upload_to(instance, filename):
+        return os.path.join('message', str(instance.channel_content_id), filename)
+
+    @property
+    def filename(self):
+        if self.file:
+            return self.file.name.split('/')[2]
+
+    @property
+    def filesize(self):
+        if self.file:
+            return self.file.size
+
+
+class Message(MessageFileMixin, ContentMixin, models.Model):
     channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
     comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True, on_delete=models.CASCADE, help_text='')
     content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='')
+    file = models.FileField(db_column='ms_file', null=True, blank=True, upload_to=MessageFileMixin.upload_to, help_text='')
 
     class Meta:
         db_table = "message"

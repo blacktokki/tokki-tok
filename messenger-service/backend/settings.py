@@ -104,6 +104,15 @@ DATABASES = {
     }
 }
 
+# Storage
+# https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+from google.oauth2 import service_account
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    Path.joinpath(BASE_DIR, 'virtual-metrics-355712-e207b739a975.json'))
+GS_BUCKET_NAME = 'blacktokki-storage'
+GS_LOCATION = 'messenger'
+
 # Auth settings
 AUTH_USER_MODEL = "accounts.user"
 AUTHENTICATION_BACKENDS = [

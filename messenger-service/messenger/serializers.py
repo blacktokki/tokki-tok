@@ -114,6 +114,8 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(write_only=True, required=False, queryset=User.objects.all())
     channel = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Channel.objects.filter(type='messenger'))
+    filename = serializers.CharField(read_only=True)
+    filesize = serializers.IntegerField(read_only=True)
 
     @transaction.atomic
     def create(self, validated_data):
