@@ -41,15 +41,27 @@ class ContentMixin:
         return self.channel_content.channel
 
 
-class MessageFileMixin:
-    @staticmethod
-    def upload_to(instance, filename):
-        return os.path.join('message', str(instance.channel_content_id), filename)
+class Message(ContentMixin, models.Model):
+    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
+    comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True, on_delete=models.CASCADE, help_text='')
+    content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='')
+
+    class Meta:
+        db_table = "message"
+
+
+def upload_to(instance, filename):
+    return os.path.join(str(instance.channel_content_id), filename)
+
+
+class File(ContentMixin, models.Model):
+    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
+    file = models.FileField(db_column='fi_file', null=True, blank=True, upload_to=upload_to, help_text='')
 
     @property
     def filename(self):
         if self.file:
-            return self.file.name.split('/')[2]
+            return self.file.name.split('/')[1]
 
     @property
     def filesize(self):
@@ -57,19 +69,12 @@ class MessageFileMixin:
             return self.file.size
 
 
-class Message(MessageFileMixin, ContentMixin, models.Model):
-    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
-    comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True, on_delete=models.CASCADE, help_text='')
-    content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='')
-    file = models.FileField(db_column='ms_file', null=True, blank=True, upload_to=MessageFileMixin.upload_to, help_text='')
-
     class Meta:
-        db_table = "message"
+        db_table = "file"
 
 
 class Link(ContentMixin, models.Model):
     channel_content = models.ForeignKey(ChannelContent,  on_delete=models.CASCADE, help_text='')
-    parent_content = models.ForeignKey(ChannelContent, related_name='children_link_set', null=True, blank=True, on_delete=models.CASCADE, help_text='')
     title = models.CharField(db_column='li_title', max_length=255, help_text='')
     description = models.TextField(db_column='li_description', null=True, blank=True, help_text='')
     url = models.TextField(db_column='li_url', null=True, blank=True, help_text='')
