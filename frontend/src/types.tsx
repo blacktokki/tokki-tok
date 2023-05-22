@@ -83,15 +83,18 @@ export type DirectChannel = Channel & {
 export type Message = {
   id?: number,
   content: string,
-  file?: string
-  filename?: string
-  filesize?: number
 }
 
 export type EditMessage = Message & {
   channel:number
   user?:number
-  newFile?:Blob
+  file?:Blob
+}
+
+export type File = {
+  file: string
+  filename: string
+  filesize: number
 }
 
 export type Link = {
@@ -105,6 +108,7 @@ export type MessengerContent = {
   id: number,
   message_set:Message[]
   link_set:Link[],
+  file_set:File[],
   user: number,
   channel: number
   created: string,

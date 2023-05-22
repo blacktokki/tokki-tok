@@ -39,9 +39,9 @@ export const getMessengerContentList = async (channel_id:number, id_lt?:number)=
 }
 
 export const postMessage = async (message:EditMessage)=>{
-    if (message.newFile){
+    if (message.file){
         const formData = new FormData(); // formData 객체를 생성한다.
-        formData.append("file", message.newFile)
+        formData.append("file", message.file)
         Object.entries(message).forEach(value=>{
             formData.append(value[0], `${value[1]}`)
         })

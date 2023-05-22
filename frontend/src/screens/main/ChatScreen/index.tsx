@@ -20,11 +20,8 @@ import lang from '../../../lang'
 import Avatar from '../../../components/Avatar';
 import VideoCallSection from './VideoCallSection';
 import useResizeWindow from '../../../hooks/useResizeWindow';
+import FilePreview from '../../../components/FilePreview';
 
-function humanFileSize(size:number) {
-  var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
-  return (size / Math.pow(1024, i)).toFixed(2) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-}
 
 function uploadFile(){
   return new Promise<Blob|undefined>((resolve, reject)=>{
@@ -74,8 +71,8 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
               <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
                 <Text selectable>{message.content}</Text>
               </Hyperlink>
-              {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}
-              {message.file && message.filename && message.filesize && <LinkPreview link={{title:`📥 ${message.filename}`, url:message.file, description:humanFileSize(message.filesize), image:null}} hideUrl align='right' isMobile={isMobile}/>}
+              {content.file_set.map((file, fileIndex)=><FilePreview key={fileIndex} file={file} isMobile={isMobile} showBorder={content.file_set.length>1 || message.content.length>0}/>)}
+              {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}              
             </CommonSection>
           </View>
         </View>
@@ -158,7 +155,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         }} onSubmitEditing={postValue} blurOnSubmit={true}/>
         <CommonButton title={'💬'} onPress={postValue}/>
         <CommonButton title={'📤'} onPress={()=>uploadFile().then(f=>{
-          contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', newFile:f})
+          contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f})
         })}/>
         {!videoMode && <CommonButton title={'📹'} onPress={()=>setVideoMode(!videoMode)}/>}
       </ThemedView>
