@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='message',
             name='file',
-            field=models.FileField(blank=True, db_column='ms_file', null=True, upload_to=messenger.models.MessageFileMixin.upload_to),
+            field=models.FileField(blank=True, db_column='ms_file', null=True, upload_to=messenger.models.upload_to),
         ),
     ]

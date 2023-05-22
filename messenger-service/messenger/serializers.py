@@ -4,7 +4,7 @@ from django.db import models, transaction
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
-from .models import Channel, MessengerMember, Message, ChannelContent, Link
+from .models import Channel, MessengerMember, Message, ChannelContent, Link, File
 
 url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
 
@@ -114,15 +114,17 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(write_only=True, required=False, queryset=User.objects.all())
     channel = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Channel.objects.filter(type='messenger'))
-    filename = serializers.CharField(read_only=True)
-    filesize = serializers.IntegerField(read_only=True)
+    file = serializers.FileField(required=False, write_only=True)
 
     @transaction.atomic
     def create(self, validated_data):
         user = validated_data.pop("user", None)
         channel = validated_data.pop("channel")
+        file = validated_data.pop("file", None)
         validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel)
         attach_link(validated_data['channel_content'], validated_data)
+        if file:
+            File.objects.create(channel_content=validated_data['channel_content'], file=file)
         return super().create(validated_data)
 
     class Meta:
@@ -133,12 +135,22 @@ class MessageSerializer(serializers.ModelSerializer):
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        exclude = ['channel_content', 'parent_content']
+        exclude = ['channel_content']
 
+
+class FileSerializer(serializers.ModelSerializer):
+    filename = serializers.CharField(read_only=True)
+    filesize = serializers.IntegerField(read_only=True)
+    
+    class Meta:
+        model = File
+        exclude = ['channel_content']
+        
 
 class MessengerContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
     link_set = LinkSerializer(many=True, read_only=True)
+    file_set = FileSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True)
     channel_name = serializers.CharField(read_only=True)
     class Meta:
