@@ -39,7 +39,19 @@ export const getMessengerContentList = async (channel_id:number, id_lt?:number)=
 }
 
 export const postMessage = async (message:EditMessage)=>{
-    await axios.post(`/api/v1/messengercontents/messages/`, message)
+    if (message.newFile){
+        const formData = new FormData(); // formData 객체를 생성한다.
+        formData.append("file", message.newFile)
+        Object.entries(message).forEach(value=>{
+            formData.append(value[0], `${value[1]}`)
+        })
+        await axios.post(`/api/v1/messengercontents/messages/`, formData, {headers:{
+            ...(axios.defaults.headers as any), "Content-Type": "multipart/form-data",
+        }})
+    }
+    else{
+        await axios.post(`/api/v1/messengercontents/messages/`, message)
+    }
 }
 
 export const deleteMessengerContent = async (content_id:number)=>{
