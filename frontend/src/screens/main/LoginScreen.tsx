@@ -15,7 +15,7 @@ export default function LoginScreen({
 }: StackScreenProps<any, 'Login'>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {dispatch} = useAuthContext()
+  const {error, dispatch} = useAuthContext()
   const _login = ()=>dispatch({type:'LOGIN_REQUEST', username, password})
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -26,6 +26,9 @@ export default function LoginScreen({
   return (
     <View style={Styles.login_wrapper}>
       <View style={Styles.form}>
+        {error && <View style={Styles.form_error}>
+          <Text style={Styles.form_error_text}>{lang(error)}</Text>
+        </View>}
         <TextInput
           style={Styles.form_input}
           value={username}
@@ -111,7 +114,17 @@ const Styles = StyleSheet.create({
     },
     form: {
       width: '100%',
-      maxWidth: 280,
+      maxWidth: 320,
+    },
+    form_error: {
+      height: 22,
+      width:'100%',
+      paddingHorizontal: 20,
+    },
+    form_error_text:{
+      textAlignVertical:'center',
+      color:'red',
+      fontSize:13,
     },
     form_input: {
       height: 44,

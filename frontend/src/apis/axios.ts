@@ -29,11 +29,15 @@ _axios.interceptors.response.use(
     },
     error => {
         if (error.response.status === 401) {
-            getToken().then(async(token)=>{
-                const r = await _axios.post("/api/v1/user/sso/refresh/", {token}, {headers:{'Authorization':''}, baseURL: accountURL})
-                if (r.status == 200 && r.data !== ''){
-                    setToken(r.data)
+            return getToken().then(async(token)=>{
+                if (token){
+                    const r = await _axios.post("/api/v1/user/sso/refresh/", {token}, {headers:{'Authorization':''}, baseURL: accountURL})
+                    if (r.status == 200 && r.data !== ''){
+                        setToken(r.data)
+                    }
                 }
+            }).finally(()=>{
+                return Promise.reject(error)
             })
         }
         return Promise.reject(error)

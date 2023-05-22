@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useReducer, useMemo, Dispatch } from "react"
+import React, { createContext, useContext, useEffect, useReducer, useMemo, Dispatch, useState } from "react"
 import { checkLogin, login, logout } from "../apis"
 import { getNotification, putNotification } from "../apis/notification"
 import { UserMembership } from "../types"
@@ -9,7 +9,7 @@ export type Auth = {user?:UserMembership|null, groupId?:number}
 
 type AuthState ={user?:UserMembership|null, request?:{username:string, password:string}|null}
 
-const AuthContext = createContext<{auth:Auth, dispatch:Dispatch<AuthAction>}>({auth:{}, dispatch:()=>{}});
+const AuthContext = createContext<{auth:Auth, error?:string, dispatch:Dispatch<AuthAction>}>({auth:{}, dispatch:()=>{}});
 
 const authReducer =(initialState:AuthState, action:AuthAction)=>{
   switch (action.type){
@@ -58,6 +58,7 @@ const authReducer =(initialState:AuthState, action:AuthAction)=>{
 
 export const AuthProvider = ({children}:{children:React.ReactNode})=>{
   const [authState, dispatch] = useReducer(authReducer, {} as Auth)
+  const [error, setError] = useState<string>()
   const auth = useMemo(()=>({
     user:authState.user,
     groupId: authState.user?.membership_set.find(g=>g.root_group_id==null)?.group
@@ -74,8 +75,9 @@ export const AuthProvider = ({children}:{children:React.ReactNode})=>{
     else if(authState.user===null && authState.request){
       login(authState.request.username, authState.request.password).then(user=>{
         dispatch({type:"LOGIN_SUCCESS", user})
-      }).catch(()=>{
+      }).catch((data)=>{
         dispatch({type:"LOGIN_FAILED"})
+        setError(data.response?.data?.message)
       })
     }
     else if(authState.user && authState.request===null){
@@ -86,7 +88,7 @@ export const AuthProvider = ({children}:{children:React.ReactNode})=>{
       })
     }
   }, [authState])
-  return <AuthContext.Provider value={{auth, dispatch}}>
+  return <AuthContext.Provider value={{auth, error, dispatch}}>
     {children}
   </AuthContext.Provider>
 }

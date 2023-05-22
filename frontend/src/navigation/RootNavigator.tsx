@@ -12,7 +12,7 @@ import { WebSocketProvider } from '../hooks/useWebsocketContext';
 import HeaderRight from '../components/HeaderRight'
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { FirebaseProvider } from '../hooks/useFirebaseContext';
+import useFirebaseContext from '../hooks/useFirebaseContext';
 import useIsMobile from '../hooks/useIsMobile';
 import MobileSafeAreaView from '../components/MobileSafeAreaView';
 import useColorScheme from '../hooks/useColorScheme';
@@ -76,28 +76,27 @@ function MainNavigator(){
         console.log('current user: ', auth.user)
         return Object.entries(auth.user === null?login:main)
     }, [auth])
+    useFirebaseContext(auth)
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
         {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
         <View style={{flex:1}}>
-            <FirebaseProvider user={auth.user}>
-                <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
-                    <Main.Navigator
-                        screenOptions={({navigation, route})=>({
-                            headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
-                            headerTitleStyle:{color:'white'},
-                            headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
-                            headerRight:()=><HeaderRight/>,
-                            headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
-                            cardStyle:{flexShrink:1},
-                            animationEnabled:windowType=='portrait',
-                            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-                        })}
-                    >
-                        {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
-                        <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-                    </Main.Navigator>
-                </WebSocketProvider>
-            </FirebaseProvider>
+            <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
+                <Main.Navigator
+                    screenOptions={({navigation, route})=>({
+                        headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
+                        headerTitleStyle:{color:'white'},
+                        headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
+                        headerRight:()=><HeaderRight/>,
+                        headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
+                        cardStyle:{flexShrink:1},
+                        animationEnabled:windowType=='portrait',
+                        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+                    })}
+                >
+                    {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
+                    <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+                </Main.Navigator>
+            </WebSocketProvider>
         </View>
     </View>:<></>);
 }

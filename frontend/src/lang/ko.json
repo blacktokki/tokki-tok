@@ -22,5 +22,6 @@
     "leave": "나가기",
     "This screen doesn't exist.":"페이지를 찾을 수 없습니다.",
     "Go to home screen!": "돌아가기",
-    "create": "추가하기"
+    "create": "추가하기",
+    "Unregistered user or incorrect password.": "가입하지 않은 아이디이거나, 잘못된 비밀번호입니다."
 }

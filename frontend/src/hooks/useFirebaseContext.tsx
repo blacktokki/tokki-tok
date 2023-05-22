@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, { createContext, useContext, useEffect } from "react"
 import firebase from "firebase/app";
 import "firebase/messaging";
 //@ts-ignore
 import {FCM_PUBLIC_VAPID_KEY, FCM_API_KEY} from "@env"
 import { Notification as NotificationType, UserMembership } from "../types";
 import { getNotification, postNotification, putNotification } from "../apis/notification";
+import { Auth } from "./useAuthContext";
 const firebaseConfig = require("../../web/firebase-config.js")
 // Initialize Firebase
 const key = firebaseConfig.messagingSenderId
@@ -23,8 +24,6 @@ messaging.onMessage((payload) => {
   }
 });
 
-const FirebaseContext = createContext<{enable:boolean, setEnable:(enable:boolean)=>void}>({enable:false, setEnable:()=>{}});
-
 const requestToken = async()=>{
   const permission = await Notification.requestPermission();
   if (permission === 'granted') {
@@ -41,46 +40,31 @@ const requestToken = async()=>{
   return undefined
 }
 
-export const FirebaseProvider = ({children, user}:{user?:UserMembership|null, children:React.ReactNode})=>{
-  const tokenRef = useRef<string>()
-  const [notification, setNotification] = useState<NotificationType>()
-  const enable = useMemo(()=>!(notification?.token), [notification])
-  const setEnable = (enable:boolean)=>{
-    if(user && notification){
-      putNotification({...notification, token:enable||tokenRef.current==undefined?null:tokenRef.current}).then((noti)=>{
-        setNotification(noti)
-      })
-    }
+
+let noti:NotificationType|undefined
+
+const setEnable = async(enable:boolean, user?:UserMembership|null)=>{
+  context.enable = enable
+  if(user && enable){
+    const token = await requestToken() || null
+    noti = await getNotification(user.id)
+    if (noti == undefined)
+      noti = await postNotification({user:user.id, type:'WEB', token})
+    else
+      noti = await putNotification({...noti, token})
   }
-  
-  useEffect(()=>{
-    let isMount = true;
-    const setNotificationInternal = (n?:NotificationType)=>{
-      if (isMount)setNotification(n)
-    }
-    if(user){
-      requestToken().then((t)=>{
-        tokenRef.current = t
-        getNotification(user.id).then(noti=>{
-          const token = t==undefined?null:t
-          if (noti == undefined)
-            postNotification({user:user.id, type:'WEB', token}).then(setNotificationInternal)
-          else
-            putNotification({...noti, token}).then(setNotificationInternal)
-        })
-      })
-    }
-    else{
-      setNotificationInternal(undefined)
-    }
-    return ()=>{isMount=false}
-  }, [user])
-  return !user?<>{children}</>:<FirebaseContext.Provider value={{enable, setEnable}}>
-    {children}
-  </FirebaseContext.Provider>
+  else if (noti){
+    await putNotification({...noti, token:null})
+  }
 }
 
-export default ()=>{
+const context:{enable:boolean, setEnable:(enable:boolean, user?:UserMembership|null)=>void} = {enable:false, setEnable}
+const FirebaseContext = createContext(context);
+
+export default (auth:Auth)=>{
+  useEffect(()=>{
+    setEnable(true, auth.user)
+  }, [auth.user])
   const firebaseContext = useContext(FirebaseContext)
   return firebaseContext
 }
