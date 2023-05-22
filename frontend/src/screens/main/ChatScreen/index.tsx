@@ -21,6 +21,8 @@ import Avatar from '../../../components/Avatar';
 import VideoCallSection from './VideoCallSection';
 import useResizeWindow from '../../../hooks/useResizeWindow';
 import FilePreview from '../../../components/FilePreview';
+import useModalsContext from '../../../hooks/useModalsContext';
+import InviteModal from '../../../modals/InviteModal';
 
 
 function uploadFile(){
@@ -86,6 +88,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const height = useRef(0)
   const inputRef = useRef<TextInput>(null)
   const {auth} = useAuthContext()
+  const { setModal } = useModalsContext()
   const channel = useMessengerChannelList(auth)?.find(v=>v.id==parseInt(channel_id))
   const {data, fetchNextPage } = useMessengerContentList(channel_id)
   const memberList = useMessengerMemberList(channel_id)
@@ -108,7 +111,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: ()=> <HeaderRight extra={[
-        {title:lang('invite'), onPress:()=>{navigate("InviteScreen", {id:channel_id})}},
+        {title:lang('invite'), onPress:()=>setModal(InviteModal, {id:channel_id})},
         {title:lang('leave'), onPress:()=>{member_id && messengerMemberMutation.leave(member_id);back()}}
       ]}/>,
       title: channel?.name

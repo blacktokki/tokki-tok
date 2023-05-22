@@ -2,13 +2,14 @@ import { useTheme } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TabView, SceneMap,NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
-import { navigate } from '.';
 import Profile from '../components/Profile';
 import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
 import useResizeWindow from '../hooks/useResizeWindow';
 import { drawerTabs } from '../tabs';
 import { UserMembership } from '../types';
+import useModalsContext from '../hooks/useModalsContext';
+import ChannelEditModal from '../modals/ChannelEditModal';
 
 export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"top"|"bottom", index?:number, onTab?:(index:number)=>void})=>{
   const [index, setIndex] = React.useState(props.index || 0);
@@ -34,15 +35,16 @@ export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"
   />
 }
 
-const onAddList = [
-  ()=>navigate("ChannelEditScreen", {type:"messenger"}),
-  ()=>navigate("ChannelEditScreen", {type:"board"})
-]
 
 export default React.memo(({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
   const windowType = useResizeWindow();
   const [index, setIndex] = useState(0);
+  const { setModal } = useModalsContext()
+  const onAddList = [
+    ()=>setModal(ChannelEditModal, {type:'messenger'}),
+    ()=>setModal(ChannelEditModal, {type:'board'})
+  ]
   return windowType=='landscape'?<View
       style={[
         styles.tabBar,

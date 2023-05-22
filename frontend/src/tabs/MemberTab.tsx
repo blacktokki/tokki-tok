@@ -5,8 +5,9 @@ import CommonItem from "../components/CommonItem"
 import useAuthContext from "../hooks/useAuthContext"
 import useUserMembershipList from "../hooks/lists/useUserMembershipList"
 import { UserMembership } from "../types"
-import { navigate } from "../navigation"
 import Avatar from "../components/Avatar"
+import useModalsContext from "../hooks/useModalsContext"
+import ProfileModal from "../modals/ProfileModal"
 
 export const renderMemberItem = (item:UserMembership, onPress?:()=>void)=> {
     return <CommonItem key={item.id} bodyStyle={{backgroundColor:'white', flexDirection:'row', justifyContent:'flex-start'}} onPress={onPress}>
@@ -17,9 +18,10 @@ export const renderMemberItem = (item:UserMembership, onPress?:()=>void)=> {
 
 export default ()=>{
     const {auth} = useAuthContext()
+    const { setModal } = useModalsContext()
     const userList = useUserMembershipList(auth)
     const memberItem = React.useMemo(
-        ()=>userList && userList.map(item=>renderMemberItem(item, ()=>navigate("ProfileScreen", {id:item.id}))), [userList])
+        ()=>userList && userList.map(item=>renderMemberItem(item, ()=>setModal(ProfileModal, {id:item.id}))), [userList])
     return <View style={{flex:1, backgroundColor:'white'}}>
         {memberItem}
     </View>

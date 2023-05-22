@@ -1,5 +1,4 @@
 import React, {useState, useEffect } from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
 import CommonSection from '../components/CommonSection';
 import { View, Text } from '../components/Themed';
@@ -11,22 +10,18 @@ import { Channel } from '../types';
 import useMessengerChannelList, { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import TextField from '../components/TextField';
 import lang from '../lang'
+import useModalsContext from '../hooks/useModalsContext';
 
-export default function ChannelEditScreen({navigation, route}: StackScreenProps<any, 'ChannelEdit'>) {
-  const id = route?.params?.id
-  const type = route?.params?.type
+export default function ChannelEditModal({id, type}: {id?:number, type:string}) {
   const {auth} = useAuthContext()
+  const { setModal } = useModalsContext()
   const channelList = useMessengerChannelList(auth)
   const channelMutation = useMessengerChannelMutation()
   const channel = channelList?.find(v=>v.id==id)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const back = ()=>{
-    if(navigation.canGoBack())
-        navigation.goBack()
-      else{
-        navigation.replace('Main')
-      }
+    setModal(ChannelEditModal, null)
   }
   useEffect(()=>{
     if (channel){

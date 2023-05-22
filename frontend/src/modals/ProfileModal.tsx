@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
-import { View} from '../components/Themed';
 import Profile from '../components/Profile';
 import useAuthContext from '../hooks/useAuthContext';
 import useUserMembershipList from '../hooks/lists/useUserMembershipList';
@@ -9,27 +7,34 @@ import CommonButton from '../components/CommonButton';
 import { DirectChannel } from '../types';
 import { navigate } from '../navigation';
 import lang from '../lang'
+import useModalsContext from '../hooks/useModalsContext';
+import CommonSection from '../components/CommonSection';
+import { Text, View } from '../components/Themed';
 
-export default function ProfileScreen({
-  navigation, route
-}: StackScreenProps<any, 'Profile'>) {
-  const id = route?.params?.id
+export default function ProfileModal({id}:{id:number}) {
   const {auth} = useAuthContext()
+  const { setModal } = useModalsContext()
   const userList = useUserMembershipList(auth)
   const user = userList?.find(v=>v.id==id)
   const channelMutation = useMessengerChannelMutation()
   const back = ()=>{
-    if(navigation.canGoBack())
-        navigation.goBack()
-      else{
-        navigation.replace('Main')
-      }
+    setModal(ProfileModal, null)
   }
   useEffect(()=>{
     if (!(id && user) && userList)
       back()
   }, [userList])
-  return user?<View style={{padding:10}}>
+  return user?<CommonSection outerContainerStyle={{alignSelf:'center'}}>
+    <View style={{flexDirection:'row', width:'100%'}}>
+      <View style={{flex:1}}>
+        <CommonButton style={{width:60}} title={'❌'} onPress={back}/>
+      </View>
+      <View style={{flex:1}}>
+        <Text style={{fontSize:20, textAlign:'center'}}>{lang('profile')}</Text>
+      </View>
+      <View style={{flex:1}}/>
+    </View>
+    <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     
     <Profile username={user.username} name={user.name} userId={user.id} />
     <CommonButton title={lang('create messenger')} onPress={()=>{
@@ -38,5 +43,5 @@ export default function ProfileScreen({
         channelMutation.direct(newChannel).then(v=>navigate("Main", {screen:"ChatScreen", params: {id:v.id}}))
       }
     }}/>
-  </View>:<></>
+  </CommonSection>:<></>
 }

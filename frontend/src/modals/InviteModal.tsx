@@ -1,5 +1,4 @@
 import React, {useRef,MutableRefObject, useMemo, useState } from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
 import { View, Text } from '../components/Themed';
 import CommonSection from '../components/CommonSection';
 import useAuthContext from '../hooks/useAuthContext';
@@ -8,8 +7,8 @@ import { UserMembership } from '../types';
 import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
 import { renderMemberItem } from '../tabs/MemberTab';
-import { navigate } from '../navigation';
 import lang from  '../lang'
+import useModalsContext from '../hooks/useModalsContext';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
@@ -28,9 +27,9 @@ const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set
 
 }
 
-export default function InviteScreen({navigation, route}: StackScreenProps<any, 'Invite'>) {
-  const id = route?.params?.id
+export default function InviteModal({id}:{id:number}) {
   const {auth} = useAuthContext()
+  const { setModal } = useModalsContext()
   const userList = useUserMembershipList(auth)
   const memberList = useMessengerMemberList(id)
   const messengerMemberMutation = useMessengerMemberMutation()
@@ -42,17 +41,16 @@ export default function InviteScreen({navigation, route}: StackScreenProps<any, 
 
 
   const back = ()=>{
-    if(navigation.canGoBack())
-      navigation.goBack()
-    else if (id)
-      navigate("ChatScreen", {id})
-    else
-      navigation.replace('Main')
+    setModal(InviteModal, null)
   }
 
   return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
+    <View style={{justifyContent:'space-around'}}>
+    <Text style={{fontSize:20}}>{lang('invite')}</Text>
+    </View>
+    <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     <View style={{backgroundColor:'white', 'width': '50%'}}>
-    {data?.map((item, index)=><InviteItem key={index} item={item} selectedRef={selectedRef}/>)}
+    {id && data?.map((item, index)=><InviteItem key={index} item={item} selectedRef={selectedRef}/>)}
     </View>
     <View style={[{width:'50%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
       <CommonButton title={lang('invite')} onPress={()=>{
