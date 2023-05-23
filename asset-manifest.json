@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/tokki-tok/static/js/app.37ba5076.chunk.js",
-    "app.js.map": "/tokki-tok/static/js/app.37ba5076.chunk.js.map",
+    "app.js": "/tokki-tok/static/js/app.7eaf4568.chunk.js",
+    "app.js.map": "/tokki-tok/static/js/app.7eaf4568.chunk.js.map",
     "runtime~app.js": "/tokki-tok/static/js/runtime~app.2b88ed0a.js",
     "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.2b88ed0a.js.map",
-    "static/js/2.360cd782.chunk.js": "/tokki-tok/static/js/2.360cd782.chunk.js",
-    "static/js/2.360cd782.chunk.js.map": "/tokki-tok/static/js/2.360cd782.chunk.js.map",
+    "static/js/2.1a1e13a8.chunk.js": "/tokki-tok/static/js/2.1a1e13a8.chunk.js",
+    "static/js/2.1a1e13a8.chunk.js.map": "/tokki-tok/static/js/2.1a1e13a8.chunk.js.map",
     "fonts/AntDesign.ttf": "/tokki-tok/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/tokki-tok/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/tokki-tok/./fonts/Feather.ttf",
@@ -33,12 +33,12 @@
     "main.ebf79481.css.map": "/tokki-tok/main.ebf79481.css.map",
     "manifest.json": "/tokki-tok/manifest.json",
     "serve.json": "/tokki-tok/serve.json",
-    "static/js/2.360cd782.chunk.js.LICENSE.txt": "/tokki-tok/static/js/2.360cd782.chunk.js.LICENSE.txt",
+    "static/js/2.1a1e13a8.chunk.js.LICENSE.txt": "/tokki-tok/static/js/2.1a1e13a8.chunk.js.LICENSE.txt",
     "virtual.html": "/tokki-tok/virtual.html"
   },
   "entrypoints": [
     "static/js/runtime~app.2b88ed0a.js",
-    "static/js/2.360cd782.chunk.js",
-    "static/js/app.37ba5076.chunk.js"
+    "static/js/2.1a1e13a8.chunk.js",
+    "static/js/app.7eaf4568.chunk.js"
   ]
 }
