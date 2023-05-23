@@ -45,18 +45,18 @@ export default React.memo(({user}:{user:UserMembership})=> {
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
     ()=>setModal(ChannelEditModal, {type:'board'})
   ]
-  return windowType=='landscape'?<View
-      style={[
-        styles.tabBar,
-        {
-          backgroundColor: colors.card,
-          borderTopColor: colors.border,
-        },
-        // tabBarStyle,
-      ]}
-      pointerEvents={false ? 'none' : 'auto'}
-    >
-      <Profile userId={user.id} username={user.username} name={user.name}/>
+  return <View style={windowType=='landscape'?[
+      styles.tabBar,
+      {
+        backgroundColor: colors.card,
+        borderTopColor: colors.border,
+      },
+      // tabBarStyle,
+    ]:{width:0}}
+    pointerEvents={false ? 'none' : 'auto'}
+  >
+    <Profile userId={user.id} username={user.username} name={user.name}/>
+    {windowType=='landscape' && <>
       <View style={{flexDirection:'row-reverse'}}>
           <TextButton title='+' textStyle={{fontSize:20}} style={{borderRadius:20}} onPress={onAddList[index]}/>
       </View>
@@ -68,7 +68,8 @@ export default React.memo(({user}:{user:UserMembership})=> {
           </View>
         }
       </View>
-    </View>:<View style={{width:0}}></View>
+    </>}
+  </View>
 })
 
 {/*<Text style={[styles.label, { color: d.isFocused ? colors.primary : '#222' }]}></Text> */}

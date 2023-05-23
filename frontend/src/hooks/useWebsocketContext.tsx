@@ -7,7 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, AppStateStatus } from "react-native";
 
 type WebsocketContextType = {lastJsonMessage:any, sendJsonMessage:SendJsonMessage }
-const WebSocketContext = createContext<WebsocketContextType>({lastJsonMessage:undefined, sendJsonMessage:()=>{}});
+const defaultContext = {lastJsonMessage:undefined, sendJsonMessage:()=>{}}
+const WebSocketContext = createContext<WebsocketContextType>(defaultContext);
 const [SCHEMA, DOMAIN] = `${API_URL}`.split('://')
 
 export const WebSocketInternalProvider = ({children, path, Context, useBackground}:{children:React.ReactNode, path:string, Context:Context<WebsocketContextType>, useBackground?:boolean})=>{
@@ -25,7 +26,7 @@ export const WebSocketInternalProvider = ({children, path, Context, useBackgroun
     AppState.addEventListener("change", onChange)
     return ()=>AppState.removeEventListener("change", onChange)
   }, [])
-  return (token==null)?<>{children}</>:<Context.Provider value={{lastJsonMessage, sendJsonMessage}}>
+  return <Context.Provider value={token!=null?{lastJsonMessage, sendJsonMessage}:defaultContext}>
       {children}
     </Context.Provider>
 }

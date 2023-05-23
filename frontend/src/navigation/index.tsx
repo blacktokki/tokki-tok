@@ -10,7 +10,12 @@ import { ColorSchemeName } from 'react-native';
 
 import LinkingConfiguration from './LinkingConfiguration';
 import RootNavigator from './RootNavigator';
+import MobileSafeAreaView from '../components/MobileSafeAreaView';
+import { AuthProvider } from '../hooks/useAuthContext';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ResizeWindowProvider } from '../hooks/useResizeWindow';
 
+const queryClient = new QueryClient();
 const navigationRef = React.createRef<NavigationContainerRef>();
 
 export function navigate(name:string, params?:any) {
@@ -20,15 +25,23 @@ export function navigate(name:string, params?:any) {
 }
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
-  return (
-    <NavigationContainer
-      ref={navigationRef}
-      documentTitle={{formatter: (options, route) => {return `TOKKI TOK`}}}
-      linking={(process.versions && process.versions['electron'])?undefined:LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
-    </NavigationContainer>
-  );
+  return <NavigationContainer
+    ref={navigationRef}
+    documentTitle={{formatter: (options, route) => {return `TOKKI TOK`}}}
+    linking={(process.versions && process.versions['electron'])?undefined:LinkingConfiguration}
+    theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <MobileSafeAreaView>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            {/* devtools */}
+            {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+            <ResizeWindowProvider>
+              <RootNavigator />
+            </ResizeWindowProvider>
+          </QueryClientProvider>
+        </AuthProvider>
+      </MobileSafeAreaView>
+  </NavigationContainer>
 }
 
 (function(l) {  // for github-page

@@ -32,6 +32,6 @@ const localSearchReducer =(initialState:LocalSearchState, action:LocalSearchActi
 
 export default function useLocalSearch<T>(target:T[], compare:(value:T, keyword:string)=>boolean) {
   const [searchState, dispatch] = useReducer(localSearchReducer, {active:false, keyword:''})
-  const data = useMemo(()=>target.filter(v=>compare(v, searchState.keyword)), [searchState, target])
+  const data = useMemo(()=>searchState.active?target.filter(v=>compare(v, searchState.keyword)):target, [searchState, target])
   return {searchState, dispatch, data}
 }

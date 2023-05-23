@@ -62,3 +62,7 @@ export const patchUser = async (user:{id:number, name:string})=>{
 export const getUserMembershipList = async (group_id:number)=>{
     return (await axios.get(`/api/v1/users/memberships/?group_id=${group_id}`) ).data as UserMembership[]
 }
+
+export const getExternalMembershipList = async (username:string)=>{
+    return (await axios.get(`/api/v1/users/memberships/?username=${username}`) ).data as UserMembership[]
+}

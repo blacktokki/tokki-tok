@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Dimensions, Platform, View } from 'react-native'
 import useIsMobile from '../hooks/useIsMobile'
 
-type ViewProps = {windowType:'landscape'|'portrait', children:React.ReactNode}
 
-export default (props:ViewProps)=>{
+export default (props:{children:React.ReactNode})=>{
     const isMobile = useIsMobile()
     const [height, setHeight] = useState(window.innerHeight + 1)
     useEffect(()=>{
