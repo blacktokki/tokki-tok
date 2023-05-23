@@ -112,7 +112,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     navigation.setOptions({
       headerRight: ()=> <HeaderRight extra={[
         {title:lang('invite'), onPress:()=>setModal(InviteModal, {id:channel_id})},
-        {title:lang('leave'), onPress:()=>{member_id && messengerMemberMutation.leave(member_id);back()}}
+        {title:lang('leave'), onPress:()=>{member_id && messengerMemberMutation.leave(member_id).then(back)}}
       ]}/>,
       title: channel?.name
     });

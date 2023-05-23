@@ -119,7 +119,6 @@ const Styles = StyleSheet.create({
     form_error: {
       height: 22,
       width:'100%',
-      paddingHorizontal: 20,
     },
     form_error_text:{
       textAlignVertical:'center',

@@ -26,6 +26,8 @@
     "This screen doesn't exist.":"페이지를 찾을 수 없습니다.",
     "Go to home screen!": "돌아가기",
     "create": "추가하기",
+    "invite link":"초대 링크",
+    "copied":"복사 완료",
     "Unregistered user or incorrect password.": "가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.",
     "Guest users cannot reconnect after logging out. Please create an account or log in.": "게스트 사용자는 로그아웃 후 다시 접속할 수 없습니다."
 }

@@ -21,5 +21,5 @@ export function useMessengerMemberMutation(){
       queryClient.invalidateQueries("MessengerMemberList")
     }
   })
-  return {invite:invite.mutate, leave:leave.mutate}
+  return {invite:invite.mutateAsync, leave:leave.mutateAsync}
 }

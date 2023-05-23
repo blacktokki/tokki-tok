@@ -1,4 +1,5 @@
 import React, {useRef,MutableRefObject, useMemo, useState, useEffect } from 'react';
+import Clipboard from '@react-native-clipboard/clipboard/dist';
 import { View, Text } from '../components/Themed';
 import CommonSection from '../components/CommonSection';
 import useAuthContext from '../hooks/useAuthContext';
@@ -13,6 +14,7 @@ import useExternalMembershipList from '../hooks/lists/useExternalMembershipList'
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
 import { TabViewNavigator } from '../navigation/DrawerNavigator';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
@@ -68,8 +70,7 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
         messengerMemberMutation.invite({
           channel_id:id,
           user_ids:[...selectedRef.current]
-        })
-        back()
+        }).then(back)
       }}/>
       <CommonButton title={lang('cancel')} onPress={back}/>
     </View>
@@ -81,9 +82,15 @@ const DELAY = 500
 const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const [value, setValue] = useState('')
   const [keyword, setKeyword] = useState('')
+  const [copied, setCopied] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { setModal } = useModalsContext()
-  const data = useExternalMembershipList(keyword)
+  const memberList = useMessengerMemberList(id)
+  const externalMemberList = useExternalMembershipList(keyword)
+  const data = useMemo(()=>{
+    const memberSet = new Set(memberList?.map(v=>v.user))
+    return externalMemberList?.filter(v=>!memberSet.has(v.id)) || []
+  }, [externalMemberList, memberList])
   const messengerMemberMutation = useMessengerMemberMutation()
   useEffect(()=>{
     timeoutRef.current = setTimeout(()=>{
@@ -94,8 +101,13 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const back = ()=>{
     setModal(InviteModal, null)
   }
-  
+  const inviteLink = location.href.replace('chat', 'invitee')
   return <View style={{alignItems:'center'}}>
+  <TouchableOpacity style={{paddingVertical:10, flexDirection:"row"}} onPress={()=>{Clipboard.setString(inviteLink);setCopied(true)}}>
+    <Text style={{fontSize:14}}>{lang('invite link')}{": "}</Text>
+    <Text style={{fontSize:14, color:'#12b886'}}>{inviteLink}{" "}</Text>
+    {copied && <Text style={{fontSize:12, color:'red'}}>{lang("copied")}</Text>}
+  </TouchableOpacity>
   <View style={{backgroundColor:'white', 'width': '50%'}}>
     <TextField name={lang('Username')} value={value} setValue={setValue} width={'80%'}/>
     {id && data?.map((item, index)=><InviteItem key={index} item={item} selectedRef={selectedRef}/>)}
@@ -105,8 +117,7 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
       messengerMemberMutation.invite({
         channel_id:id,
         user_ids:[...selectedRef.current]
-      })
-      back()
+      }).then(back)
     }}/>
     <CommonButton title={lang('cancel')} onPress={back}/>
   </View>
@@ -114,7 +125,6 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
 }
 
 export default function InviteModal({id}:{id:number}) {
-  const [index, setIndex] = React.useState(0);
   const selectedRef = useRef<Set<number>>(new Set())
   const drawerTabs:Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}> = {
     group:{
@@ -134,7 +144,7 @@ export default function InviteModal({id}:{id:number}) {
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     <View style={{width:'100%'}}>
-      <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>
+      <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"}/>
     </View>
   </CommonSection>
 }
