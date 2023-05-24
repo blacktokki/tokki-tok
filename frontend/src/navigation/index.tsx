@@ -6,16 +6,15 @@
 import _ from 'lodash';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
 import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
 
 import LinkingConfiguration from './LinkingConfiguration';
 import RootNavigator from './RootNavigator';
-import MobileSafeAreaView from '../components/MobileSafeAreaView';
-import { AuthProvider } from '../hooks/useAuthContext';
-import { QueryClient, QueryClientProvider } from 'react-query';
+
+import { ColorSchemeName, useColorScheme as useDefaultColorScheme } from 'react-native';
+import { Appearance, useColorScheme as useColorScheme } from 'react-native-appearance';
 import { ResizeWindowProvider } from '../hooks/useResizeWindow';
 
-const queryClient = new QueryClient();
+
 const navigationRef = React.createRef<NavigationContainerRef>();
 
 export function navigate(name:string, params?:any) {
@@ -24,23 +23,18 @@ export function navigate(name:string, params?:any) {
   navigationRef.current?.navigate(name);
 }
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+export default function Navigation() {
+  const defaultColorScheme = useDefaultColorScheme()
+  const userColorScheme = useColorScheme()
+  const colorScheme = userColorScheme =='no-preference'?defaultColorScheme:userColorScheme
   return <NavigationContainer
     ref={navigationRef}
     documentTitle={{formatter: (options, route) => {return `TOKKI TOK`}}}
     linking={(process.versions && process.versions['electron'])?undefined:LinkingConfiguration}
     theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <MobileSafeAreaView>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            {/* devtools */}
-            {/* <ReactQueryDevtools initialIsOpen={true} /> */}
-            <ResizeWindowProvider>
-              <RootNavigator />
-            </ResizeWindowProvider>
-          </QueryClientProvider>
-        </AuthProvider>
-      </MobileSafeAreaView>
+        <ResizeWindowProvider>
+          <RootNavigator />
+        </ResizeWindowProvider>
   </NavigationContainer>
 }
 

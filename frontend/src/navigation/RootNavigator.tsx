@@ -53,7 +53,7 @@ function headerLeft(navigation:any, route:any, windowType:string, isMobile:boole
     return null
 }
 
-const MainNavigator = React.memo(()=>{
+const MainNavigator = ()=>{
     const windowType = useResizeWindow();
     const isMobile = useIsMobile()
     const {auth} = useAuthContext()
@@ -95,4 +95,4 @@ const MainNavigator = React.memo(()=>{
             </WebSocketProvider>
         </View>
     </View>:<></>);
-})
+}

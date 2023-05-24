@@ -31,11 +31,11 @@ export const WebSocketInternalProvider = ({children, path, Context, useBackgroun
     </Context.Provider>
 }
 
-export const WebSocketProvider = React.memo(({disable, children}:{disable?:boolean, children:React.ReactNode})=>{
+export const WebSocketProvider = ({disable, children}:{disable?:boolean, children:React.ReactNode})=>{
   return disable?<>{children}</>:<WebSocketInternalProvider path={'messenger/ws/'} Context={WebSocketContext}>
     {children}
   </WebSocketInternalProvider>
-})
+}
 
 export default ()=>{
   const webSocketContext = useContext(WebSocketContext)
