@@ -8,13 +8,13 @@ import { UserMembership } from '../types';
 import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
 import { renderMemberItem } from '../tabs/MemberTab';
-import lang from  '../lang'
 import useModalsContext from '../hooks/useModalsContext';
 import useExternalMembershipList from '../hooks/lists/useExternalMembershipList';
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
 import { TabViewNavigator } from '../navigation/DrawerNavigator';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import useLangContext from '../hooks/useLangContext';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
@@ -38,6 +38,7 @@ type InviteTabViewProps = {
 }
 
 const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
+  const { lang } = useLangContext()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const userList = useUserMembershipList(auth)
@@ -80,6 +81,7 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
 const DELAY = 500
 
 const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
+  const { lang } = useLangContext()
   const [value, setValue] = useState('')
   const [keyword, setKeyword] = useState('')
   const [copied, setCopied] = useState(false)
@@ -125,6 +127,7 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
 }
 
 export default function InviteModal({id}:{id:number}) {
+  const { lang } = useLangContext()
   const selectedRef = useRef<Set<number>>(new Set())
   const drawerTabs:Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}> = {
     group:{

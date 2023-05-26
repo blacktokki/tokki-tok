@@ -9,16 +9,16 @@ import { bottomTabs } from '../../tabs';
 import HeaderRight from '../../components/HeaderRight';
 import TextButton from '../../components/TextButton';
 import Colors from '../../constants/Colors';
-import useColorScheme from '../../hooks/useColorScheme';
-import lang from '../../lang'
+import useColorScheme, { setColorScheme } from '../../hooks/useColorScheme';
 import useModalsContext from '../../hooks/useModalsContext';
 import ChannelEditModal from '../../modals/ChannelEditModal';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import useLangContext from '../../hooks/useLangContext';
 
 // navigate("BoardEditScreen", {channel_id:item.channel, id:item.id})
 // deleteBoardContent(item.id).then(()=>navigate('BoardScreen', {id:item.channel}))
 
 export default function HomeScreen({navigation, route}: StackScreenProps<any, 'Home'>) {
+  const { lang, locale, setLocale } = useLangContext()
   const windowType = useResizeWindow();
   const theme = useColorScheme()
   const configTheme = useConfigColorScheme()
@@ -52,11 +52,16 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
           <Text style={{fontSize:24}}> </Text>
           <Text style={{fontSize:24, fontWeight:'500', color}}>{lang('Quick Start')}</Text>
           <TextButton title={lang('+ New Messenger')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>setModal(ChannelEditModal, {type:'messenger'})}/>
+          <Text style={{fontSize:20, fontWeight:'500', color}}>{lang('* Language Settings')}</Text>
+          <View style={{flexDirection:'row'}}>
+            {[[lang('Auto'), 'auto'], ['한국어', 'ko'], ['English', 'en']].map(([title, l])=><TextButton 
+              key={title} title={title || ''} textStyle={{fontSize:16, color, textDecorationLine:locale==l?'underline':'none'}} style={{borderRadius:20}} onPress={()=>setLocale(l)}/>)}
+          </View>
           <Text style={{fontSize:20, fontWeight:'500', color}}>{lang('* Skin Settings')}</Text>
           <View style={{flexDirection:'row'}}>
             {[[lang('Auto'), 'no-preference'], [lang('Light'), 'light'], [lang('Dark'), 'dark']].map(([title, colorScheme])=><TextButton 
               key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:configTheme==colorScheme?'underline':'none'}} style={{borderRadius:20}} onPress={(
-                )=>AsyncStorage.setItem('color',colorScheme).then(()=>Appearance.set({colorScheme:(colorScheme as any)}))}/>)}
+                )=>setColorScheme(colorScheme)}/>)}
           </View>
         </View>
       </View>

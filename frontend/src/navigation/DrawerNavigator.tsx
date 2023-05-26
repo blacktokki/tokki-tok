@@ -10,9 +10,10 @@ import { drawerTabs } from '../tabs';
 import { UserMembership } from '../types';
 import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
-import useColorScheme from '../hooks/useColorScheme';
+import useLangContext from '../hooks/useLangContext';
 
 export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"top"|"bottom", index?:number, onTab?:(index:number)=>void})=>{
+  const { lang } = useLangContext()
   const [index, setIndex] = React.useState(props.index || 0);
   const entries = Object.entries(props.tabs)
   const onTab = props.onTab
@@ -29,7 +30,7 @@ export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"
         onTabPress={(scene)=>onTab?.(entries.findIndex(([k, v])=>k == scene.route.key))}
       />
     }}
-    navigationState={{ index, routes: entries.map(([k, v])=>({key:k, title:v.title}))}}
+    navigationState={{ index, routes: entries.map(([k, v])=>({key:k, title:lang(v.title)}))}}
     onIndexChange={setIndex}
     renderScene={SceneMap(Object.assign({}, ...entries.map(([k, v])=>({[k]:v.component}))))}
     tabBarPosition={props.tabBarPosition}

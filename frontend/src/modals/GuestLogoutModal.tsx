@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
-import Profile from '../components/Profile';
+import React from 'react';
 import useAuthContext from '../hooks/useAuthContext';
-import useUserMembershipList from '../hooks/lists/useUserMembershipList';
-import { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import CommonButton from '../components/CommonButton';
-import lang from '../lang'
 import useModalsContext from '../hooks/useModalsContext';
 import CommonSection from '../components/CommonSection';
 import { Text, View } from '../components/Themed';
+import useLangContext from '../hooks/useLangContext';
 
 export default function GuestLogoutModal({id}:{id:number}) {
+  const { lang } = useLangContext()
   const { setModal } = useModalsContext()
   const {dispatch} = useAuthContext()
   const back = ()=>{

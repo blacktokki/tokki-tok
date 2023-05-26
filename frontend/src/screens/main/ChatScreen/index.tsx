@@ -16,13 +16,13 @@ import Hyperlink from 'react-native-hyperlink'
 import useMessengerChannelList from '../../../hooks/lists/useMessengerChannelList';
 import useIsMobile from '../../../hooks/useIsMobile';
 import LinkPreview from '../../../components/LinkPreview';
-import lang from '../../../lang'
 import Avatar from '../../../components/Avatar';
 import VideoCallSection from './VideoCallSection';
 import useResizeWindow from '../../../hooks/useResizeWindow';
 import FilePreview from '../../../components/FilePreview';
 import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
+import useLangContext from '../../../hooks/useLangContext';
 
 
 function uploadFile(){
@@ -84,6 +84,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
 })
 
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
+  const { lang } = useLangContext()
   const channel_id = route?.params?.id
   const height = useRef(0)
   const inputRef = useRef<TextInput>(null)

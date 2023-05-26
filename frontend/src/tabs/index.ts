@@ -3,17 +3,16 @@ import MemberTab, {MemberIcon} from "./MemberTab";
 import OneTab, {ConfigIcon} from "./OneTab";
 import DrawerTab  from './DrawerTab';
 import MessengerTab, {MessengerIcon} from "./MessengerTab";
-import lang from "../lang"
 // import BoardTab, {BoardIcon}  from "../lib/blacktokki-board/BoardTab";
 
 export const bottomTabs = {
     OneTab:{
-        title:lang('member'),
+        title:'member',
         component:MemberTab,
         icon:MemberIcon,
     },
     TwoTab:{
-        title:lang('messenger'),
+        title:'messenger',
         component:MessengerTab,
         icon:MessengerIcon
     },
@@ -31,7 +30,7 @@ export const bottomTabs = {
 
 export const drawerTabs = {
     TwoTab:{
-        title:lang('messenger'),
+        title:'messenger',
         component:DrawerTab.Messenger,
         icon:MessengerIcon
     },

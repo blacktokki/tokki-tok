@@ -3,11 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Navigation from './src/navigation';
 import useCachedResources from './src/hooks/useCachedResources';
-import { AppearanceProvider } from 'react-native-appearance';
 import { useInitColorScheme } from './src/hooks/useColorScheme';
 import MobileSafeAreaView from './src/components/MobileSafeAreaView';
 import { AuthProvider } from './src/hooks/useAuthContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { IntlProvider } from './src/hooks/useLangContext';
 
 const queryClient = new QueryClient();
 
@@ -22,10 +22,12 @@ export default function App() {
         <MobileSafeAreaView>
           <AuthProvider>
             <QueryClientProvider client={queryClient}>
-              {/* devtools */}
-              {/* <ReactQueryDevtools initialIsOpen={true} /> */}
-              <Navigation/>
-              <StatusBar />
+              <IntlProvider>
+                {/* devtools */}
+                {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+                <Navigation/>
+                <StatusBar />
+              </IntlProvider>
             </QueryClientProvider>
           </AuthProvider>
         </MobileSafeAreaView>

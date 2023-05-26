@@ -1,11 +1,12 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import lang from '../lang'
+import useLangContext from '../hooks/useLangContext';
 
 export default function NotFoundScreen({
   navigation,
 }: StackScreenProps<any, 'NotFound'>) {
+  const { lang } = useLangContext()
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{lang("This screen doesn't exist.")}</Text>

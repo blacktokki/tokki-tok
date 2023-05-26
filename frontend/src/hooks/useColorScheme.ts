@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
 import { useMemo, useEffect, useState } from 'react';
 import { ColorSchemeName } from 'react-native';
-import { Appearance } from 'react-native-appearance';
+import { Appearance, ColorSchemeName as UserColorSchemeName } from 'react-native-appearance';
 
 // The useColorScheme value is always either light or dark, but the built-in
 // type suggests that it can be null. This will not happen in practice, so this
@@ -19,6 +19,10 @@ export function useInitColorScheme(){
     }
   }, [complete])
   return complete
+}
+
+export function setColorScheme(colorScheme:UserColorSchemeName){
+  AsyncStorage.setItem('color',colorScheme as string).then(()=>Appearance.set({colorScheme}))
 }
 
 export default function useColorScheme(): NonNullable<ColorSchemeName> {

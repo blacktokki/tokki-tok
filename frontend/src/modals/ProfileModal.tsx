@@ -6,12 +6,13 @@ import { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelL
 import CommonButton from '../components/CommonButton';
 import { DirectChannel } from '../types';
 import { navigate } from '../navigation';
-import lang from '../lang'
 import useModalsContext from '../hooks/useModalsContext';
 import CommonSection from '../components/CommonSection';
 import { Text, View } from '../components/Themed';
+import useLangContext from '../hooks/useLangContext';
 
 export default function ProfileModal({id}:{id:number}) {
+  const { lang } = useLangContext()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const userList = useUserMembershipList(auth)

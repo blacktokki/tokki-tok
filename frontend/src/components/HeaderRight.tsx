@@ -3,13 +3,14 @@ import TextButton from "./TextButton"
 import useAuthContext from "../hooks/useAuthContext"
 import useResizeWindow from '../hooks/useResizeWindow'
 import { View } from 'react-native'
-import lang from '../lang'
 import useModalsContext from '../hooks/useModalsContext'
 import GuestLogoutModal from '../modals/GuestLogoutModal'
+import useLangContext from '../hooks/useLangContext'
 
 type ButtonProps = {title:string, onPress:()=>void, windowType?:'landscape'|'portrait'}
 
 export default (props:{extra?:ButtonProps[]})=>{
+    const { lang } = useLangContext()
     const {auth, dispatch} = useAuthContext()
     const { setModal } = useModalsContext()
     const windowType = useResizeWindow()

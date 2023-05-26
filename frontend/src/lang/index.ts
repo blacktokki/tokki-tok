@@ -2,7 +2,7 @@ import { createIntl, createIntlCache } from "@formatjs/intl";
 import {I18nManager} from "react-native";
 import * as RNLocalize from "react-native-localize";
 
-const translations = {
+export const translations = {
   ko: require("./ko.json"),
 } as const;
 
@@ -27,9 +27,4 @@ const intl = createIntl(
   createIntlCache(),
 );
 
-type TranslationParams = Parameters<(typeof intl)["formatMessage"]>[1];
-
-export default (key: string, params?: TranslationParams) => 
-  intl
-    .formatMessage({ id: key, defaultMessage: key }, params)
-    .toString();
+export default intl

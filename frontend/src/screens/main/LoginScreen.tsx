@@ -8,11 +8,12 @@ import {
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import useAuthContext from '../../hooks/useAuthContext';
-import lang from '../../lang'
+import useLangContext from '../../hooks/useLangContext';
 
 export default function LoginScreen({
   navigation, route
 }: StackScreenProps<any, 'Login'>) {
+  const { lang } = useLangContext()
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const {error, dispatch} = useAuthContext()

@@ -6,16 +6,15 @@ import InviteeScreen from "./main/InviteeScreen";
 // import BoardScreen from "../lib/blacktokki-board/BoardScreen";
 // import BoardEditScreen from "../lib/blacktokki-board/BoardEditScreen";
 import { Screens } from "../types";
-import lang from "../lang"
 
 export const main = {
     HomeScreen:{
-        title:lang('home'),
+        title:'home',
         component:HomeScreen,
         path:'home',
     },
     ChatScreen:{
-        title:lang('chat'),
+        title:'chat',
         component:ChatScreen,
         path:'chat'
     },
@@ -39,7 +38,7 @@ export const main = {
 export const login = {
     LoginScreen:{
         path: 'login',
-        title: lang('Sign in'),
+        title: 'Sign in',
         component:LoginScreen
     },
     InviteeScreen:{

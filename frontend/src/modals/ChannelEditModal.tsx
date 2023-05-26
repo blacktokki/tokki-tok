@@ -9,10 +9,11 @@ import { navigate } from '../navigation';
 import { Channel } from '../types';
 import useMessengerChannelList, { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import TextField from '../components/TextField';
-import lang from '../lang'
 import useModalsContext from '../hooks/useModalsContext';
+import useLangContext from '../hooks/useLangContext';
 
 export default function ChannelEditModal({id, type}: {id?:number, type:string}) {
+  const { lang } = useLangContext()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const channelList = useMessengerChannelList(auth)
