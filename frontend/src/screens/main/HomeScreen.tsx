@@ -38,7 +38,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
       title: lang('home'),
       headerRight: ()=><HeaderRight/>
     });
-  }, [navigation, route, windowType]);
+  }, [navigation, route, windowType, locale]);
   useEffect(()=>{
     setHome(windowType == 'landscape')
   }, [windowType])

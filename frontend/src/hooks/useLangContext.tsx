@@ -27,8 +27,7 @@ export default ()=>{
   const { locale, setLocale } = useContext(IntlContext)
   return {
     lang:(key: string, params?: TranslationParams) => {
-      console.log(locale)
-      if (locale == 'en')
+      if (locale == 'en' || key.length==0)
         return key
       if (locale != undefined && locale !='auto')
         return translations[locale as 'ko'][key]

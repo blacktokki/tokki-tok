@@ -16,6 +16,7 @@ import useIsMobile from '../hooks/useIsMobile';
 import useColorScheme from '../hooks/useColorScheme';
 import { ModalsProvider } from '../hooks/useModalsContext';
 import modals from '../modals';
+import useLangContext from '../hooks/useLangContext';
 
 const Root = createStackNavigator();
 
@@ -58,12 +59,13 @@ const MainNavigator = ()=>{
     const isMobile = useIsMobile()
     const {auth} = useAuthContext()
     const theme = useColorScheme()
+    const {lang, locale} = useLangContext()
     const entries = useMemo(()=>{
         if (auth.user === undefined)
             return []
         console.log('current user: ', auth.user)
         return Object.entries(auth.user === null?login:main)
-    }, [auth])
+    }, [auth, locale])
     const modalValues = useMemo(()=>{
         if (auth.user === undefined)
             return []
@@ -88,7 +90,7 @@ const MainNavigator = ()=>{
                             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
                         })}
                     >
-                        {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: screen.title }} />)}
+                        {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: lang(screen.title) }} />)}
                         <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
                     </Main.Navigator>
                 </ModalsProvider>

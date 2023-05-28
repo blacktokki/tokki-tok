@@ -23,11 +23,11 @@ export const main = {
     //     component:BoardScreen,
     //     path:'board'
     // },
-    TabOneScreen:{
-        title:'tab one',
-        component:TabOneScreen,
-        path:'one'
-    },
+    // TabOneScreen:{
+    //     title:'tab one',
+    //     component:TabOneScreen,
+    //     path:'one'
+    // },
     InviteeScreen:{
         title: '',        
         component:InviteeScreen,

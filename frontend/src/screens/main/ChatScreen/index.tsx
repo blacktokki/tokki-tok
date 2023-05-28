@@ -84,7 +84,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
 })
 
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
-  const { lang } = useLangContext()
+  const { lang, locale } = useLangContext()
   const channel_id = route?.params?.id
   const height = useRef(0)
   const inputRef = useRef<TextInput>(null)
@@ -117,7 +117,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       ]}/>,
       title: channel?.name
     });
-  }, [navigation, route, member_id]);
+  }, [navigation, route, member_id, locale]);
 
   const renderItem = useCallback(({item, index}:{item:MessengerContentPage, index:number})=><MessengerContentPageItem {...item} ownerId={auth.user?.id}/>, [auth])
   
