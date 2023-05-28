@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { TextProps, StyleProp } from 'react-native';
 import {View, Text } from './Themed'
-import useResizeWindow from '../hooks/useResizeWindow';
+import useResizeContext from '../hooks/useResizeContext';
 
 type Props = {
   name: string,
@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default function RowField(props:Props) {
-  const windowType = useResizeWindow()
+  const windowType = useResizeContext()
   const rowStyle = useMemo(()=>windowType=='landscape'?
     {flexDirection:'row', alignItems: 'center', justifyContent:'space-between'}:
     {flexDirection:'column', alignItems:'flex-start'} as any

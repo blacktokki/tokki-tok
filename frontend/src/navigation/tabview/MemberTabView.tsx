@@ -1,13 +1,13 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import React from "react"
 import { Text, View } from "react-native"
-import CommonItem from "../components/CommonItem"
-import useAuthContext from "../hooks/useAuthContext"
-import useUserMembershipList from "../hooks/lists/useUserMembershipList"
-import { UserMembership } from "../types"
-import Avatar from "../components/Avatar"
-import useModalsContext from "../hooks/useModalsContext"
-import ProfileModal from "../modals/ProfileModal"
+import CommonItem from "../../components/CommonItem"
+import useAuthContext from "../../hooks/useAuthContext"
+import useUserMembershipList from "../../hooks/lists/useUserMembershipList"
+import { UserMembership } from "../../types"
+import Avatar from "../../components/Avatar"
+import useModalsContext from "../../hooks/useModalsContext"
+import ProfileModal from "../../modals/ProfileModal"
 
 export const renderMemberItem = (item:UserMembership, onPress?:()=>void)=> {
     return <CommonItem key={item.id} bodyStyle={{backgroundColor:'white', flexDirection:'row', justifyContent:'flex-start'}} onPress={onPress}>

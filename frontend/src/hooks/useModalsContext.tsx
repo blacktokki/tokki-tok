@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { Modal } from "react-native";
-import useResizeWindow from "./useResizeWindow";
+import useResizeContext from "./useResizeContext";
 
 type ModalProps = any
 
@@ -16,7 +16,7 @@ const ModalsContext = createContext<{setModal: SetModal}>({
 
 export const ModalsProvider = ({children, modals:allModals}:{children:React.ReactNode, modals:React.ComponentType<ModalProps>[]}) => {
     const [modals, setModals] = useState<ModalState[]>(allModals.map((Component)=>({Component})));
-    const windowType = useResizeWindow();
+    const windowType = useResizeContext();
     const [animationType, setAnimationType] = useState('none')
     const setModal:SetModal = (Component, props) => {
         const newModals = modals.map(m=>{

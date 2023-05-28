@@ -1,10 +1,10 @@
 import { Ionicons, FontAwesome } from "@expo/vector-icons"
 import React from "react"
 import { Text, View } from "react-native"
-import CommonItem from "../components/CommonItem"
-import useAuthContext from "../hooks/useAuthContext"
-import { useMessengerChannelSorted } from "../hooks/lists/useMessengerChannelList"
-import { navigate } from "../navigation"
+import CommonItem from "../../components/CommonItem"
+import useAuthContext from "../../hooks/useAuthContext"
+import { useMessengerChannelSorted } from "../../hooks/lists/useMessengerChannelList"
+import { navigate } from "../../navigation"
 
 export default ()=>{
     const {auth} = useAuthContext()

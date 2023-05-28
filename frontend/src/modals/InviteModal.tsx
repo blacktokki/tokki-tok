@@ -7,12 +7,12 @@ import useUserMembershipList from '../hooks/lists/useUserMembershipList';
 import { UserMembership } from '../types';
 import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
-import { renderMemberItem } from '../tabs/MemberTab';
+import { renderMemberItem } from '../navigation/tabview/MemberTabView';
 import useModalsContext from '../hooks/useModalsContext';
 import useExternalMembershipList from '../hooks/lists/useExternalMembershipList';
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
-import { TabViewNavigator } from '../navigation/DrawerNavigator';
+import TabViewNavigator from '../navigation/tabview';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import useLangContext from '../hooks/useLangContext';
 

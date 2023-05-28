@@ -2,10 +2,9 @@ import React, {useState, useEffect, useLayoutEffect} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
 import { StyleSheet, Text, View} from 'react-native';
 import { Text as StyledText } from 'react-native-paper';
-import { Appearance, useColorScheme as useConfigColorScheme} from 'react-native-appearance';
-import {TabViewNavigator} from '../../navigation/DrawerNavigator';
-import useResizeWindow from '../../hooks/useResizeWindow';
-import { bottomTabs } from '../../tabs';
+import { useColorScheme as useConfigColorScheme} from 'react-native-appearance';
+import useResizeContext from '../../hooks/useResizeContext';
+import TabViewNavigator, { bottomTabs } from '../../navigation/tabview';
 import HeaderRight from '../../components/HeaderRight';
 import TextButton from '../../components/TextButton';
 import Colors from '../../constants/Colors';
@@ -19,7 +18,7 @@ import useLangContext from '../../hooks/useLangContext';
 
 export default function HomeScreen({navigation, route}: StackScreenProps<any, 'Home'>) {
   const { lang, locale, setLocale } = useLangContext()
-  const windowType = useResizeWindow();
+  const windowType = useResizeContext();
   const theme = useColorScheme()
   const configTheme = useConfigColorScheme()
   const { setModal } = useModalsContext()

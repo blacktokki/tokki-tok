@@ -1,46 +1,18 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TabView, SceneMap,NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
 import Profile from '../components/Profile';
 import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
-import useResizeWindow from '../hooks/useResizeWindow';
-import { drawerTabs } from '../tabs';
+import useResizeContext from '../hooks/useResizeContext';
+import TabViewNavigator, { drawerTabs } from './tabview';
 import { UserMembership } from '../types';
 import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
-import useLangContext from '../hooks/useLangContext';
-
-export const TabViewNavigator = (props:{tabs:typeof drawerTabs, tabBarPosition:"top"|"bottom", index?:number, onTab?:(index:number)=>void})=>{
-  const { lang } = useLangContext()
-  const [index, setIndex] = React.useState(props.index || 0);
-  const entries = Object.entries(props.tabs)
-  const onTab = props.onTab
-  const icons = Object.assign({}, ...entries.map(([k, v])=>({[k]:v.icon})))
-  return <TabView
-    renderTabBar={(props:SceneRendererProps & {navigationState: NavigationState<any>})=>{
-      return <TabBar
-        {...props}
-        indicatorStyle={{ backgroundColor: "#2196F3" }}
-        style={{ backgroundColor:'white' }}
-        activeColor={'black'}
-        inactiveColor={'black'}
-        renderIcon={(scene)=>icons[scene.route.key]}
-        onTabPress={(scene)=>onTab?.(entries.findIndex(([k, v])=>k == scene.route.key))}
-      />
-    }}
-    navigationState={{ index, routes: entries.map(([k, v])=>({key:k, title:lang(v.title)}))}}
-    onIndexChange={setIndex}
-    renderScene={SceneMap(Object.assign({}, ...entries.map(([k, v])=>({[k]:v.component}))))}
-    tabBarPosition={props.tabBarPosition}
-  />
-}
-
 
 export default ({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
-  const windowType = useResizeWindow();
+  const windowType = useResizeContext();
   const [index, setIndex] = useState(0);
   const { setModal } = useModalsContext()
   const onAddList = [

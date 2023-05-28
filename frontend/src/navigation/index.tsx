@@ -10,9 +10,9 @@ import * as React from 'react';
 import LinkingConfiguration from './LinkingConfiguration';
 import RootNavigator from './RootNavigator';
 
-import { ColorSchemeName, useColorScheme as useDefaultColorScheme } from 'react-native';
-import { Appearance, useColorScheme as useColorScheme } from 'react-native-appearance';
-import { ResizeWindowProvider } from '../hooks/useResizeWindow';
+import { useColorScheme as useDefaultColorScheme } from 'react-native';
+import { useColorScheme as useColorScheme } from 'react-native-appearance';
+import { ResizeContextProvider } from '../hooks/useResizeContext';
 
 
 const navigationRef = React.createRef<NavigationContainerRef>();
@@ -32,9 +32,9 @@ export default function Navigation() {
     documentTitle={{formatter: (options, route) => {return `TOKKI TOK`}}}
     linking={(process.versions && process.versions['electron'])?undefined:LinkingConfiguration}
     theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <ResizeWindowProvider>
+        <ResizeContextProvider>
           <RootNavigator />
-        </ResizeWindowProvider>
+        </ResizeContextProvider>
   </NavigationContainer>
 }
 

@@ -5,7 +5,7 @@ import Colors from '../../../constants/Colors';
 import {default as useRtcContext, WebSocketProvider as RtcProvider} from "../../../lib/react-native-webrtc/useWebsocketContext";
 import LocalCam from '../../../lib/react-native-webrtc/LocalCam';
 import RemoteCam from '../../../lib/react-native-webrtc/RemoteCam';
-import useResizeWindow from '../../../hooks/useResizeWindow';
+import useResizeContext from '../../../hooks/useResizeContext';
 import useAuthContext from '../../../hooks/useAuthContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
@@ -35,7 +35,7 @@ const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
   const [videoMode, setVideoMode] = useState<VideoType>(null)
   const [guests, setGuests] = useState<string[]>([])
   const [focusGuest, setFocusGuest] = useState<string>()
-  const windowType = useResizeWindow()
+  const windowType = useResizeContext()
   const { lastJsonMessage, sendJsonMessage } = useRtcContext()
   useEffect(()=>{
     if(lastJsonMessage !=null){

@@ -2,7 +2,7 @@ import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/
 import React, {useMemo} from 'react';
 import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import useResizeWindow from '../hooks/useResizeWindow';
+import useResizeContext from '../hooks/useResizeContext';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import {main, login, modal} from '../screens';
 import DrawerNavigator from './DrawerNavigator';
@@ -21,7 +21,7 @@ import useLangContext from '../hooks/useLangContext';
 const Root = createStackNavigator();
 
 export default function RootNavigator() {
-    const windowType = useResizeWindow();
+    const windowType = useResizeContext();
     return <Root.Navigator
         mode= 'modal'
         headerMode= 'screen'
@@ -55,7 +55,7 @@ function headerLeft(navigation:any, route:any, windowType:string, isMobile:boole
 }
 
 const MainNavigator = ()=>{
-    const windowType = useResizeWindow();
+    const windowType = useResizeContext();
     const isMobile = useIsMobile()
     const {auth} = useAuthContext()
     const theme = useColorScheme()
@@ -74,27 +74,27 @@ const MainNavigator = ()=>{
 
     useFirebaseContext(auth)
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
-        {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
-        <View style={{flex:1}}>
-            <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
-                <ModalsProvider modals={modalValues}>
-                    <Main.Navigator
-                        screenOptions={({navigation, route})=>({
-                            headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
-                            headerTitleStyle:{color:'white'},
-                            headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
-                            headerRight:()=><HeaderRight/>,
-                            headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
-                            cardStyle:{flexShrink:1},
-                            animationEnabled:windowType=='portrait',
-                            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-                        })}
-                    >
-                        {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: lang(screen.title) }} />)}
-                        <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-                    </Main.Navigator>
-                </ModalsProvider>
-            </WebSocketProvider>
-        </View>
+        <ModalsProvider modals={modalValues}>
+            {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
+            <View style={{flex:1}}>
+                <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
+                        <Main.Navigator
+                            screenOptions={({navigation, route})=>({
+                                headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
+                                headerTitleStyle:{color:'white'},
+                                headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
+                                headerRight:()=><HeaderRight/>,
+                                headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
+                                cardStyle:{flexShrink:1},
+                                animationEnabled:windowType=='portrait',
+                                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+                            })}
+                        >
+                            {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: lang(screen.title) }} />)}
+                            <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+                        </Main.Navigator>
+                </WebSocketProvider>
+            </View>
+        </ModalsProvider>
     </View>:<></>);
 }

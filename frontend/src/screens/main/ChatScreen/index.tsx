@@ -18,7 +18,7 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import LinkPreview from '../../../components/LinkPreview';
 import Avatar from '../../../components/Avatar';
 import VideoCallSection from './VideoCallSection';
-import useResizeWindow from '../../../hooks/useResizeWindow';
+import useResizeContext from '../../../hooks/useResizeContext';
 import FilePreview from '../../../components/FilePreview';
 import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
@@ -94,7 +94,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const {data, fetchNextPage } = useMessengerContentList(channel_id)
   const memberList = useMessengerMemberList(channel_id)
   const member_id = useMemo(()=>memberList?.find(v=>v.user == auth.user?.id)?.id, [auth, memberList])
-  const windowType = useResizeWindow()
+  const windowType = useResizeContext()
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
   const [autoFocus, setAutoFocus] = useState(true)

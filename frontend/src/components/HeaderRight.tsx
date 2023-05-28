@@ -1,7 +1,7 @@
 import React from 'react'
 import TextButton from "./TextButton"
 import useAuthContext from "../hooks/useAuthContext"
-import useResizeWindow from '../hooks/useResizeWindow'
+import useResizeContext from '../hooks/useResizeContext'
 import { View } from 'react-native'
 import useModalsContext from '../hooks/useModalsContext'
 import GuestLogoutModal from '../modals/GuestLogoutModal'
@@ -13,7 +13,7 @@ export default (props:{extra?:ButtonProps[]})=>{
     const { lang } = useLangContext()
     const {auth, dispatch} = useAuthContext()
     const { setModal } = useModalsContext()
-    const windowType = useResizeWindow()
+    const windowType = useResizeContext()
     const defaultButtonProps:ButtonProps[] = [{title:lang('sign out'), onPress:()=>{
         if (auth?.user?.username.endsWith(".guest")){
             setModal(GuestLogoutModal, {})
