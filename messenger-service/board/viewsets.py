@@ -1,4 +1,3 @@
-from django.db import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from board.models import Board
@@ -12,8 +11,7 @@ from messenger.models import ChannelContent
 class BoardContentViewset(viewsets.ModelViewSet):
     serializer_class = BoardContentSerializer
     filterset_class = ChannelContentFilterSet
-    queryset = ChannelContent.objects.filter(channel__type='board').annotate(
-        name=models.F('user__last_name')).order_by('-id')
+    queryset = ChannelContent.objects.board_annotate_viewset()
 
     @action(detail=False, methods=['post'],
             queryset=Board.objects.all(),

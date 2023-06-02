@@ -1,6 +1,6 @@
 import re
 from opengraph_parse import parse_page
-from django.db import models, transaction
+from django.db import transaction
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
@@ -46,7 +46,6 @@ class ChannelSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
         if instance.type == 'messenger':
-            print('@@@')
             MessengerMember.objects.create(user_id=validated_data['owner'].id, channel_id=instance.id)
             instance.enter_message_id = create_enter_message(instance.id, validated_data['owner']).id
         return instance
@@ -64,14 +63,9 @@ class DirectChannelSerializer(ChannelSerializer):
     def create(self, validated_data):
         counterpart = validated_data.pop('counterpart')
         is_self = (validated_data['owner'].id == counterpart.id)
-        owner_channel_ids = set(MessengerMember.objects.filter(user=validated_data['owner']).values_list(
-            'channel_id', flat=True))
-        counterpart_channel_ids = set(MessengerMember.objects.filter(user=counterpart).values_list(
-            'channel_id', flat=True))
-        instance = Channel.objects.filter(id__in=(owner_channel_ids & counterpart_channel_ids)).annotate(
-            member_count=models.Subquery(Channel.objects.filter(id=models.OuterRef('id')).annotate(
-                member_count=models.Count('messengermember')).values('member_count')[:1]),
-        ).filter(member_count=1 if is_self else 2).last()
+        owner_channel_ids = set(MessengerMember.objects.channel_ids_filter(user=validated_data['owner']))
+        counterpart_channel_ids = set(MessengerMember.objects.channel_ids_filter(user=counterpart))
+        instance = Channel.objects.filter_direct_channel(owner_channel_ids, counterpart_channel_ids, is_self)
         if instance:
             instance.owner = validated_data['owner']
             instance.enter_message_id = None
@@ -106,10 +100,10 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         if not hasattr(self, '_last_message'):
-            _last_message = [
-                i.last_message_id for i in self.parent.instance] if self.parent else [self.instance.last_message_id]
-            self._last_message = {i['channel_content__channel_id']: i for i in Message.objects.filter(
-                id__in=_last_message).values('channel_content__channel_id', 'channel_content__created', 'content')}
+            _last_message = [i.last_message_id for i in self.parent.instance] if self.parent else [
+                self.instance.last_message_id]
+            self._last_message = {i['channel_content__channel_id']: i for i in Message.objects.last_message_values(
+                _last_message)}
         data = super().to_representation(instance)
         data['last_message'] = LastMessageSerializer(
             instance=self._last_message[data['id']]).data if data['id'] in self._last_message else None

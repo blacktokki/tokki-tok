@@ -26,13 +26,11 @@ ANNOTATE_MESSENGER_CONTENT = {
 
 def post_create_message(channel_id, message_ids):
     notification_messages = defaultdict(list)
-    for instance in ChannelContent.objects.annotate(**ANNOTATE_MESSENGER_CONTENT).filter(message__id__in=message_ids):
+    for instance in ChannelContent.objects.messenger_content_filter(message__id__in=message_ids):
         serializer = MessengerContentSerializer(instance=instance)
         send_next_message(channel_id, serializer.data)
         notification_messages[channel_id].append(serializer.data)
-    prefetch = models.Prefetch('messengermember_set', MessengerMember.objects.prefetch_related(
-        'user__notification_set').all())
-    for channel in Channel.objects.prefetch_related(prefetch).filter(id__in=notification_messages.keys()):
+    for channel in Channel.objects.channel_with_notifications(notification_messages.keys()):
         for data in notification_messages[channel_id]:
             notifications = []
             for mm in channel.messengermember_set.all():
@@ -49,13 +47,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
     queryset = Channel.objects.all()
 
     @action(detail=False, methods=['get'],
-            queryset=Channel.objects.filter(type='messenger').annotate(
-            member_count=models.Subquery(Channel.objects.filter(id=models.OuterRef('id')).annotate(
-                member_count=models.Count('messengermember')).values('member_count')[:1]),
-            unread_count=models.Count('channelcontent', filter=models.Q(channelcontent__message__id__gt=models.F(
-                'messengermember__last_message'))),
-            last_message_id=models.Max('channelcontent__message'),
-            ),
+            queryset=Channel.objects.annotate_viewset(),
             serializer_class=MessengerChannelSerializer)
     def messenger(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -86,8 +78,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
 class MessengerContentViewset(viewsets.ModelViewSet):
     serializer_class = MessengerContentSerializer
     filterset_class = ChannelContentFilterSet
-    queryset = ChannelContent.objects.filter(channel__type='messenger').annotate(
-        **ANNOTATE_MESSENGER_CONTENT).order_by('-id')
+    queryset = ChannelContent.objects.annotate_messenger_viewset()
 
     @action(detail=False, methods=['post'],
             queryset=Message.objects.all(),

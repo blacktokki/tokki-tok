@@ -43,8 +43,7 @@ class MessengerConsumer(WebsocketConsumer):
 
     @connect
     def connect(self):
-        self.channel_ids = set(Channel.objects.filter(messengermember__user_id=self.user.id).values_list(
-            'id', flat=True))
+        self.channel_ids = set(Channel.objects.entered_channel_ids(self.user))
         for channel_id in self.channel_ids:
             async_to_sync(self.channel_layer.group_add)(
                 f"{self.CHANNEL_PREFIX}{channel_id}",
