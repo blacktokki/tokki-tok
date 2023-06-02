@@ -1,4 +1,3 @@
-from opengraph_parse import parse_page
 from django.db import transaction
 from rest_framework import serializers
 from accounts.models import User
@@ -35,6 +34,7 @@ class BoardContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
     link_set = LinkSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True)
+
     class Meta:
         model = ChannelContent
         fields = '__all__'

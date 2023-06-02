@@ -19,3 +19,4 @@ pyfcm==1.5.4
 opengraph_parse
 pyforkurento
 django-storages[google]
+flake8

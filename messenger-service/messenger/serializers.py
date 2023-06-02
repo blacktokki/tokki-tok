@@ -4,9 +4,10 @@ from django.db import models, transaction
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
-from .models import Channel, MessengerMember, Message, ChannelContent, Link, File
+from .models import (
+    Channel, MessengerMember, Message, ChannelContent, Link, File)
 
-url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
+url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"  # noqa E501
 
 
 def create_enter_message(channel_id, user):
@@ -24,14 +25,16 @@ def attach_link(channel_content, validated_data):
         else:
             link_set.remove(link.url)
     for url in link_set:
-        parsed_og_tags = parse_page(url, ["og:url", "og:title", "og:image", "og:description"], fallback_tags={'og:title': 'title'})
-        add_links.append(Link(
-            channel_content=channel_content,
-            url=parsed_og_tags.get("og:url"),
-            title=parsed_og_tags.get("og:title"),
-            image=parsed_og_tags.get("og:image"),
-            description=parsed_og_tags.get("og:description")
-        ))
+        parsed_og_tags = parse_page(url, [
+            "og:url", "og:title", "og:image", "og:description"], fallback_tags={'og:title': 'title'})
+        if parsed_og_tags:
+            add_links.append(Link(
+                channel_content=channel_content,
+                url=parsed_og_tags.get("og:url"),
+                title=parsed_og_tags.get("og:title"),
+                image=parsed_og_tags.get("og:image"),
+                description=parsed_og_tags.get("og:description")
+            ))
     Link.objects.filter(id__in=delete_link_ids).delete()
     Link.objects.bulk_create(add_links)
 
@@ -47,7 +50,7 @@ class ChannelSerializer(serializers.ModelSerializer):
             MessengerMember.objects.create(user_id=validated_data['owner'].id, channel_id=instance.id)
             instance.enter_message_id = create_enter_message(instance.id, validated_data['owner']).id
         return instance
-    
+
     class Meta:
         model = Channel
         fields = '__all__'
@@ -60,11 +63,14 @@ class DirectChannelSerializer(ChannelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         counterpart = validated_data.pop('counterpart')
-        is_self = (validated_data['owner'].id==counterpart.id)
-        owner_channel_ids = set(MessengerMember.objects.filter(user=validated_data['owner']).values_list('channel_id', flat=True))
-        counterpart_channel_ids = set(MessengerMember.objects.filter(user=counterpart).values_list('channel_id', flat=True))
+        is_self = (validated_data['owner'].id == counterpart.id)
+        owner_channel_ids = set(MessengerMember.objects.filter(user=validated_data['owner']).values_list(
+            'channel_id', flat=True))
+        counterpart_channel_ids = set(MessengerMember.objects.filter(user=counterpart).values_list(
+            'channel_id', flat=True))
         instance = Channel.objects.filter(id__in=(owner_channel_ids & counterpart_channel_ids)).annotate(
-            member_count=models.Subquery( Channel.objects.filter(id=models.OuterRef('id')).annotate(member_count=models.Count('messengermember')).values('member_count')[:1]),
+            member_count=models.Subquery(Channel.objects.filter(id=models.OuterRef('id')).annotate(
+                member_count=models.Count('messengermember')).values('member_count')[:1]),
         ).filter(member_count=1 if is_self else 2).last()
         if instance:
             instance.owner = validated_data['owner']
@@ -81,7 +87,7 @@ class DirectChannelSerializer(ChannelSerializer):
                 instance.counterpart = None
                 instance.counterpart_message_id = None
         return instance
-    
+
     class Meta:
         model = Channel
         fields = '__all__'
@@ -100,10 +106,13 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         if not hasattr(self, '_last_message'):
-            _last_message = [i.last_message_id for i in self.parent.instance] if self.parent else [self.instance.last_message_id]
-            self._last_message = {i['channel_content__channel_id']:i for i in Message.objects.filter(id__in=_last_message).values('channel_content__channel_id', 'channel_content__created', 'content')}
+            _last_message = [
+                i.last_message_id for i in self.parent.instance] if self.parent else [self.instance.last_message_id]
+            self._last_message = {i['channel_content__channel_id']: i for i in Message.objects.filter(
+                id__in=_last_message).values('channel_content__channel_id', 'channel_content__created', 'content')}
         data = super().to_representation(instance)
-        data['last_message'] = LastMessageSerializer(instance=self._last_message[data['id']]).data if data['id'] in self._last_message else None
+        data['last_message'] = LastMessageSerializer(
+            instance=self._last_message[data['id']]).data if data['id'] in self._last_message else None
         return data
 
     class Meta:
@@ -141,11 +150,11 @@ class LinkSerializer(serializers.ModelSerializer):
 class FileSerializer(serializers.ModelSerializer):
     filename = serializers.CharField(read_only=True)
     filesize = serializers.IntegerField(read_only=True)
-    
+
     class Meta:
         model = File
         exclude = ['channel_content']
-        
+
 
 class MessengerContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
@@ -153,6 +162,7 @@ class MessengerContentSerializer(serializers.ModelSerializer):
     file_set = FileSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True)
     channel_name = serializers.CharField(read_only=True)
+
     class Meta:
         model = ChannelContent
         fields = '__all__'
@@ -166,6 +176,7 @@ class MessengerMemberSerializer(serializers.ModelSerializer):
 
 class MessengerUserSerializer(MessengerMemberSerializer):
     user = UserSerializer()
+
     class Meta:
         model = MessengerMember
         fields = '__all__'
@@ -187,6 +198,7 @@ class MessengerUserBulkSerializer(MessengerMemberSerializer):
         ]
         validated_data["user_ids"] = user_ids
         return validated_data
+
     class Meta:
         model = MessengerMember
         fields = '__all__'

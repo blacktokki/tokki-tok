@@ -9,11 +9,13 @@ from messenger.consumers import connect, disconnect
 class BroadcastMixin:
     def receive_broadcast(self, channel_id):
         self.channel_id = channel_id
-        async_to_sync(self.channel_layer.group_send)(f"{self.CHANNEL_PREFIX}{channel_id}", {"type": "broadcast", "message": {
-            "type": "broadcast_guest",
-            "sender": self.channel_name, 
-            "data":{}
-        }})
+        async_to_sync(self.channel_layer.group_send)(f"{self.CHANNEL_PREFIX}{channel_id}", {
+            "type": "broadcast", "message": {
+                "type": "broadcast_guest",
+                "sender": self.channel_name,
+                "data": {}
+            }
+        })
         async_to_sync(self.channel_layer.group_add)(
             f"{self.CHANNEL_PREFIX}{channel_id}",
             self.channel_name
@@ -25,24 +27,26 @@ class BroadcastMixin:
                 f"{self.CHANNEL_PREFIX}{self.channel_id}",
                 self.channel_name
             )
-            async_to_sync(self.channel_layer.group_send)(f"{self.CHANNEL_PREFIX}{self.channel_id}", {"type": "broadcast", "message": {
-                "type": "broadcast_disconnect",
-                "sender":self.channel_name,
-                "data":{}
-            }})
+            async_to_sync(self.channel_layer.group_send)(f"{self.CHANNEL_PREFIX}{self.channel_id}", {
+                "type": "broadcast", "message": {
+                    "type": "broadcast_disconnect",
+                    "sender": self.channel_name,
+                    "data": {}
+                }
+            })
 
     def broadcast(self, event):
         if event['message']['type'] == 'broadcast_guest':
             async_to_sync(self.channel_layer.send)(event['message']['sender'], {"type": "broadcast", "message": {
                 "type": "broadcast_host",
-                "sender":self.channel_name,
-                "data":{}
+                "sender": self.channel_name,
+                "data": {}
             }})
         self.send(text_data=json.dumps(event['message']))
 
 
-class P2PConsumer(BroadcastMixin, WebsocketConsumer):    
-    USER_PREFIX='rtc-user'
+class P2PConsumer(BroadcastMixin, WebsocketConsumer):
+    USER_PREFIX = 'rtc-user'
     CHANNEL_PREFIX = 'rtc-channel-'
 
     @connect
@@ -66,7 +70,7 @@ class P2PConsumer(BroadcastMixin, WebsocketConsumer):
         print(f"{self.channel_name}(id: {self.user.id})", "send", message_type, "to", receiver)
         async_to_sync(self.channel_layer.send)(receiver, {
             'type': 'send_message',
-            'message': {'sender': self.channel_name, 'type':message_type, 'data': data}
+            'message': {'sender': self.channel_name, 'type': message_type, 'data': data}
         })
 
     def send_message(self, event):
@@ -93,15 +97,15 @@ class KurentoMemoryMixin:
         self._endpoints[user_id] = endpoint
 
 
-class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):    
-    USER_PREFIX='rtc-user'
+class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
+    USER_PREFIX = 'rtc-user'
     CHANNEL_PREFIX = 'rtc-channel-'
     BAND_WIDTH = 8000
 
     @connect
     def connect(self):
         self.cli = client.KurentoClient("ws://localhost:8888/kurento")
-        self.cli.ping() # Test connection with KMS
+        self.cli.ping()  # Test connection with KMS
 
     @disconnect
     def disconnect(self, close_code):
@@ -114,8 +118,8 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
                 'type': 'send_message',
                 'message': {
-                    'sender': self.user.id, 
-                    'type':"ICEcandidate", 
+                    'sender': self.user.id,
+                    'type': "ICEcandidate",
                     'data': {"rtcMessage": ice, "target": "guest"}
                 }
             })
@@ -129,13 +133,13 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
             if resp['subscriber'] in host.guests_func:
                 host.guests_func[resp['subscriber']](resp)
             else:
-                self.send(text_data = json.dumps({
+                self.send(text_data=json.dumps({
                     "sender": self.user.id,
                     "type": "ICEcandidate",
                     "data": {"rtcMessage": ice, "target": "host"}
                 }))
         return _func
-    
+
     def _post_host_finished_callback(self, host_id, guest_id):
         def _func(resp):
             host = self.get_endpoint(host_id)
@@ -152,7 +156,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
         host.guests_func[guest.elem_id] = self._guest_sendICE(guest_id)
         async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{guest_id}", {
             'type': 'send_message',
-            'message': {'sender': self.user.id, 'type':'start', 'data': {'username': self.user.username}}
+            'message': {'sender': self.user.id, 'type': 'start', 'data': {'username': self.user.username}}
         })
 
     def receive(self, text_data):
@@ -164,7 +168,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
         else:
             user = text_data_json['user']
         print('@@@', self.user.id, "send", message_type, "to", user)
-        message = {'sender': self.user.id, 'type':message_type, 'data': data}
+        message = {'sender': self.user.id, 'type': message_type, 'data': data}
         if message_type in ["start", "end"] or data.get("target") == 'host':
             async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
                 'type': 'receive_host',
@@ -181,14 +185,14 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
         else:
             async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
                 'type': 'send_message',
-                'message': {'sender': self.user.id, 'type':message_type, 'data': data}
+                'message': {'sender': self.user.id, 'type': message_type, 'data': data}
             })
 
     def receive_host(self, event):
         message = event['message']
         message_type = message['type']
         data = message.get('data')
-        if(message_type == "start"):
+        if (message_type == "start"):
             if self.get_endpoint(event['host']) is None:
                 host = self.pipeline.add_endpoint("WebRtcEndpoint")
                 self.set_endpoint(event['host'], host)
@@ -196,20 +200,20 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
                 self.send(text_data=json.dumps(message))
             else:
                 self._post_host_finished(event['host'], event['guest'])
-                       
-        elif(message_type =='call'):
+        elif (message_type == 'call'):
             if data['target'] == 'guest':
                 host = self.get_endpoint(event['host'])
                 offer = data["rtcMessage"]
                 answer_sdp = host.process_offer(offer['sdp'])
-                self.send(text_data = json.dumps({
+                self.send(text_data=json.dumps({
                     "sender": event['guest'],
                     "type": "answer",
                     "data": {"target": "host", "rtcMessage": {"type": "answer", "sdp": answer_sdp}}
                 }))
                 host.guests_func = {}
                 host.add_event_listener("OnIceCandidate", self._sendICE(host))
-                host.add_event_listener("OnIceGatheringDone", self._post_host_finished_callback(event['host'], event['guest']))
+                host.add_event_listener("OnIceGatheringDone", self._post_host_finished_callback(
+                    event['host'], event['guest']))
                 host.gather_ice_candidates()
             elif data['target'] == 'host':
                 host = self.get_endpoint(event['host'])
@@ -219,18 +223,19 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
                 host.connect(guest)
                 async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{event['guest']}", {
                     'type': 'send_message',
-                    'message': {'sender': self.user.id, 'type':'answer', "data": {"target": "guest", "rtcMessage": {"type": "answer", "sdp": answer_sdp}}}
+                    'message': {'sender': self.user.id, 'type': 'answer', "data": {"target": "guest", "rtcMessage": {
+                        "type": "answer", "sdp": answer_sdp}}}
                 })
                 guest.add_event_listener("OnIceCandidate", self._guest_sendICE(event['guest']))
                 guest.add_event_listener("OnIceGatheringDone", lambda e: print('guest finish'))
-        elif(message_type == 'ICEcandidate'):
+        elif (message_type == 'ICEcandidate'):
             ice = data["rtcMessage"]
             if data['target'] == 'guest':
                 endpoint = self.get_endpoint(event['host'])
             else:
                 endpoint = self.get_endpoint(event['guest'])
             endpoint.add_ice_candidate(ice)
-        elif(message_type == "end"):
+        elif (message_type == "end"):
             guest = self.get_endpoint(event['guest'])
             guest.gather_ice_candidates()
 
@@ -241,24 +246,24 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
     def setVideoSendBandwidth(endpoint, value):
         endpoint.pipeline._invoke({
             "object": endpoint.elem_id,
-            "operation":"setMinVideoRecvBandwidth",
-            "operationParams":{
+            "operation": "setMinVideoRecvBandwidth",
+            "operationParams": {
                 "minVideoRecvBandwidth": int(value * 0.75)
             },
             "sessionId": endpoint.session_id
         })
         endpoint.pipeline._invoke({
             "object": endpoint.elem_id,
-            "operation":"setMaxVideoSendBandwidth",
-            "operationParams":{
+            "operation": "setMaxVideoSendBandwidth",
+            "operationParams": {
                 "maxVideoSendBandwidth": value
             },
             "sessionId": endpoint.session_id
         })
         endpoint.pipeline._invoke({
             "object": endpoint.elem_id,
-            "operation":"setMinVideoSendBandwidth",
-            "operationParams":{
+            "operation": "setMinVideoSendBandwidth",
+            "operationParams": {
                 "minVideoSendBandwidth": value
             },
             "sessionId": endpoint.session_id

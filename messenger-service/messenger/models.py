@@ -3,8 +3,8 @@ from django.db import models
 
 from accounts.models import Group, User
 
-# Create your models here.
 
+# Create your models here.
 class Channel(models.Model):
     TYPES = (
         ('messenger', 'messenger'),
@@ -16,7 +16,6 @@ class Channel(models.Model):
     type = models.CharField(db_column='ch_type', choices=TYPES, default='messenger', max_length=100)
     is_archive = models.BooleanField(db_column="ch_is_archive", default=False, help_text='')
     description = models.TextField(db_column="ch_description", blank=True, null=True, help_text='')
-    
 
     class Meta:
         db_table = "channel"
@@ -27,6 +26,7 @@ class ChannelContent(models.Model):
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='')
     created = models.DateTimeField(db_column='cc_created', null=True, auto_now_add=True)
     updated = models.DateTimeField(db_column='cc_updated', null=True, auto_now=True)
+
     class Meta:
         db_table = "channel_content"
 
@@ -43,7 +43,8 @@ class ContentMixin:
 
 class Message(ContentMixin, models.Model):
     channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
-    comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True, on_delete=models.CASCADE, help_text='')
+    comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True,
+                                        on_delete=models.CASCADE, help_text='')
     content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='')
 
     class Meta:
@@ -68,13 +69,12 @@ class File(ContentMixin, models.Model):
         if self.file:
             return self.file.size
 
-
     class Meta:
         db_table = "file"
 
 
 class Link(ContentMixin, models.Model):
-    channel_content = models.ForeignKey(ChannelContent,  on_delete=models.CASCADE, help_text='')
+    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
     title = models.CharField(db_column='li_title', max_length=255, help_text='')
     description = models.TextField(db_column='li_description', null=True, blank=True, help_text='')
     url = models.TextField(db_column='li_url', null=True, blank=True, help_text='')

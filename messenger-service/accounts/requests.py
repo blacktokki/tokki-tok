@@ -9,6 +9,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 user_logged_in.disconnect(update_last_login, dispatch_uid='update_last_login')
 account_service_url = f"http://{settings.ACCOUNT_SERVICE_DOMAIN}"
 
+
 def account_service_login(request, data):
     session = requests.Session()
     csrf = session.get(f"{account_service_url}/api/v1/user/csrf/").content
@@ -25,7 +26,7 @@ def account_service_login(request, data):
     res = session.post(f"{account_service_url}/login", headers=headers, data=mp_encoder)
     if res.ok and res.status_code == 200 and len(res.history) == 0:
         return session, None
-    p = re.compile('(?<=\<div class="alert alert-danger" role="alert">)(.*?)(?=<\/div>)')
+    p = re.compile('(?<=\<div class="alert alert-danger" role="alert">)(.*?)(?=<\/div>)')  # noqa W605
     message = p.findall(res.text)
     return None, message[0] if len(message) else ''
 
