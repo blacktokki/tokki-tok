@@ -3,7 +3,7 @@ django-environ
 mysqlclient
 channels==3.0.1
 pyopenssl==21.0.0
-cryptography==36.0.1
+cryptography==41.0.0
 django-db-views
 djangorestframework == 3.11.0
 coreapi
