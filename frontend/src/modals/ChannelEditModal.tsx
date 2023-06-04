@@ -44,7 +44,7 @@ export default function ChannelEditModal({id, type}: {id?:number, type:string}) 
         if(auth?.user?.id && auth.groupId){
           const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
           (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
-            screen:v.type == 'messenger'?'MessengerScreen':'BoardScreen',
+            screen:v.type == 'messenger'?'ChatScreen':'BoardScreen',
             params:{id:v.id}
           }))
         }

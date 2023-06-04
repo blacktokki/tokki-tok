@@ -59,7 +59,7 @@ const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
   return lastJsonMessage !==undefined ?
     <ThemedView style={[
       {aspectRatio:!disable?16/9:0, borderColor:Colors.borderColor, borderRadius:10},
-      windowType=='landscape'?{flexShrink:0.5, height:'100%', borderLeftWidth:1, paddingBottom:65}:{maxHeight:'36%', width:'100%', borderBottomWidth:1}
+      windowType=='landscape'?{flexShrink:1, flexGrow:0, height:'100%', borderLeftWidth:1, paddingBottom:65}:{maxHeight:'36%', width:'100%', borderBottomWidth:1}
     ]}>
       <View style={{aspectRatio:16/9, backgroundColor:'white', flexWrap:'wrap', flexDirection:'row', width:'100%', height:'100%'}}>
         {guests.map((receiver, i)=><VideoView scale={scale} focusGuest={focusGuest} setFocusGuest={setFocusGuest} receiver={receiver}>

@@ -23,6 +23,7 @@ import FilePreview from '../../../components/FilePreview';
 import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
 import useLangContext from '../../../hooks/useLangContext';
+import ChannelEditModal from '../../../modals/ChannelEditModal';
 
 
 function uploadFile(){
@@ -129,9 +130,10 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       }
   }
   useEffect(()=>{
+    setModal(ChannelEditModal, null)
     if (!(channel_id))
       back()
-  }, [])
+  }, [route])
   useEffect(()=>{
     if(autoFocus){
       (inputRef.current as any).focus()
@@ -139,7 +141,10 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     }
   }, [autoFocus])
 
-  return <View style={{flex:1, alignItems:'center', flexDirection:windowType=='landscape'?'row-reverse':'column'}}>
+  return <View style={[
+    {flex:1, alignItems:'center'},
+    windowType=='landscape'?{flexDirection:'row-reverse', minWidth:480}:{flexDirection:'column'}
+  ]}>
     <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
     <View style={[{flex:videoMode?undefined:1, flexShrink:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
       <FlatList

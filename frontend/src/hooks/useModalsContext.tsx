@@ -15,7 +15,7 @@ const ModalsContext = createContext<{setModal: SetModal}>({
 });
 
 export const ModalsProvider = ({children, modals:allModals}:{children:React.ReactNode, modals:React.ComponentType<ModalProps>[]}) => {
-    const [modals, setModals] = useState<ModalState[]>(allModals.map((Component)=>({Component})));
+    const [modals, setModals] = useState<ModalState[]>([]);
     const windowType = useResizeContext();
     const [animationType, setAnimationType] = useState('none')
     const setModal:SetModal = (Component, props) => {
@@ -33,6 +33,9 @@ export const ModalsProvider = ({children, modals:allModals}:{children:React.Reac
     useEffect(()=>{
         modals.filter(v=>v.ExactComponent!==undefined).length == 0 && setAnimationType(windowType == 'landscape'?'fade':'slide')
     }, [windowType, modals])
+    useEffect(()=>{
+        setModals(allModals.map((Component)=>({Component})))
+    }, [allModals])
     return <ModalsContext.Provider value={{setModal}}>
         {children}
         {modals.map((modal, index)=>{
