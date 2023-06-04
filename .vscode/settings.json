@@ -3,5 +3,9 @@
     "python.analysis.extraPaths": [
         "./backend",
         "./messenger-service"
-    ]
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.analysis.typeCheckingMode": "off"
 }

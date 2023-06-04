@@ -12,6 +12,7 @@ class ChannelFilterSet(django_filters.FilterSet):
 
 class ChannelContentFilterSet(django_filters.FilterSet):
     id_lt = django_filters.NumberFilter(field_name='id', lookup_expr='lt')
+
     class Meta:
         model = ChannelContent
         fields = '__all__'

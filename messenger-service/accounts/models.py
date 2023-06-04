@@ -19,7 +19,7 @@ class CustomUserManager(UserManager):
 class User(AbstractUser, DBView):
     objects = CustomUserManager()
     image_url = models.CharField(max_length=255, help_text='')
-    
+
     view_definition = """
     SELECT
         us.us_id as id,
@@ -45,15 +45,16 @@ class User(AbstractUser, DBView):
         managed = False
         db_table = "user"
 
+
 class Group(DBView):
     id = models.IntegerField(db_column="gr_id", primary_key=True, serialize=False)
     image_url = models.CharField(db_column="gr_image_url", max_length=255, help_text='')
     name = models.CharField(db_column="gr_name", max_length=255, help_text='')
     parent_id = models.IntegerField(db_column="gr_parent_id", help_text='')
     root_id = models.IntegerField(db_column="gr_root_id", help_text='')
-    
+
     view_definition = "SELECT * FROM {0}.group"
-    
+
     def __str__(self):
         return self.name
 
@@ -76,7 +77,8 @@ class Membership(DBView):
 
 class BaseMigrationMixin:
     def _is_exclude_sql(self, sql):
-        return sql.template.startswith('ALTER TABLE') and str(sql.parts.get('column', None)) in ['`user_id`', '`group_id`', '`membership_id`']
+        return sql.template.startswith('ALTER TABLE') and str(sql.parts.get('column', None)) in [
+            '`user_id`', '`group_id`', '`membership_id`']
 
     def _format_view_sql(self):
         if self.app_label != 'accounts':
@@ -84,7 +86,7 @@ class BaseMigrationMixin:
         for op in self.operations:
             if isinstance(op, ViewRunPython):
                 name = connections.databases[DEFAULT_DB_ALIAS]['NAME']
-                db = name.replace('messenger','account')
+                db = name.replace('messenger', 'account')
                 op.code.view_definition = op.code.view_definition.format(db)
                 op.reverse_code.view_definition = op.reverse_code.view_definition.format(db)
 
@@ -93,6 +95,7 @@ class BaseMigrationMixin:
         result = super().apply(project_state, schema_editor, collect_sql)
         schema_editor.deferred_sql = [sql for sql in schema_editor.deferred_sql if not self._is_exclude_sql(sql)]
         return result
+
 
 OldMigration = migrations.Migration
 migrations.Migration = type(f'__{OldMigration.__name__}', (BaseMigrationMixin, OldMigration), {})

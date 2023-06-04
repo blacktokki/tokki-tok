@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
 import environ
+from pathlib import Path
+from google.oauth2 import service_account
+
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
@@ -81,7 +83,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 ASGI_APPLICATION = 'backend.asgi.application'
 
-CHANNEL_LAYERS={
+CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
@@ -98,16 +100,16 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db1_messenger',
         'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASS'), 
+        'PASSWORD': env('DATABASE_PASS'),
         'HOST': env('DATABASE_HOST'),
-        'PORT': '3306', 
+        'PORT': '3306',
     }
 }
 
 # Storage
 # https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-from google.oauth2 import service_account
+
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     Path.joinpath(BASE_DIR, 'virtual-metrics-355712-e207b739a975.json'))
 GS_BUCKET_NAME = 'blacktokki-storage'
@@ -178,8 +180,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
-    #     'CustomOrderingFilter',
-    #     # 'drf_replace_ordering_filter.filters.ReplaceFieldsOrderingFilter'
+        # 'drf_replace_ordering_filter.filters.ReplaceFieldsOrderingFilter'
     ],
 }
 
