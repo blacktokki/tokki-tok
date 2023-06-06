@@ -13,7 +13,7 @@ import useExternalMembershipList from '../hooks/lists/useExternalMembershipList'
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
 import TabViewNavigator from '../navigation/tabview';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import useLangContext from '../hooks/useLangContext';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
@@ -61,10 +61,10 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const back = ()=>{
     setModal(InviteModal, null)
   }
-  return <View style={{alignItems:'center'}}>
-    <View style={{backgroundColor:'white', 'width': '50%'}}>
+  return <View style={{alignItems:'center', flex:1}}>
+    <View style={{backgroundColor:'white', 'width': '50%', flexShrink:1}}>
       <TextField name={`${lang('Username')} & ${lang('Name')}`} value={searchState.keyword} setValue={search} width={'80%'}/>
-      {id && data?.map((item, index)=><InviteItem key={index} item={item} selectedRef={selectedRef}/>)}
+      {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
     </View>
     <View style={[{width:'50%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
       <CommonButton title={lang('invite')} onPress={()=>{
@@ -104,15 +104,15 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
     setModal(InviteModal, null)
   }
   const inviteLink = location.href.replace('chat', 'invitee')
-  return <View style={{alignItems:'center'}}>
+  return <View style={{alignItems:'center', flex:1}}>
   <TouchableOpacity style={{paddingVertical:10, flexDirection:"row"}} onPress={()=>{Clipboard.setString(inviteLink);setCopied(true)}}>
     <Text style={{fontSize:14}}>{lang('invite link')}{": "}</Text>
     <Text style={{fontSize:14, color:'#12b886'}}>{inviteLink}{" "}</Text>
     {copied && <Text style={{fontSize:12, color:'red'}}>{lang("copied")}</Text>}
   </TouchableOpacity>
-  <View style={{backgroundColor:'white', 'width': '50%'}}>
+  <View style={{backgroundColor:'white', 'width': '50%', flexShrink:1}}>
     <TextField name={lang('Username')} value={value} setValue={setValue} width={'80%'}/>
-    {id && data?.map((item, index)=><InviteItem key={index} item={item} selectedRef={selectedRef}/>)}
+    {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
   </View>
   <View style={[{width:'50%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
     <CommonButton title={lang('invite')} onPress={()=>{
@@ -131,22 +131,22 @@ export default function InviteModal({id}:{id:number}) {
   const selectedRef = useRef<Set<number>>(new Set())
   const drawerTabs:Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}> = {
     group:{
-      title: lang('Group'),
+      title: 'Group',
       component: ()=><GroupTabView id={id} selectedRef={selectedRef}/>,
       icon: <></>
     },
     external:{
-      title: lang('External members'),
+      title: 'External members',
       component: ()=><ExternalMembershipTabView id={id} selectedRef={selectedRef}/>,
       icon: <></>
     }
   }
-  return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
+  return <CommonSection outerContainerStyle={{alignSelf:'center', flexShrink:1}} containerStyle={{flex:1}} bodyStyle={{flexShrink:1}}>
     <View style={{justifyContent:'space-around'}}>
       <Text style={{fontSize:20}}>{lang('invite')}</Text>
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={{width:'100%'}}>
+    <View style={{width:'100%', flexShrink:1}}>
       <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"}/>
     </View>
   </CommonSection>

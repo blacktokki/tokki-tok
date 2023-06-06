@@ -5,12 +5,13 @@ import CommonItem from "../../components/CommonItem"
 import useAuthContext from "../../hooks/useAuthContext"
 import { useMessengerChannelSorted } from "../../hooks/lists/useMessengerChannelList"
 import { navigate } from "../../navigation"
+import { ScrollView } from "react-native-gesture-handler"
 
 export default ()=>{
     const {auth} = useAuthContext()
     const channelList = useMessengerChannelSorted(auth)
     const today = (new Date()).toISOString().slice(0, 10)
-    return <View style={{flex:1, backgroundColor:'white'}}>
+    return <ScrollView style={{flex:1, backgroundColor:'white'}}>
         {channelList?.map((item, index)=>{
             const date = item.last_message?.created.slice(0,10)
             return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
@@ -30,7 +31,7 @@ export default ()=>{
                 </View>
             </CommonItem>
         })}
-    </View>
+    </ScrollView>
 }
 
 export const MessengerIcon = <Ionicons size={30} style={{ marginBottom: -3 }} name='chatbox'/>

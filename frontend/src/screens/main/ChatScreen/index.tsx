@@ -24,6 +24,7 @@ import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
 import useLangContext from '../../../hooks/useLangContext';
 import ChannelEditModal from '../../../modals/ChannelEditModal';
+import ProfileModal from '../../../modals/ProfileModal';
 
 
 function uploadFile(){
@@ -131,6 +132,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   }
   useEffect(()=>{
     setModal(ChannelEditModal, null)
+    setModal(ProfileModal, null)
     if (!(channel_id))
       back()
   }, [route])

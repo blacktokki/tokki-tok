@@ -8,6 +8,7 @@ import { UserMembership } from "../../types"
 import Avatar from "../../components/Avatar"
 import useModalsContext from "../../hooks/useModalsContext"
 import ProfileModal from "../../modals/ProfileModal"
+import { ScrollView } from "react-native-gesture-handler"
 
 export const renderMemberItem = (item:UserMembership, onPress?:()=>void)=> {
     return <CommonItem key={item.id} bodyStyle={{backgroundColor:'white', flexDirection:'row', justifyContent:'flex-start'}} onPress={onPress}>
@@ -22,9 +23,9 @@ export default ()=>{
     const userList = useUserMembershipList(auth)
     const memberItem = React.useMemo(
         ()=>userList && userList.map(item=>renderMemberItem(item, ()=>setModal(ProfileModal, {id:item.id}))), [userList])
-    return <View style={{flex:1, backgroundColor:'white'}}>
+    return <ScrollView style={{flex:1, backgroundColor:'white'}}>
         {memberItem}
-    </View>
+    </ScrollView>
 }
 
 export const MemberIcon = <MaterialCommunityIcons size={32} style={{ marginBottom: -3 }} name='account'/>

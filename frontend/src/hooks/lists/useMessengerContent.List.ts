@@ -22,7 +22,7 @@ export default function useMessengerContentList(channel_id:number){
       },
       getNextPageParam:(lastPage)=>lastPage?.current.length?lastPage.current[lastPage.current.length - 1].id:undefined,
       refetchOnReconnect:false,
-      refetchOnWindowFocus:false
+      refetchOnWindowFocus:true
     }
   )
   const { lastJsonMessage } = useWebsocketContext()
