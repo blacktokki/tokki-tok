@@ -162,11 +162,11 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{
           flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text
         }} onSubmitEditing={postValue} blurOnSubmit={true}/>
-        <CommonButton title={'💬'} onPress={postValue}/>
-        <CommonButton title={'📤'} onPress={()=>uploadFile().then(f=>{
+        <CommonButton style={{height:40, paddingTop:8}} title={'💬'} onPress={postValue}/>
+        <CommonButton style={{height:40, paddingTop:8}} title={'📤'} onPress={()=>uploadFile().then(f=>{
           contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f})
         })}/>
-        {!videoMode && <CommonButton title={'📹'} onPress={()=>setVideoMode(!videoMode)}/>}
+        {!videoMode && <CommonButton style={{height:40, paddingTop:8}} title={'📹'} onPress={()=>setVideoMode(!videoMode)}/>}
       </ThemedView>
     </View>
   </View>

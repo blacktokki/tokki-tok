@@ -72,11 +72,11 @@ const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
       </View>
       <ThemedView style={[
           {position:'absolute', alignItems:'center', justifyContent:'flex-end', width:'100%',flexDirection:'row'},
-          windowType=='landscape'?{bottom:0, paddingVertical:15, paddingHorizontal:19}:{backgroundColor:'transparent'}
+          windowType=='landscape'?{bottom:0, paddingTop:15, paddingBottom:10, paddingHorizontal:19}:{backgroundColor:'transparent'}
         ]}>
-        <CommonButton title={'⏺️'} onPress={()=>toggleVideoMode('camera')}/>
-        <CommonButton title={'🖥️'} onPress={()=>toggleVideoMode('display')}/>
-        <CommonButton title={'📹'} onPress={()=>setDisable(true)}/>
+        <CommonButton title={'⏺️'} style={{height:40, paddingTop:8}} onPress={()=>toggleVideoMode('camera')}/>
+        <CommonButton title={'🖥️'} style={{height:40, paddingTop:8}} onPress={()=>toggleVideoMode('display')}/>
+        <CommonButton title={'📹'} style={{height:40, paddingTop:8}} onPress={()=>setDisable(true)}/>
       </ThemedView>
     </ThemedView>:
   <></>
