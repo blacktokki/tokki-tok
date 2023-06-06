@@ -21,7 +21,7 @@ const VideoView = (props:{
   receiver?:string
   children:React.ReactNode
 })=>{
-  return <View style={[{maxWidth:props.scale, maxHeight:props.scale, borderWidth:1, borderColor:Colors.borderColor, backgroundColor:'gray', flexDirection:'row', flexGrow:1}, (props.focusGuest == undefined || props.focusGuest == props.receiver)?{}:{width:0, height:0}]}>
+  return <View style={[{maxWidth:props.scale, maxHeight:props.scale, borderWidth:1, borderColor:Colors.borderColor, backgroundColor:'gray', flexDirection:'row', flexGrow:1}, (props.focusGuest == undefined || props.focusGuest == props.receiver)?{height:'100%'}:{maxWidth:0, height:0}]}>
     <TouchableOpacity style={{flex:1}} containerStyle={{flex:1, justifyContent:'center'}} onPress={()=>props.setFocusGuest(props.focusGuest?undefined:props.receiver)}>
     {props.children}
     </TouchableOpacity>
@@ -61,7 +61,7 @@ const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
       {aspectRatio:!disable?16/9:0, borderColor:Colors.borderColor, borderRadius:10},
       windowType=='landscape'?{flexShrink:1, flexGrow:0, height:'100%', borderLeftWidth:1, paddingBottom:65}:{maxHeight:'36%', width:'100%', borderBottomWidth:1}
     ]}>
-      <View style={{aspectRatio:16/9, backgroundColor:'white', flexWrap:'wrap', flexDirection:'row', width:'100%', height:'100%'}}>
+      <View style={{aspectRatio:focusGuest?undefined:16/9, backgroundColor:'white', flexWrap:'wrap', flexDirection:'row', width:'100%', height:'100%'}}>
         {guests.map((receiver, i)=><VideoView scale={scale} focusGuest={focusGuest} setFocusGuest={setFocusGuest} receiver={receiver}>
           <RemoteCam receiver={receiver}/>
         </VideoView>
