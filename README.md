@@ -6,8 +6,9 @@
 > #### 파이썬과 타입스크립트로 만든 화상회의 및 메신저 서비스입니다.
 ![제목 없는 다이어그램 drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/df1d177c-07dc-4d36-b964-f217409b902d)
 
-## Overview/주요 기능
+## Overview
 
+주요 기능:
 + REST API와 웹소켓을 사용한 실시간 채팅
 + WebRTC를 사용한 화상 회의
 + 파일 업로드 및 다운로드
@@ -16,11 +17,11 @@
 + 모바일 반응형 디자인
 + Swagger로 문서화
 
-주요 모듈:
+서브 프로젝트:
 + Messenger server(Django + React Native): [https://github.com/blacktokki/tokki-tok](https://github.com/blacktokki/tokki-tok)
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
-## Architecture/설계 구조
+## Architecture
 ![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/e509396a-7ccf-4257-bc9f-6bedcea243be)
 + Spring Cloud를 사용하여 계정 서비스와 메신저 서비스로 구성된 마이크로서비스 아키텍처입니다.
 + 모든 정적 리소스는 Github Pages에 배포되며, 정적 리소스에 대한 요청은 Github Pages에서 호스팅됩니다.
