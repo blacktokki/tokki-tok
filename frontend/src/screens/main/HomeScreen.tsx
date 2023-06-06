@@ -12,6 +12,7 @@ import useColorScheme, { setColorScheme } from '../../hooks/useColorScheme';
 import useModalsContext from '../../hooks/useModalsContext';
 import ChannelEditModal from '../../modals/ChannelEditModal';
 import useLangContext from '../../hooks/useLangContext';
+import ContractFooter from '../../components/ContractFooter';
 
 // navigate("BoardEditScreen", {channel_id:item.channel, id:item.id})
 // deleteBoardContent(item.id).then(()=>navigate('BoardScreen', {id:item.channel}))
@@ -43,7 +44,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   }, [windowType])
   return home?
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-      <View style={{width:'80%', height:'80%'}}>
+      <View style={{width:'80%', flex:1, marginTop:72}}>
         <StyledText style={{fontSize:32, color}}>Tokki Tok</StyledText>
         <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
         <View style={{flex:1, alignItems:'flex-start'}}>
@@ -64,6 +65,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
           </View>
         </View>
       </View>
+      <ContractFooter/>
     </View>:
     <TabViewNavigator tabs={bottomTabs} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
 }

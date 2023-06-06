@@ -9,6 +9,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack';
 import useAuthContext from '../../hooks/useAuthContext';
 import useLangContext from '../../hooks/useLangContext';
+import ContractFooter from '../../components/ContractFooter';
 
 export default function LoginScreen({
   navigation, route
@@ -24,7 +25,7 @@ export default function LoginScreen({
     });
   }, [navigation, route]);
 
-  return (
+  return (<View style={Styles.login_container}>
     <View style={Styles.login_wrapper}>
       <View style={Styles.form}>
         {error && <View style={Styles.form_error}>
@@ -76,7 +77,8 @@ export default function LoginScreen({
         </TouchableOpacity>
       </> */}
     </View>
-  );
+    <ContractFooter/>
+  </View>);
 };
 
 const Styles = StyleSheet.create({
@@ -106,10 +108,9 @@ const Styles = StyleSheet.create({
     login_wrapper: {
       flex: 1,
       justifyContent: 'space-between',
-      paddingVertical: 40,
+      paddingTop: 40,
       borderTopRightRadius: 12,
       borderTopLeftRadius: 12,
-      marginTop: -10,
       backgroundColor: '#fff',
       alignItems: 'center',
     },
