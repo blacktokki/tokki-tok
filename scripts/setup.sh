@@ -12,6 +12,7 @@ git config user.email "$1@github.com"
 git config user.name "$1"
 git config credential.helper store
 
+sudo add-apt-repository --yes ppa:redislabs/redis
 sudo apt-get update
 sudo apt-get --assume-yes install python3
 sudo apt-get --assume-yes install python3-pip
