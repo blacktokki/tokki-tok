@@ -3,24 +3,31 @@
 [![Django](https://img.shields.io/badge/django-3.2.16-blue.svg?style=flat-square)](https://www.djangoproject.com/)
 [![Django Rest Framework](https://img.shields.io/badge/django_rest_framework-3.11.0-blue.svg?style=flat-square)](http://www.django-rest-framework.org/)
 
-> #### A messenger service based on Python and Typescript.
+> #### A messenger service with video call based on Python and Typescript.
 
 ## Overview
 
-+ Separated backend and frontend; Rest API; Micro service
-+ Full cross-platform support
-+ Documented with swagger
-+ Real-time chat functionality using websocket
++ Rest API & Real-time chat functionality using websocket
++ Video call functionality using webrtc
++ File upload & download
++ web push notification support
 + User authentication using JWT
++ Mobile responsible design 
++ Documented with swagger
 
 Main modules are available below:
 
 + Messenger server(Django + React Native): [https://github.com/blacktokki/tokki-tok](https://github.com/blacktokki/tokki-tok)
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
-Screenshot from the architecture below:
-![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/554a84c4-b587-41f6-8c0f-78193feb69dc)
-
+## Architecture
+![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/e509396a-7ccf-4257-bc9f-6bedcea243be)
++ This project is a microservice architecture composed of account service and messenger service using Spring Cloud.
++ All static resources are deployed to Github Pages, and requests for static resources are entirely hosted on Github Pages.
++ Account and messenger service share account data using database replication.
++ Redis Pub/Sub and FCM were used to send messages to users participating in the chat. 
++ Cloud Storage was used for file upload and download.
++ Video call uses web rtc and is connected to p2p or sfu through kurento media server.
 
 ## Installation
 ### Install account server
@@ -53,15 +60,9 @@ $ cd frontend
 $ npm run env
 
 # run client development
-$ npm run android
-$ npm run ios
 $ npm run web
-$ npm run desktop
 ```
 
 ## Screenshots
 ### Messenger Screen
 ![제목 없음2](https://user-images.githubusercontent.com/39031723/214096452-1061190e-c738-422f-bfc1-b0a8ec9edeaf.png)
-
-
-<!-- ### Read More -->
