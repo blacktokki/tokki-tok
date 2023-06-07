@@ -37,6 +37,8 @@ export type AvatarProps = {
   size:number
 }
 
+export type TabViewRecord = Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}>
+
 export type User = {
   id:number,
   is_staff:boolean,

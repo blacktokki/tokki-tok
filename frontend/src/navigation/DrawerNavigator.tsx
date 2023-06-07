@@ -5,10 +5,36 @@ import Profile from '../components/Profile';
 import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
 import useResizeContext from '../hooks/useResizeContext';
-import TabViewNavigator, { drawerTabs } from './tabview';
-import { UserMembership } from '../types';
+import TabView from '../components/TabView';
+import { TabViewRecord, UserMembership } from '../types';
 import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
+import CommonItem from '../components/CommonItem';
+import { Text } from '../components/Themed';
+import useAuthContext from '../hooks/useAuthContext';
+import { useMessengerChannelSorted } from '../hooks/lists/useMessengerChannelList';
+import { navigate } from '.'
+
+const DrawerTabView = (props:{data:{name:string, onPress?:()=>void}[]})=><View style={{flex:1}}>
+    {props.data.map((item, index)=><CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={item.onPress}>
+        <Text style={{marginLeft:20}}>{item.name}</Text>
+    </CommonItem>
+    )}
+</View>
+
+const MessengerTabView = ()=>{
+  const {auth} = useAuthContext()
+  const channelList = useMessengerChannelSorted(auth);
+  return <DrawerTabView data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
+}
+
+const drawerTabs:TabViewRecord = {
+  MessengerTab:{
+      title:'messenger',
+      component:MessengerTabView,
+      icon:<></>
+  },
+}
 
 export default ({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
@@ -36,7 +62,7 @@ export default ({user}:{user:UserMembership})=> {
       </View>
       <View accessibilityRole="tablist" style={styles.content}>
         {Object.keys(drawerTabs).length>1 ? 
-          <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>: 
+          <TabView tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>: 
           <View style={{borderTopWidth:1, flex:1, borderColor:colors.border}}>            
             {Object.values(drawerTabs).map(drawerTab=>{const Tab = drawerTab.component; return <Tab key={drawerTab.title}/>})}
           </View>

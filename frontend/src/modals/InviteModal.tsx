@@ -4,22 +4,22 @@ import { View, Text } from '../components/Themed';
 import CommonSection from '../components/CommonSection';
 import useAuthContext from '../hooks/useAuthContext';
 import useUserMembershipList from '../hooks/lists/useUserMembershipList';
-import { UserMembership } from '../types';
+import { TabViewRecord, UserMembership } from '../types';
 import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
-import { renderMemberItem } from '../navigation/tabview/MemberTabView';
 import useModalsContext from '../hooks/useModalsContext';
 import useExternalMembershipList from '../hooks/lists/useExternalMembershipList';
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
-import TabViewNavigator from '../navigation/tabview';
+import TabView from '../components/TabView';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import useLangContext from '../hooks/useLangContext';
+import MemberItem from '../components/MemberItem';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
   return <View style={selected?{borderWidth:1, borderColor:'blue'}:{}}>
-    {renderMemberItem(props.item, ()=>{
+    <MemberItem member={props.item} onPress={()=>{
       if (selected){
         setSelected(false)
         props.selectedRef.current.delete(props.item.id)
@@ -28,7 +28,7 @@ const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set
         setSelected(true)
         props.selectedRef.current.add(props.item.id)
       }
-    })}
+    }}/>
   </View>
 
 }
@@ -129,7 +129,7 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
 export default function InviteModal({id}:{id:number}) {
   const { lang } = useLangContext()
   const selectedRef = useRef<Set<number>>(new Set())
-  const drawerTabs:Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}> = {
+  const drawerTabs:TabViewRecord = {
     group:{
       title: 'Group',
       component: ()=><GroupTabView id={id} selectedRef={selectedRef}/>,
@@ -147,7 +147,7 @@ export default function InviteModal({id}:{id:number}) {
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     <View style={{width:'100%', flexShrink:1}}>
-      <TabViewNavigator tabs={drawerTabs} tabBarPosition={"top"}/>
+      <TabView tabs={drawerTabs} tabBarPosition={"top"}/>
     </View>
   </CommonSection>
 }
