@@ -131,8 +131,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       }
   }
   useEffect(()=>{
-    setModal(ChannelEditModal, null)
-    setModal(ProfileModal, null)
+    setModal(null, null)
     if (!(channel_id))
       back()
   }, [route])

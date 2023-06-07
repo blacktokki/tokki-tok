@@ -1,6 +1,5 @@
 import React, {useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import CommonSection from '../components/CommonSection';
 import { View, Text } from '../components/Themed';
 import CommonButton from '../components/CommonButton';
 // import useBoardChannelList, { useBoardChannelMutation } from '../hooks/lists/useBoardChannelList';
@@ -11,6 +10,7 @@ import useMessengerChannelList, { useMessengerChannelMutation } from '../hooks/l
 import TextField from '../components/TextField';
 import useModalsContext from '../hooks/useModalsContext';
 import useLangContext from '../hooks/useLangContext';
+import ModalSection from '../components/ModalSection';
 
 export default function ChannelEditModal({id, type}: {id?:number, type:string}) {
   const { lang } = useLangContext()
@@ -30,28 +30,28 @@ export default function ChannelEditModal({id, type}: {id?:number, type:string}) 
       setDescription(channel?.description || '')
     }
   }, [channel])
-  return <CommonSection outerContainerStyle={{alignSelf:'center'}}>
-    <View style={{justifyContent:'space-around'}}>
-    <Text style={{fontSize:20}}>{lang('Channel')}</Text>
+  return <ModalSection>
+    <View style={{justifyContent:'space-between', flex:1, width:'100%'}}>
+      <View style={{width:'100%'}}>
+        <Text style={{fontSize:20}}>{lang('New chat')}</Text>
+        <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
+        <TextField name={lang('Channel Name')} value={name} setValue={setName} width={'60%'}/>
+        <TextField name={lang('Description')} value={description} setValue={setDescription} multiline width={'60%'}/>
+      </View>
+      <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>
+        <CommonButton title={lang('save')} onPress={()=>{
+          if(auth?.user?.id && auth.groupId){
+            const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
+            (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
+              screen:v.type == 'messenger'?'ChatScreen':'BoardScreen',
+              params:{id:v.id}
+            }))
+          }
+        }}/>
+        <CommonButton title={lang('cancel')} style={{marginHorizontal:5}} onPress={back}/>
+      </View>
     </View>
-    <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={{width:'100%'}}>
-      <TextField name={lang('Channel Name')} value={name} setValue={setName} width={'60%'}/>
-      <TextField name={lang('Description')} value={description} setValue={setDescription} multiline width={'60%'}/>
-    </View>
-    <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>
-      <CommonButton title={lang('save')} onPress={()=>{
-        if(auth?.user?.id && auth.groupId){
-          const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
-          (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
-            screen:v.type == 'messenger'?'ChatScreen':'BoardScreen',
-            params:{id:v.id}
-          }))
-        }
-      }}/>
-      <CommonButton title={lang('cancel')} style={{marginHorizontal:5}} onPress={back}/>
-    </View>
-  </CommonSection>
+  </ModalSection>
 }
 
 const styles = StyleSheet.create({

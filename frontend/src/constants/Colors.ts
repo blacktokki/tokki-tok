@@ -20,7 +20,7 @@ export default {
     tabIconSelected: tintColorDark,
     header:'#dbd6d1',
     buttonColor:'rgb(14,14,14)',
-    buttonBackgroundColor: '#080604',
+    buttonBackgroundColor: '#282624',
   },
   button:{
     borderColor:'rgba(27,31,36,0.15)',

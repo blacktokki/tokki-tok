@@ -23,6 +23,7 @@ import CommonItem from '../../components/CommonItem';
 import MemberItem from '../../components/MemberItem';
 import ProfileModal from '../../modals/ProfileModal';
 import { navigate } from '../../navigation';
+import CommonSection from '../../components/CommonSection';
 
 const MemberTabView = ()=>{
   const {auth} = useAuthContext()
@@ -69,7 +70,7 @@ const bottomTabs:TabViewRecord = {
       icon:<MaterialCommunityIcons size={32} style={{ marginBottom: -3 }} name='account'/>,
   },
   TwoTab:{
-      title:'messenger',
+      title:'chat',
       component:MessengerTabView,
       icon:<Ionicons size={30} style={{ marginBottom: -3 }} name='chatbox'/>
   },
@@ -96,7 +97,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const color = Colors[theme].text
   const options = [
     {title:lang('member'), headerRight:()=><HeaderRight/>},
-    {title:lang('messenger'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
+    {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
     // {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>setModal(ChannelEditModal, props:{type:'board'}}) }]}/>},
     {title:'config', headerRight:()=><HeaderRight/>}
   ]
@@ -116,23 +117,26 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
       <View style={{width:'80%', flex:1, marginTop:72}}>
         <StyledText style={{fontSize:32, color}}>Tokki Tok</StyledText>
         <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
-        <View style={{flex:1, alignItems:'flex-start'}}>
-          {/* <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger for teams.</Text>*/}
-          <Text style={{fontSize:24}}> </Text>
-          <Text style={{fontSize:24, fontWeight:'500', color}}>{lang('Quick Start')}</Text>
-          <TextButton title={lang('+ New Messenger')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>setModal(ChannelEditModal, {type:'messenger'})}/>
-          <Text style={{fontSize:20, fontWeight:'500', color}}>{lang('* Language Settings')}</Text>
+        {/* <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger for teams.</Text>*/}
+        <View style={{height:24}}/>
+        <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:'transparent'}}>
+          <TextButton title={lang('+ New chat')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>setModal(ChannelEditModal, {type:'messenger'})}/>
+        </CommonSection>
+        <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:'transparent'}}>
+          <Text style={{fontSize:20, color, fontWeight:'600'}}>{lang('* Language Settings')}</Text>
           <View style={{flexDirection:'row'}}>
             {[[lang('Auto'), 'auto'], ['한국어', 'ko'], ['English', 'en']].map(([title, l])=><TextButton 
               key={title} title={title || ''} textStyle={{fontSize:16, color, textDecorationLine:locale==l?'underline':'none'}} style={{borderRadius:20}} onPress={()=>setLocale(l)}/>)}
           </View>
-          <Text style={{fontSize:20, fontWeight:'500', color}}>{lang('* Skin Settings')}</Text>
+        </CommonSection>
+        <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:'transparent'}}>
+          <Text style={{fontSize:20, color, fontWeight:'600'}}>{lang('* Skin Settings')}</Text>
           <View style={{flexDirection:'row'}}>
             {[[lang('Auto'), 'no-preference'], [lang('Light'), 'light'], [lang('Dark'), 'dark']].map(([title, colorScheme])=><TextButton 
               key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:configTheme==colorScheme?'underline':'none'}} style={{borderRadius:20}} onPress={(
                 )=>setColorScheme(colorScheme)}/>)}
           </View>
-        </View>
+        </CommonSection>
       </View>
       <ContractFooter/>
     </View>:

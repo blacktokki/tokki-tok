@@ -6,9 +6,10 @@ type ModalProps = any
 
 type ModalState = {
   Component:React.ComponentType<ModalProps>,
-  ExactComponent?:React.ComponentType<ModalProps>
+  props:any
+  visible:boolean
 }
-type SetModal = (Component:ModalState["Component"], props:ModalProps|null)=>void
+type SetModal = (Component:ModalState["Component"]|null, props:ModalProps|null)=>void
 
 const ModalsContext = createContext<{setModal: SetModal}>({
     setModal: () => {}
@@ -20,10 +21,17 @@ export const ModalsProvider = ({children, modals:allModals}:{children:React.Reac
     const [animationType, setAnimationType] = useState('none')
     const setModal:SetModal = (Component, props) => {
         const newModals = modals.map(m=>{
-            if(m.Component == Component){
+            if(Component==null){
+                return {
+                    ...m,
+                    visible:false
+                }
+            }
+            else if(m.Component == Component){
                 return {
                     Component, 
-                    ExactComponent:props != null?React.memo(()=><Component {...props}/>):undefined
+                    props:props!==null?props:m.props,
+                    visible:props!==null
                 }
             }
             return m        
@@ -31,17 +39,18 @@ export const ModalsProvider = ({children, modals:allModals}:{children:React.Reac
         setModals(newModals);
     }
     useEffect(()=>{
-        modals.filter(v=>v.ExactComponent!==undefined).length == 0 && setAnimationType(windowType == 'landscape'?'fade':'slide')
-    }, [windowType, modals])
+        if (modals.filter(v=>v.visible).length == 0)
+            setAnimationType(windowType == 'landscape'?'fade':'slide')
+    }, [windowType])
     useEffect(()=>{
-        setModals(allModals.map((Component)=>({Component})))
+        setModals(allModals.map((Component)=>({Component, props:null, visible:false})))
     }, [allModals])
     return <ModalsContext.Provider value={{setModal}}>
         {children}
         {modals.map((modal, index)=>{
-            const { ExactComponent } = modal;
-            return <Modal key={index} animationType={animationType as any} visible={ExactComponent!==undefined}>
-                {ExactComponent?<ExactComponent/>:<></>}
+            const { Component, props, visible } = modal;
+            return <Modal key={index} animationType={animationType as any} visible={visible} transparent>
+                <Component {...props}/>
             </Modal>
         })}
     </ModalsContext.Provider>

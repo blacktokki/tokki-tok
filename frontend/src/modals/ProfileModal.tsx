@@ -7,12 +7,17 @@ import CommonButton from '../components/CommonButton';
 import { DirectChannel } from '../types';
 import { navigate } from '../navigation';
 import useModalsContext from '../hooks/useModalsContext';
-import CommonSection from '../components/CommonSection';
 import { Text, View } from '../components/Themed';
 import useLangContext from '../hooks/useLangContext';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Colors from '../constants/Colors';
+import useColorScheme from '../hooks/useColorScheme';
+import { BottomSheet } from '../components/ModalSection';
 
 export default function ProfileModal({id}:{id:number}) {
   const { lang } = useLangContext()
+  const theme = useColorScheme()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const userList = useUserMembershipList(auth)
@@ -25,10 +30,12 @@ export default function ProfileModal({id}:{id:number}) {
     if (!(id && user) && userList)
       back()
   }, [userList])
-  return user?<CommonSection outerContainerStyle={{alignSelf:'center'}}>
+  return user?<BottomSheet>
     <View style={{flexDirection:'row', width:'100%'}}>
-      <View style={{flex:1}}>
-        <CommonButton style={{width:60}} title={'❌'} onPress={back}/>
+      <View style={{flex:1, flexDirection:'row'}}>
+        <TouchableOpacity onPress={back}>
+          <Ionicons size={20} name="arrow-back" color={Colors[theme].text}/>
+        </TouchableOpacity>
       </View>
       <View style={{flex:1}}>
         <Text style={{fontSize:20, textAlign:'center'}}>{lang('profile')}</Text>
@@ -38,11 +45,11 @@ export default function ProfileModal({id}:{id:number}) {
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     
     <Profile username={user.username} name={user.name} userId={user.id} />
-    <CommonButton title={lang('create messenger')} onPress={()=>{
+    <CommonButton title={lang('1:1 Chat')} onPress={()=>{
       if(auth?.user?.id && auth.groupId){
         const newChannel:DirectChannel = {name:auth.user.id!=user.id?`${auth.user.name}, ${user.name}`:auth.user.name, type:'messenger', owner:auth?.user?.id, group:auth.groupId, counterpart:user.id};
         channelMutation.direct(newChannel).then(v=>navigate("Main", {screen:"ChatScreen", params: {id:v.id}}))
       }
     }}/>
-  </CommonSection>:<></>
+  </BottomSheet>:<></>
 }

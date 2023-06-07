@@ -1,7 +1,6 @@
 import React, {useRef,MutableRefObject, useMemo, useState, useEffect } from 'react';
 import Clipboard from '@react-native-clipboard/clipboard/dist';
 import { View, Text } from '../components/Themed';
-import CommonSection from '../components/CommonSection';
 import useAuthContext from '../hooks/useAuthContext';
 import useUserMembershipList from '../hooks/lists/useUserMembershipList';
 import { TabViewRecord, UserMembership } from '../types';
@@ -15,6 +14,7 @@ import TabView from '../components/TabView';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import useLangContext from '../hooks/useLangContext';
 import MemberItem from '../components/MemberItem';
+import ModalSection from '../components/ModalSection';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
@@ -62,11 +62,11 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
     setModal(InviteModal, null)
   }
   return <View style={{alignItems:'center', flex:1}}>
-    <View style={{backgroundColor:'white', 'width': '50%', flexShrink:1}}>
+    <View style={{'width': '100%', flex:1}}>
       <TextField name={`${lang('Username')} & ${lang('Name')}`} value={searchState.keyword} setValue={search} width={'80%'}/>
       {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
     </View>
-    <View style={[{width:'50%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
+    <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
       <CommonButton title={lang('invite')} onPress={()=>{
         messengerMemberMutation.invite({
           channel_id:id,
@@ -110,11 +110,11 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
     <Text style={{fontSize:14, color:'#12b886'}}>{inviteLink}{" "}</Text>
     {copied && <Text style={{fontSize:12, color:'red'}}>{lang("copied")}</Text>}
   </TouchableOpacity>
-  <View style={{backgroundColor:'white', 'width': '50%', flexShrink:1}}>
+  <View style={{'width': '100%', flex:1}}>
     <TextField name={lang('Username')} value={value} setValue={setValue} width={'80%'}/>
     {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
   </View>
-  <View style={[{width:'50%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
+  <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
     <CommonButton title={lang('invite')} onPress={()=>{
       messengerMemberMutation.invite({
         channel_id:id,
@@ -141,14 +141,14 @@ export default function InviteModal({id}:{id:number}) {
       icon: <></>
     }
   }
-  return <CommonSection outerContainerStyle={{alignSelf:'center', flexShrink:1}} containerStyle={{flex:1}} bodyStyle={{flexShrink:1}}>
-    <View style={{justifyContent:'space-around'}}>
-      <Text style={{fontSize:20}}>{lang('invite')}</Text>
-    </View>
-    <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <View style={{width:'100%', flexShrink:1}}>
+  return <ModalSection>
+    <View style={{flex:1, width:'100%'}}>
+      <View style={{width:'100%'}}>
+        <Text style={{fontSize:20}}>{lang('invite')}</Text>
+        <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
+      </View>
       <TabView tabs={drawerTabs} tabBarPosition={"top"}/>
     </View>
-  </CommonSection>
+  </ModalSection>
 }
 
