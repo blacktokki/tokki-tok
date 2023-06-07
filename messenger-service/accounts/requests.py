@@ -31,6 +31,12 @@ def account_service_login(request, data):
     return None, message[0] if len(message) else ''
 
 
+def authenticate(request, username=None, password=None):
+    session, _ = account_service_login(request, {'username': username, 'password': password})
+    if session:
+        return session.get(f"{account_service_url}/api/v1/user/?self=true")
+
+
 def sso_token(request):
     session, message = account_service_login(request, json.loads(request.body))
     if session:

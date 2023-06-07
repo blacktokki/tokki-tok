@@ -86,6 +86,8 @@ class BaseMigrationMixin:
         for op in self.operations:
             if isinstance(op, ViewRunPython):
                 name = connections.databases[DEFAULT_DB_ALIAS]['NAME']
+                if name == 'test_db1_messenger':
+                    name = 'db1_messenger'
                 db = name.replace('messenger', 'account')
                 op.code.view_definition = op.code.view_definition.format(db)
                 op.reverse_code.view_definition = op.reverse_code.view_definition.format(db)

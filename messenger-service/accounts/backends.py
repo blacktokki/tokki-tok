@@ -1,15 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import AnonymousUser
-from .requests import account_service_login, account_service_url
+from .requests import authenticate
 
 
 class AuthBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None):
-        session, _ = account_service_login(request, {
-            'username': username, 'password': password})
-        if session:
-            res = session.get(f"{account_service_url}/api/v1/user/?self=true")
+        res = authenticate(request, username, password)
+        if res:
             username = res.json().get('value')[0]['username']
             # request.session['username'] = username
             return get_user_model().objects.get_by_natural_key(username)

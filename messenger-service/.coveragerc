@@ -1,0 +1,7 @@
+[run]
+include = ./*
+omit = 
+    ./board/*
+    ./accounts/requests.py
+    ./*/migrations/*
+    ./*/tests.py

@@ -20,3 +20,4 @@ opengraph_parse
 pyforkurento
 django-storages[google]
 flake8
+coverage

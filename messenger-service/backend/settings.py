@@ -32,6 +32,9 @@ FCM_API_KEY = env('FCM_API_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+TEST_USERNAME = env('TEST_USERNAME')
+TEST_USERNAME2 = env('TEST_USERNAME2')
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -103,6 +106,9 @@ DATABASES = {
         'PASSWORD': env('DATABASE_PASS'),
         'HOST': env('DATABASE_HOST'),
         'PORT': '3306',
+        'TEST': {
+            'CHARSET': 'utf8'
+        }
     }
 }
 
