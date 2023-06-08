@@ -87,6 +87,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
 
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
   const { lang, locale } = useLangContext()
+  const isMobile = useIsMobile()
   const channel_id = route?.params?.id
   const height = useRef(0)
   const inputRef = useRef<TextInput>(null)
@@ -99,7 +100,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const windowType = useResizeContext()
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
-  const [autoFocus, setAutoFocus] = useState(true)
+  const [autoFocus, setAutoFocus] = useState<boolean|null>(null)
   const [videoMode, setVideoMode] = useState<boolean>(false)
   const theme = useColorScheme()
   const postValue = ()=>{
@@ -141,7 +142,12 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       setAutoFocus(false)
     }
   }, [autoFocus])
-
+  useEffect(()=>{
+    if (autoFocus==null && !isMobile){
+      const timeout = setTimeout(()=>setAutoFocus(true), 500)
+      return ()=>clearTimeout(timeout)
+    }
+  })
   return <View style={[
     {flex:1, alignItems:'center'},
     windowType=='landscape'?{flexDirection:'row-reverse', minWidth:480}:{flexDirection:'column'}
