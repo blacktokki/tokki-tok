@@ -117,14 +117,16 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(write_only=True, required=False, queryset=User.objects.all())
     channel = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Channel.objects.filter(type='messenger'))
+    timer = serializers.DateTimeField(required=False, write_only=True)
     file = serializers.FileField(required=False, write_only=True)
 
     @transaction.atomic
     def create(self, validated_data):
         user = validated_data.pop("user", None)
         channel = validated_data.pop("channel")
+        timer = validated_data.pop("timer", None)
         file = validated_data.pop("file", None)
-        validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel)
+        validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel, timer=timer)
         attach_link(validated_data['channel_content'], validated_data)
         if file:
             File.objects.create(channel_content=validated_data['channel_content'], file=file)

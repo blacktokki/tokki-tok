@@ -12,6 +12,7 @@ class ChannelFilterSet(django_filters.FilterSet):
 
 class ChannelContentFilterSet(django_filters.FilterSet):
     id_lt = django_filters.NumberFilter(field_name='id', lookup_expr='lt')
+    timer_gt = django_filters.DateTimeFilter(field_name='timer', lookup_expr='gt')
 
     class Meta:
         model = ChannelContent
