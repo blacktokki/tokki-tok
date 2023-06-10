@@ -11,15 +11,17 @@ const DefaultButton = (props:CustomButtonProps)=>{
         //@ts-ignore
         onHoverIn={()=>setHover(true)}
         onHoverOut={()=>setHover(false)}
+        disabled={props.disabled}
         style={[
             {
                 paddingVertical:5, 
                 paddingHorizontal:16
             },
             props.style,
-            hover?{backgroundColor:props.color}:{}
+            (hover || props.disabled)?{backgroundColor:props.color}:{}
         ]}>
-            <Text selectable={false} style={[{fontSize:14}, props.textStyle]}>{props.title}</Text>
+            {props.children?props.children:
+            <Text selectable={false} style={[{fontSize:14}, props.textStyle]}>{props.title}</Text>}
         </Pressable>
 }
 
@@ -31,7 +33,8 @@ export default (props:CustomButtonProps)=>{
         style:[
             styles.style,
             {
-                backgroundColor:Colors[theme].buttonBackgroundColor
+                backgroundColor:Colors[theme].buttonBackgroundColor,
+                borderColor:Colors[theme].buttonBorderColor
             },
             props.style,
         ] as StyleProp<ViewStyle>,
@@ -47,7 +50,6 @@ export default (props:CustomButtonProps)=>{
 const styles = StyleSheet.create({
     style:{
         borderRadius:6, 
-        borderColor:Colors.button.borderColor, 
         borderWidth:1, 
     },
     text:{

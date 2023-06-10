@@ -9,6 +9,7 @@ import useResizeContext from '../../../hooks/useResizeContext';
 import useAuthContext from '../../../hooks/useAuthContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
+import { Ionicons } from '@expo/vector-icons';
 
 type VideoType = 'camera'|'display'|null
 type VideoCallProps = {channel_id:number, setDisable:(disable:boolean)=>void, disable?:boolean}
@@ -76,7 +77,9 @@ const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
         ]}>
         <CommonButton title={'⏺️'} style={{height:40, paddingTop:8}} onPress={()=>toggleVideoMode('camera')}/>
         <CommonButton title={'🖥️'} style={{height:40, paddingTop:8}} onPress={()=>toggleVideoMode('display')}/>
-        <CommonButton title={'📹'} style={{height:40, paddingTop:8}} onPress={()=>setDisable(true)}/>
+        <CommonButton title={''} style={{height:40, paddingTop:8}} onPress={()=>setDisable(true)}>
+          <Ionicons size={20} name="arrow-back" color={'deepskyblue'}/>
+        </CommonButton>
       </ThemedView>
     </ThemedView>:
   <></>

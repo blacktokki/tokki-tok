@@ -8,7 +8,6 @@ import useMessengerContentList, { MessengerContentPage, useMessengerContentMutat
 import useAuthContext from '../../../hooks/useAuthContext';
 import HeaderRight from '../../../components/HeaderRight';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../../../hooks/lists/useMessengerMemberList';
-import { navigate } from '../../../navigation';
 import Colors from '../../../constants/Colors';
 import useColorScheme from '../../../hooks/useColorScheme';
 import { Text, View as ThemedView } from '../../../components/Themed' 
@@ -23,8 +22,7 @@ import FilePreview from '../../../components/FilePreview';
 import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
 import useLangContext from '../../../hooks/useLangContext';
-import ChannelEditModal from '../../../modals/ChannelEditModal';
-import ProfileModal from '../../../modals/ProfileModal';
+import { Entypo } from '@expo/vector-icons';
 
 
 function uploadFile(){
@@ -102,11 +100,14 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const [value, setValue] = useState('')
   const [autoFocus, setAutoFocus] = useState<boolean|null>(null)
   const [videoMode, setVideoMode] = useState<boolean>(false)
+  const [bottomTab, setBottomTab] = useState<boolean>(false)
+
   const theme = useColorScheme()
   const postValue = ()=>{
     if (value.length>0){
       contentMutation.create({channel:channel_id, user:auth.user?.id, content:value})
       setValue('')
+      setBottomTab(false)
       setAutoFocus(true)
     }
   }
@@ -165,15 +166,23 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         }}
         onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
       />
-      <ThemedView style={{bottom:0, alignItems:'center', width:'100%',flexDirection:'row', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
-        <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{
-          flex:1, borderWidth:1, height:40, borderRadius:6, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text
-        }} onSubmitEditing={postValue} blurOnSubmit={true}/>
-        <CommonButton style={{height:40, paddingTop:8}} title={'💬'} onPress={postValue}/>
-        <CommonButton style={{height:40, paddingTop:8}} title={'📤'} onPress={()=>uploadFile().then(f=>{
-          contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f})
-        })}/>
-        {!videoMode && <CommonButton style={{height:40, paddingTop:8}} title={'📹'} onPress={()=>setVideoMode(!videoMode)}/>}
+      <ThemedView style={{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
+        <View style={{alignItems:'center', width:'100%',flexDirection:'row'}}>
+          <CommonButton title={''} style={{height:40, paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0}} onPress={()=>setBottomTab(!bottomTab)}>
+            <View style={{top:-2}}>
+              <Entypo name={bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
+            </View>
+          </CommonButton>
+          <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{
+            flex:1, borderWidth:1, height:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text
+          }} onSubmitEditing={postValue} blurOnSubmit={true} onFocus={()=>setBottomTab(false)}/>
+          <CommonButton style={{height:40, paddingTop:8, borderTopLeftRadius:0, borderBottomLeftRadius:0}} title={'💬'} onPress={postValue}/>
+        </View>
+        {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('Upload File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer Message')}`} onPress={()=>{}}/>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center'}} title={`📹\n ${lang('Video Call')}`} onPress={()=>{setVideoMode(!videoMode);setBottomTab(false)}} disabled={videoMode}/>
+        </View>}
       </ThemedView>
     </View>
   </View>

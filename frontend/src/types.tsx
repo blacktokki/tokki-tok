@@ -12,6 +12,7 @@ export type CustomButtonProps = ButtonProps & {
   style?:StyleProp<ViewStyle>,
   textStyle?:StyleProp<TextStyle>
   onPress:()=>void
+  children?:React.ReactNode
 }
 
 export type CustomTextInputProps = {
@@ -90,6 +91,7 @@ export type Message = {
 export type EditMessage = Message & {
   channel:number
   user?:number
+  timer?:string
   file?:Blob
 }
 
@@ -113,6 +115,7 @@ export type MessengerContent = {
   file_set:File[],
   user: number,
   channel: number
+  timer: string,
   created: string,
   updated: string,
   name: string,
