@@ -38,6 +38,10 @@ export const getMessengerContentList = async (channel_id:number, id_lt?:number)=
     return (await axios.get(`/api/v1/messengercontents/?limit=30&channel=${channel_id}${id_lt_param}`)).data.results as MessengerContent[]
 }
 
+export const getTimerMessageContentList = async (channel_id:number, timer_gt:string)=>{
+    return (await axios.get(`/api/v1/messengercontents/?channel=${channel_id}&timer_gt=${timer_gt}`)).data as MessengerContent[]
+}
+
 export const postMessage = async (message:EditMessage)=>{
     if (message.file){
         const formData = new FormData(); // formData 객체를 생성한다.

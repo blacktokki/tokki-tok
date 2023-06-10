@@ -4,7 +4,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import CommonSection from '../../../components/CommonSection';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
-import useMessengerContentList, { MessengerContentPage, useMessengerContentMutation } from '../../../hooks/lists/useMessengerContent.List';
+import useMessengerContentList, { MessengerContentPage, useMessengerContentMutation } from '../../../hooks/lists/useMessengerContentList';
 import useAuthContext from '../../../hooks/useAuthContext';
 import HeaderRight from '../../../components/HeaderRight';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../../../hooks/lists/useMessengerMemberList';
@@ -21,8 +21,11 @@ import useResizeContext from '../../../hooks/useResizeContext';
 import FilePreview from '../../../components/FilePreview';
 import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
+import DateTimePickerModal from '../../../modals/DateTimePickerModal'
 import useLangContext from '../../../hooks/useLangContext';
 import { Entypo } from '@expo/vector-icons';
+import TimerTags, { timerFormat } from './TimerTags';
+import moment from 'moment';
 
 
 function uploadFile(){
@@ -69,10 +72,16 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
             {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
             <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
-              {/* @ts-ignore */}
-              <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                <Text selectable>{message.content}</Text>
-              </Hyperlink>
+              {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
+                <Text style={{fontSize:12}}>⌚</Text>
+                <Text style={{fontSize:12}} selectable>{moment(content.timer).format('L HH:mm')}</Text>
+              </View>}
+              <View style={{width:"100%"}}>
+                {/* @ts-ignore */}
+                <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
+                  <Text selectable style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
+                </Hyperlink>
+              </View>
               {content.file_set.map((file, fileIndex)=><FilePreview key={fileIndex} file={file} isMobile={isMobile} showBorder={content.file_set.length>1 || message.content.length>0}/>)}
               {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}              
             </CommonSection>
@@ -98,6 +107,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const windowType = useResizeContext()
   const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
+  const [timer, setTimer] = useState<string>()
   const [autoFocus, setAutoFocus] = useState<boolean|null>(null)
   const [videoMode, setVideoMode] = useState<boolean>(false)
   const [bottomTab, setBottomTab] = useState<boolean>(false)
@@ -105,8 +115,9 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const theme = useColorScheme()
   const postValue = ()=>{
     if (value.length>0){
-      contentMutation.create({channel:channel_id, user:auth.user?.id, content:value})
+      contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer})
       setValue('')
+      setTimer(undefined)
       setBottomTab(false)
       setAutoFocus(true)
     }
@@ -166,6 +177,9 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         }}
         onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
       />
+      <View style={{position:'absolute'}}>
+        <TimerTags channel_id={channel_id}/>
+      </View>
       <ThemedView style={{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
         <View style={{alignItems:'center', width:'100%',flexDirection:'row'}}>
           <CommonButton title={''} style={{height:40, paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0}} onPress={()=>setBottomTab(!bottomTab)}>
@@ -173,14 +187,16 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
               <Entypo name={bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
             </View>
           </CommonButton>
+          {timer && <CommonButton style={{height:40, paddingTop:8, borderRadius:0}} title={`⌚${timerFormat(timer)}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>}
           <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{
             flex:1, borderWidth:1, height:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text
           }} onSubmitEditing={postValue} blurOnSubmit={true} onFocus={()=>setBottomTab(false)}/>
           <CommonButton style={{height:40, paddingTop:8, borderTopLeftRadius:0, borderBottomLeftRadius:0}} title={'💬'} onPress={postValue}/>
         </View>
+
         {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('Upload File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
-          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer Message')}`} onPress={()=>{}}/>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer Message')}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center'}} title={`📹\n ${lang('Video Call')}`} onPress={()=>{setVideoMode(!videoMode);setBottomTab(false)}} disabled={videoMode}/>
         </View>}
       </ThemedView>
