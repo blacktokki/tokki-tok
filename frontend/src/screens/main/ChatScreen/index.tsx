@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View, TouchableOpacity } from 'react-native';
 import CommonSection from '../../../components/CommonSection';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
@@ -26,6 +26,7 @@ import useLangContext from '../../../hooks/useLangContext';
 import { Entypo } from '@expo/vector-icons';
 import TimerTags, { timerFormat } from './TimerTags';
 import moment from 'moment';
+import MessageModal from '../../../modals/MessageModal';
 
 
 function uploadFile(){
@@ -47,6 +48,7 @@ function uploadFile(){
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number})=>{
   const isMobile = useIsMobile()
+  const { setModal } = useModalsContext()
   let nextPage = props.next;
     while(nextPage?.next && nextPage.current.length==0){
       nextPage = nextPage.next
@@ -72,18 +74,20 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
             {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
             <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
-              {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
-                <Text style={{fontSize:12}}>⌚</Text>
-                <Text style={{fontSize:12}} selectable>{moment(content.timer).format('L HH:mm')}</Text>
-              </View>}
-              <View style={{width:"100%"}}>
-                {/* @ts-ignore */}
-                <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                  <Text selectable style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
-                </Hyperlink>
-              </View>
+              <TouchableOpacity onLongPress={()=>setModal(MessageModal, {id:content.id, content:message.content})}>
+                {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
+                  <Text style={{fontSize:12}}>⌚</Text>
+                  <Text style={{fontSize:12}} selectable>{moment(content.timer).format('L HH:mm')}</Text>
+                </View>}
+                <View style={{width:"100%"}}>
+                  {/* @ts-ignore */}
+                  <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
+                    <Text selectable style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
+                  </Hyperlink>
+                </View>
               {content.file_set.map((file, fileIndex)=><FilePreview key={fileIndex} file={file} isMobile={isMobile} showBorder={content.file_set.length>1 || message.content.length>0}/>)}
-              {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}              
+              {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}
+              </TouchableOpacity>        
             </CommonSection>
           </View>
         </View>

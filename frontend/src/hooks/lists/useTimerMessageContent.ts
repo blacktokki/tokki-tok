@@ -13,11 +13,18 @@ export default function useTimerMessageContentList(channel_id:number){
   )
   const { lastJsonMessage } = useWebsocketContext()
   useEffect(()=>{
-    if(lastJsonMessage !=null && lastJsonMessage['type']=='next_message' && lastJsonMessage['data']['channel'] == channel_id){
-      if(lastJsonMessage['data']['timer'] && moment() < moment(lastJsonMessage['data']['timer']))
+    if(lastJsonMessage !=null && lastJsonMessage['data']['channel'] == channel_id){
+      if(lastJsonMessage['type']=='next_message'){
+        if(lastJsonMessage['data']['timer'] && moment() < moment(lastJsonMessage['data']['timer']))
+          queryClient.setQueryData<MessengerContent[]>(["TimerMessageContentList", channel_id], (_data)=>{
+            return [...(_data || []), lastJsonMessage['data']]
+          })
+      }
+      if(lastJsonMessage['type']=='delete_message'){
         queryClient.setQueryData<MessengerContent[]>(["TimerMessageContentList", channel_id], (_data)=>{
-          return [...(_data || []), lastJsonMessage['data']]
+          return [...(_data?.filter(v=>v.id!=lastJsonMessage['data'].id) || [])]
         })
+      }
     }
   }, [lastJsonMessage])
   const sorted = useMemo(()=>data?.sort((a, b)=>(a.timer || '') > (b.timer || '')?1:-1), [data])
