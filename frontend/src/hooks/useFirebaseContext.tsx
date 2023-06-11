@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from "react"
+import { useState,  useEffect } from "react"
 import firebase from "firebase/app";
 import "firebase/messaging";
 //@ts-ignore
@@ -42,29 +42,52 @@ const requestToken = async()=>{
 
 
 let noti:NotificationType|undefined
+let notiListener:((enable:boolean)=>void)[] = []
 
-const setEnable = async(enable:boolean, user?:UserMembership|null)=>{
-  context.enable = enable
-  if(user && enable){
-    const token = await requestToken() || null
+const initEnable = async(user:UserMembership, callback:(enable:boolean)=>void)=>{
+  notiListener.push(callback)
+  if (notiListener.length == 1){  
     noti = await getNotification(user.id)
-    if (noti == undefined)
-      noti = await postNotification({user:user.id, type:'WEB', token})
-    else
-      noti = await putNotification({...noti, token})
-  }
-  else if (noti){
-    await putNotification({...noti, token:null})
+    if (noti === undefined){
+      noti = await postNotification({user:user.id, type:'WEB', token:null})
+    }
+    else if(noti.token){
+      requestToken().then(async token=>{
+        if(noti)
+          noti = await putNotification({...noti, token:(token||null)})
+        notiListener.map(c=>c(noti?.token?true:false))
+      })
+    }
+    notiListener.map(c=>c(noti?.token?true:false))
   }
 }
 
-const context:{enable:boolean, setEnable:(enable:boolean, user?:UserMembership|null)=>void} = {enable:false, setEnable}
-const FirebaseContext = createContext(context);
+const changeEnable = async(enable:boolean)=>{
+  if (noti){
+    if(enable){
+      const token = await requestToken() || null
+      noti = await putNotification({...noti, token})
+    }
+    else{
+      noti = await putNotification({...noti, token:null})
+    }
+  }
+  return noti?.token?true:false
+}
 
 export default (auth:Auth)=>{
+  const [enable, setEnable] = useState<boolean|null>(null)
   useEffect(()=>{
-    setEnable(true, auth.user)
+    if (auth.user){
+      if(noti === undefined)
+        initEnable(auth.user, setEnable)
+      else{
+        setEnable(noti.token?true:false)
+      }
+    }
   }, [auth.user])
-  const firebaseContext = useContext(FirebaseContext)
-  return firebaseContext
+  return {
+    enable,
+    setEnable:(_enable:boolean)=>changeEnable(_enable).then(setEnable)
+  }
 }

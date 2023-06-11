@@ -24,6 +24,7 @@ import MemberItem from '../../components/MemberItem';
 import ProfileModal from '../../modals/ProfileModal';
 import { navigate } from '../../navigation';
 import CommonSection from '../../components/CommonSection';
+import useFirebaseContext from '../../hooks/useFirebaseContext';
 
 const MemberTabView = ()=>{
   const {auth} = useAuthContext()
@@ -63,6 +64,51 @@ const MessengerTabView = ()=>{
   </ScrollView>
 }
 
+const ConfigSection = ({title, children}:{title:string, children?: React.ReactNode})=>{
+  const theme = useColorScheme()
+  const color = Colors[theme].text
+  return <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:theme=='light'?'transparent':"black"}}>
+    <Text style={{fontSize:20, color, fontWeight:'600'}}>{title}</Text>
+    {children}
+  </CommonSection>
+}
+
+const ConfigSections = ()=>{
+  const { lang, locale, setLocale } = useLangContext()
+  const theme = useColorScheme()
+  const configTheme = useConfigColorScheme()
+  const { auth } = useAuthContext()
+  const {enable:noti, setEnable:setNoti} = useFirebaseContext(auth)
+  const color = Colors[theme].text
+  return <>
+    <ConfigSection title={lang('* Notification Settings')}>
+      <View style={{flexDirection:'row'}}>
+        {[[lang('On'), true], [lang('Off'), false]].map(([title, n])=><TextButton 
+          key={title} title={title || ''} textStyle={{fontSize:16, color, textDecorationLine:noti==n?'underline':'none'}} style={{borderRadius:20}} onPress={()=>{setNoti(n)}}/>)}
+      </View>
+    </ConfigSection>
+    <ConfigSection title={lang('* Language Settings')}>
+    <View style={{flexDirection:'row'}}>
+        {[[lang('Auto'), 'auto'], ['한국어', 'ko'], ['English', 'en']].map(([title, l])=><TextButton 
+          key={title} title={title || ''} textStyle={{fontSize:16, color, textDecorationLine:locale==l?'underline':'none'}} style={{borderRadius:20}} onPress={()=>setLocale(l)}/>)}
+      </View>
+    </ConfigSection>
+    <ConfigSection title={lang('* Skin Settings')}>
+      <View style={{flexDirection:'row'}}>
+        {[[lang('Auto'), 'no-preference'], [lang('Light'), 'light'], [lang('Dark'), 'dark']].map(([title, colorScheme])=><TextButton 
+          key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:configTheme==colorScheme?'underline':'none'}} style={{borderRadius:20}} onPress={(
+            )=>setColorScheme(colorScheme)}/>)}
+      </View>
+    </ConfigSection>
+  </>
+}
+
+const ConfigTabView = ()=>{
+  return <View style={{flex:1, backgroundColor:'white'}}>
+    <ConfigSections/>
+  </View>
+}
+
 const bottomTabs:TabViewRecord = {
   OneTab:{
       title:'member',
@@ -79,19 +125,18 @@ const bottomTabs:TabViewRecord = {
   //     component:()=><></>,
   //     icon:<></>
   // },
-  // FourTab:{
-  //     title:'config',
-  //     component:()=><></>,
-  //     icon:<SimpleLineIcons size={30} style={{ marginBottom: -3 }} name='options'/>
-  // }
+  FourTab:{
+      title:'config',
+      component:ConfigTabView,
+      icon:<SimpleLineIcons size={30} style={{ marginBottom: -3 }} name='options'/>
+  }
 }
 
 
 export default function HomeScreen({navigation, route}: StackScreenProps<any, 'Home'>) {
-  const { lang, locale, setLocale } = useLangContext()
+  const { lang, locale } = useLangContext()
   const windowType = useResizeContext();
   const theme = useColorScheme()
-  const configTheme = useConfigColorScheme()
   const { setModal } = useModalsContext()
   const [ home, setHome ] = useState(windowType == 'landscape')
   const color = Colors[theme].text
@@ -122,21 +167,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
         <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:'transparent'}}>
           <TextButton title={lang('+ New chat')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>setModal(ChannelEditModal, {type:'messenger'})}/>
         </CommonSection>
-        <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:'transparent'}}>
-          <Text style={{fontSize:20, color, fontWeight:'600'}}>{lang('* Language Settings')}</Text>
-          <View style={{flexDirection:'row'}}>
-            {[[lang('Auto'), 'auto'], ['한국어', 'ko'], ['English', 'en']].map(([title, l])=><TextButton 
-              key={title} title={title || ''} textStyle={{fontSize:16, color, textDecorationLine:locale==l?'underline':'none'}} style={{borderRadius:20}} onPress={()=>setLocale(l)}/>)}
-          </View>
-        </CommonSection>
-        <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:'transparent'}}>
-          <Text style={{fontSize:20, color, fontWeight:'600'}}>{lang('* Skin Settings')}</Text>
-          <View style={{flexDirection:'row'}}>
-            {[[lang('Auto'), 'no-preference'], [lang('Light'), 'light'], [lang('Dark'), 'dark']].map(([title, colorScheme])=><TextButton 
-              key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:configTheme==colorScheme?'underline':'none'}} style={{borderRadius:20}} onPress={(
-                )=>setColorScheme(colorScheme)}/>)}
-          </View>
-        </CommonSection>
+        <ConfigSections/>
       </View>
       <ContractFooter/>
     </View>:

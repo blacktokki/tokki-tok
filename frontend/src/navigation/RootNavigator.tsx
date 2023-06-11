@@ -72,8 +72,8 @@ const MainNavigator = ()=>{
         return auth.user === null?[]:modals
     }, [auth])
 
-    useFirebaseContext(auth)
-    return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
+    const {enable:noti} = useFirebaseContext(auth)
+    return (auth.user!==undefined && noti!=null?<View style={{flexDirection:'row', flex:1}}>
         <ModalsProvider modals={modalValues}>
             {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
             <View style={{flex:1}}>
