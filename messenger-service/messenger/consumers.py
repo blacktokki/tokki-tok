@@ -94,6 +94,9 @@ class MessengerConsumer(WebsocketConsumer):
     def next_message(self, event):
         self.send(text_data=json.dumps(event))
 
+    def delete_message(self, event):
+        self.send(text_data=json.dumps(event))
+
 
 def send_enter(channel, user_id):
     channel_data = ChannelSerializer(instance=channel).data
@@ -112,3 +115,8 @@ def send_leave(channel_id, user_id=None):
 def send_next_message(channel_id, data):
     async_to_sync(get_channel_layer().group_send)(f"{MessengerConsumer.CHANNEL_PREFIX}{channel_id}", {
         "type": "next_message", "data": data})
+
+
+def send_delete_message(channel_id, content_id):
+    async_to_sync(get_channel_layer().group_send)(f"{MessengerConsumer.CHANNEL_PREFIX}{channel_id}", {
+        "type": "delete_message", "data": {'id': content_id, 'channel': channel_id}})
