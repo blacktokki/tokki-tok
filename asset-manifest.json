@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/tokki-tok/static/js/app.5cd263cf.chunk.js",
-    "app.js.map": "/tokki-tok/static/js/app.5cd263cf.chunk.js.map",
+    "app.js": "/tokki-tok/static/js/app.7b67d570.chunk.js",
+    "app.js.map": "/tokki-tok/static/js/app.7b67d570.chunk.js.map",
     "runtime~app.js": "/tokki-tok/static/js/runtime~app.2b88ed0a.js",
     "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.2b88ed0a.js.map",
-    "static/js/2.db5586cc.chunk.js": "/tokki-tok/static/js/2.db5586cc.chunk.js",
-    "static/js/2.db5586cc.chunk.js.map": "/tokki-tok/static/js/2.db5586cc.chunk.js.map",
+    "static/js/2.68ad40e1.chunk.js": "/tokki-tok/static/js/2.68ad40e1.chunk.js",
+    "static/js/2.68ad40e1.chunk.js.map": "/tokki-tok/static/js/2.68ad40e1.chunk.js.map",
     "fonts/AntDesign.ttf": "/tokki-tok/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/tokki-tok/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/tokki-tok/./fonts/Feather.ttf",
@@ -26,13 +26,19 @@
     "firebase-config.js": "/tokki-tok/firebase-config.js",
     "firebase-messaging-sw.js": "/tokki-tok/firebase-messaging-sw.js",
     "index.html": "/tokki-tok/index.html",
+    "main.8e18c2c5.js": "/tokki-tok/main.8e18c2c5.js",
+    "main.8e18c2c5.js.LICENSE.txt": "/tokki-tok/main.8e18c2c5.js.LICENSE.txt",
+    "main.8e18c2c5.js.map": "/tokki-tok/main.8e18c2c5.js.map",
+    "main.ebf79481.css": "/tokki-tok/main.ebf79481.css",
+    "main.ebf79481.css.map": "/tokki-tok/main.ebf79481.css.map",
     "manifest.json": "/tokki-tok/manifest.json",
     "serve.json": "/tokki-tok/serve.json",
-    "static/js/2.db5586cc.chunk.js.LICENSE.txt": "/tokki-tok/static/js/2.db5586cc.chunk.js.LICENSE.txt"
+    "static/js/2.68ad40e1.chunk.js.LICENSE.txt": "/tokki-tok/static/js/2.68ad40e1.chunk.js.LICENSE.txt",
+    "virtual.html": "/tokki-tok/virtual.html"
   },
   "entrypoints": [
     "static/js/runtime~app.2b88ed0a.js",
-    "static/js/2.db5586cc.chunk.js",
-    "static/js/app.5cd263cf.chunk.js"
+    "static/js/2.68ad40e1.chunk.js",
+    "static/js/app.7b67d570.chunk.js"
   ]
 }
