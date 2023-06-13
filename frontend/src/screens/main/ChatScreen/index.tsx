@@ -7,7 +7,7 @@ import CommonButton from '../../../components/CommonButton';
 import useMessengerContentList, { MessengerContentPage, useMessengerContentMutation } from '../../../hooks/lists/useMessengerContentList';
 import useAuthContext from '../../../hooks/useAuthContext';
 import HeaderRight from '../../../components/HeaderRight';
-import useMessengerMemberList, { useMessengerMemberMutation } from '../../../hooks/lists/useMessengerMemberList';
+import useMessengerMemberList from '../../../hooks/lists/useMessengerMemberList';
 import Colors from '../../../constants/Colors';
 import useColorScheme from '../../../hooks/useColorScheme';
 import { Text, View as ThemedView } from '../../../components/Themed' 
@@ -15,7 +15,7 @@ import Hyperlink from 'react-native-hyperlink'
 import useMessengerChannelList from '../../../hooks/lists/useMessengerChannelList';
 import useIsMobile from '../../../hooks/useIsMobile';
 import LinkPreview from '../../../components/LinkPreview';
-import Avatar from '../../../components/Avatar';
+import Avatar, { avatarFromChannel } from '../../../components/Avatar';
 import VideoCallSection from './VideoCallSection';
 import useResizeContext from '../../../hooks/useResizeContext';
 import FilePreview from '../../../components/FilePreview';
@@ -27,6 +27,7 @@ import { Entypo } from '@expo/vector-icons';
 import TimerTags, { timerFormat } from './TimerTags';
 import moment from 'moment';
 import MessageModal from '../../../modals/MessageModal';
+import ChannelEditModal from '../../../modals/ChannelEditModal';
 
 
 function uploadFile(){
@@ -105,11 +106,11 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const channel = useMessengerChannelList(auth)?.find(v=>v.id==parseInt(channel_id))
+  const channelAvatar = channel?avatarFromChannel(channel, auth.user):undefined
   const {data, fetchNextPage } = useMessengerContentList(channel_id)
   const memberList = useMessengerMemberList(channel_id)
   const member_id = useMemo(()=>memberList?.find(v=>v.user == auth.user?.id)?.id, [auth, memberList])
   const windowType = useResizeContext()
-  const messengerMemberMutation = useMessengerMemberMutation()
   const [value, setValue] = useState('')
   const [timer, setTimer] = useState<string>()
   const [autoFocus, setAutoFocus] = useState<boolean|null>(null)
@@ -132,9 +133,9 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     navigation.setOptions({
       headerRight: ()=> <HeaderRight extra={[
         {title:lang('invite'), onPress:()=>setModal(InviteModal, {id:channel_id})},
-        {title:lang('leave'), onPress:()=>{member_id && messengerMemberMutation.leave(member_id).then(back)}}
+        {title:lang('setting'), onPress:()=>setModal(ChannelEditModal, {id:channel_id, type:'messenger', member_id})}
       ]}/>,
-      title: channel?.name
+      title: channelAvatar?.name
     });
   }, [navigation, route, member_id, locale]);
 
@@ -149,9 +150,13 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   }
   useEffect(()=>{
     setModal(null, null)
-    if (!(channel_id))
+    if (!channel_id)
       back()
   }, [route])
+  useEffect(()=>{
+    if (memberList===null)
+      back()
+  }, [memberList])
   useEffect(()=>{
     if(autoFocus){
       (inputRef.current as any).focus()
