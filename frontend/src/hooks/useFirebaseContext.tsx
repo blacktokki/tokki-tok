@@ -83,7 +83,11 @@ export default (auth:Auth)=>{
         initEnable(auth.user, setEnable)
       else{
         setEnable(noti.token?true:false)
+        noti = undefined
+        notiListener = []
       }
+    }else{
+      setEnable(false)
     }
   }, [auth.user])
   return {
