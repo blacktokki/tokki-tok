@@ -16,7 +16,7 @@ class Channel(models.Model):
     subowner = models.ForeignKey(User, db_column='subuser_id', on_delete=models.SET_NULL, help_text='', null=True,
                                  related_name='subchannel_set')
     group = models.ForeignKey(Group, on_delete=models.CASCADE, help_text='')
-    name = models.CharField(db_column='ch_name', max_length=255, default='', help_text='')
+    name = models.CharField(db_column='ch_name', max_length=255, blank=True, default='', help_text='')
     type = models.CharField(db_column='ch_type', choices=TYPES, default='messenger', max_length=100)
     is_archive = models.BooleanField(db_column="ch_is_archive", default=False, help_text='')
     description = models.TextField(db_column="ch_description", blank=True, null=True, help_text='')

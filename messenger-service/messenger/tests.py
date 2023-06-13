@@ -37,13 +37,15 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_channel(self):
         # given
-        channel = Channel.objects.create(owner=self.user, group=self.group, type='messenger', name='name')
+        channel_data = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": ""}
 
         # when
+        create_response = self.client.post('/api/v1/channels/', channel_data)
         list_response = self.client.get('/api/v1/channels/messenger/')
-        delete_response = self.client.delete(f'/api/v1/channels/{channel.id}/')
+        delete_response = self.client.delete(f'/api/v1/channels/{create_response.data["id"]}/')
 
         # then
+        self.assertEqual(create_response.status_code, 201)
         self.assertEqual(list_response.status_code, 200)
         self.assertEqual(delete_response.status_code, 204)
 

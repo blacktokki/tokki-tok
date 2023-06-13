@@ -26,11 +26,6 @@ class Migration(migrations.Migration):
                     name='subowner',
                     field=models.ForeignKey(db_column='subuser_id', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='subchannel_set', to='accounts.user'),
                 ),
-                migrations.AlterField(
-                    model_name='channel',
-                    name='owner',
-                    field=models.ForeignKey(db_column='user_id', null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounts.user'),
-                ),
             ],
             database_operations=[
                 migrations.AddField(

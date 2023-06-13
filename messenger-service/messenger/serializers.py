@@ -49,7 +49,7 @@ class ChannelSerializer(serializers.ModelSerializer):
         if instance.type == 'messenger':
             MessengerMember.objects.create(user_id=validated_data['owner'].id, channel_id=instance.id)
             instance.enter_message_id = create_enter_message(instance.id, validated_data['owner']).id
-            if not validated_data['owner'].id != validated_data['subowner'].id:
+            if 'subowner' in validated_data and not validated_data['owner'].id != validated_data['subowner'].id:
                 MessengerMember.objects.create(user_id=validated_data['subowner'].id, channel_id=instance.id)
                 instance.subowner_message_id = create_enter_message(instance.id, validated_data['subowner']).id
         return instance
