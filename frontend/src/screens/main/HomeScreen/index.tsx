@@ -24,7 +24,7 @@ import ProfileModal from '../../../modals/ProfileModal';
 import { navigate } from '../../../navigation';
 import CommonSection from '../../../components/CommonSection';
 import ConfigSections from './ConfigSections';
-import Avatar from '../../../components/Avatar';
+import Avatar, { avatarFromChannel } from '../../../components/Avatar';
 
 const MemberTabView = ()=>{
   const {auth} = useAuthContext()
@@ -44,9 +44,7 @@ const MessengerTabView = ()=>{
   const today = (new Date()).toISOString().slice(0, 10)
   return <ScrollView style={{flex:1, backgroundColor:'white'}}>
       {channelList?.map((item, index)=>{
-          let avatar;
-          if (item.member_count<3)
-            avatar = (item.member_count==1 || auth.user?.id == item.subowner.id)?item.owner:item.subowner
+          const {avatar, name} = avatarFromChannel(item, auth.user)
           const date = item.last_message?.created.slice(0,10)
           return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
               <View style={{flexDirection:'row'}}>
@@ -57,7 +55,7 @@ const MessengerTabView = ()=>{
                     <FontAwesome size={40} style={{ marginBottom: -3, marginRight:20 }} name='users'/>}
                   <View>
                       <View style={{flexDirection:'row'}}>
-                          <Text style={{fontSize:18}}>{item.name}</Text>
+                          <Text style={{fontSize:18}}>{name}</Text>
                           <Text style={{fontSize:18, opacity: 0.4, paddingLeft:5}}>{item.member_count}</Text>
                       </View>
                       <Text style={{fontSize:16, opacity: 0.4}}>{item.last_message?.content}</Text>

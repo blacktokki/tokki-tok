@@ -6,26 +6,29 @@ import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
 import useResizeContext from '../hooks/useResizeContext';
 import TabView from '../components/TabView';
-import { TabViewRecord, UserMembership } from '../types';
+import { MessengerChannel, TabViewRecord, User, UserMembership } from '../types';
 import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
 import CommonItem from '../components/CommonItem';
 import { Text } from '../components/Themed';
-import useAuthContext from '../hooks/useAuthContext';
+import useAuthContext, { Auth } from '../hooks/useAuthContext';
 import { useMessengerChannelSorted } from '../hooks/lists/useMessengerChannelList';
 import { navigate } from '.'
+import { avatarFromChannel } from '../components/Avatar';
 
-const DrawerTabView = (props:{data:{name:string, onPress?:()=>void}[]})=><View style={{flex:1}}>
-    {props.data.map((item, index)=><CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={item.onPress}>
-        <Text style={{marginLeft:20}}>{item.name}</Text>
-    </CommonItem>
-    )}
+const DrawerTabView = (props:{auth:Auth, data:(MessengerChannel & {onPress?:()=>void})[]})=><View style={{flex:1}}>
+    {props.data.map((item, index)=>{
+      const {name} = avatarFromChannel(item, props.auth.user)
+      return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={item.onPress}>
+        <Text style={{marginLeft:20}}>{name}</Text>
+      </CommonItem>
+    })}
 </View>
 
 const MessengerTabView = ()=>{
   const {auth} = useAuthContext()
   const channelList = useMessengerChannelSorted(auth);
-  return <DrawerTabView data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
+  return <DrawerTabView auth={auth} data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
 }
 
 const drawerTabs:TabViewRecord = {
