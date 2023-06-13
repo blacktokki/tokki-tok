@@ -41,6 +41,7 @@ def attach_link(channel_content, validated_data):
 
 class ChannelSerializer(serializers.ModelSerializer):
     enter_message_id = serializers.CharField(read_only=True)
+    subowner_message_id = serializers.CharField(read_only=True)
 
     @transaction.atomic
     def create(self, validated_data):
@@ -48,6 +49,9 @@ class ChannelSerializer(serializers.ModelSerializer):
         if instance.type == 'messenger':
             MessengerMember.objects.create(user_id=validated_data['owner'].id, channel_id=instance.id)
             instance.enter_message_id = create_enter_message(instance.id, validated_data['owner']).id
+            if not validated_data['owner'].id != validated_data['subowner'].id:
+                MessengerMember.objects.create(user_id=validated_data['subowner'].id, channel_id=instance.id)
+                instance.subowner_message_id = create_enter_message(instance.id, validated_data['subowner']).id
         return instance
 
     class Meta:
@@ -56,30 +60,14 @@ class ChannelSerializer(serializers.ModelSerializer):
 
 
 class DirectChannelSerializer(ChannelSerializer):
-    counterpart = serializers.PrimaryKeyRelatedField(required=True, queryset=User.objects.all())
-    counterpart_message_id = serializers.CharField(read_only=True)
-
     @transaction.atomic
     def create(self, validated_data):
-        counterpart = validated_data.pop('counterpart')
-        is_self = (validated_data['owner'].id == counterpart.id)
-        owner_channel_ids = set(MessengerMember.objects.channel_ids_filter(user=validated_data['owner']))
-        counterpart_channel_ids = set(MessengerMember.objects.channel_ids_filter(user=counterpart))
-        instance = Channel.objects.filter_direct_channel(owner_channel_ids, counterpart_channel_ids, is_self)
+        instance = Channel.objects.filter_direct_channel(validated_data['owner'], validated_data['subowner'])
         if instance:
-            instance.owner = validated_data['owner']
             instance.enter_message_id = None
-            instance.counterpart = None
-            instance.counterpart_message_id = None
+            instance.subowner_message_id = None
         else:
             instance = super().create(validated_data)
-            if not is_self:
-                MessengerMember.objects.create(user_id=counterpart.id, channel_id=instance.id)
-                instance.counterpart = counterpart.id
-                instance.counterpart_message_id = create_enter_message(instance.id, counterpart).id
-            else:
-                instance.counterpart = None
-                instance.counterpart_message_id = None
         return instance
 
     class Meta:
@@ -94,9 +82,11 @@ class LastMessageSerializer(serializers.Serializer):
 
 class MessengerChannelSerializer(serializers.ModelSerializer):
     last_message_id = serializers.HiddenField(default=None)
-    last_message = LastMessageSerializer(required=False)
+    last_message = LastMessageSerializer(read_only=True, required=False)
     member_count = serializers.IntegerField(read_only=True)
     unread_count = serializers.IntegerField(read_only=True)
+    owner = UserSerializer(read_only=True)
+    subowner = UserSerializer(read_only=True)
 
     def to_representation(self, instance):
         if not hasattr(self, '_last_message'):
@@ -188,10 +178,16 @@ class MessengerUserBulkSerializer(MessengerMemberSerializer):
         user_ids = validated_data.pop("user_ids")
         members = [MessengerMember(user_id=user_id, **validated_data) for user_id in user_ids]
         MessengerMember.objects.bulk_create(members)
+        users = User.objects.filter(id__in=user_ids)
+        channel = validated_data['channel']
+        if channel.subowner is None:
+            channel.subowner_id = ([i for i in user_ids if i != channel.owner_id] + [None])[0]
+            channel.save()
+        elif len(channel.name) == 0:
+            channel.name = f"{channel.owner.name},{channel.subowner.name}..."
+            channel.save()
         validated_data['enter_message_ids'] = [
-            create_enter_message(validated_data['channel'].id, user).id
-            for user in User.objects.filter(id__in=user_ids)
-        ]
+            create_enter_message(channel.id, user).id for user in users]
         validated_data["user_ids"] = user_ids
         return validated_data
 

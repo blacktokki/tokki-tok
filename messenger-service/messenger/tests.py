@@ -49,13 +49,17 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_direct_channel(self):
         # given
-        channel_data = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": "name",
-                        "counterpart": self.user2.id}
+        channel_data_self = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": "",
+                        "subowner": self.user.id}
+        channel_data = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": "",
+                        "subowner": self.user2.id}
 
         # when
+        create_response_self = self.client.post('/api/v1/channels/direct/', channel_data_self)
         create_response = self.client.post('/api/v1/channels/direct/', channel_data)
 
         # then
+        self.assertEqual(create_response_self.status_code, 201)
         self.assertEqual(create_response.status_code, 201)
 
     def test_messenger_member(self):

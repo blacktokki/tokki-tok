@@ -1,5 +1,4 @@
 from collections import defaultdict
-from django.db import models
 from rest_framework import viewsets
 from rest_framework.decorators import action
 
@@ -17,11 +16,6 @@ from .serializers import (
 )
 from .filtersets import ChannelFilterSet, ChannelContentFilterSet, MessengerMemberFilterSet
 from .models import Message, Channel, MessengerMember, ChannelContent
-
-ANNOTATE_MESSENGER_CONTENT = {
-    'name': models.F('user__last_name'),
-    'channel_name': models.F('channel__name')
-}
 
 
 def post_create_message(channel_id, message_ids):
@@ -59,7 +53,6 @@ class ChannelViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
         if serializer.data['type'] == 'messenger':
-            print(serializer.data)
             if serializer.data.get('enter_message_id'):
                 send_enter(serializer.instance, serializer.data["owner"])
                 post_create_message(serializer.data["id"], [serializer.data['enter_message_id']])
@@ -126,6 +119,11 @@ class MessengerMemberViewset(viewsets.ModelViewSet):
         user_id = instance.user_id
         channel = instance.channel
         instance.delete()
+        if channel.owner_id == user_id or channel.subowner_id == user_id:
+            channel.owner_id = channel.owner_id if channel.owner_id != user_id else channel.subowner_id
+            subowner = MessengerMember.objects.filter(channel_id=channel.id).exclude(user_id=channel.owner_id).first()
+            channel.subowner = subowner.user if subowner else None
+            channel.save()
         send_leave(channel.id, user_id)
         serializer = MessageSerializer(data={"channel": channel.id, "content": f"{instance.user.name} 퇴장"})
         serializer.is_valid()
