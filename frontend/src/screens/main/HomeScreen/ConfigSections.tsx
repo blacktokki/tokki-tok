@@ -1,3 +1,4 @@
+import React from "react"
 import CommonSection from "../../../components/CommonSection"
 import Colors from "../../../constants/Colors"
 import useColorScheme, { setColorScheme } from "../../../hooks/useColorScheme"

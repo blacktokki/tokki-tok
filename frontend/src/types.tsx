@@ -60,27 +60,29 @@ export type UserMembership =  User & {
   membership_set:Membership[]
 }
 
-export type Channel = {
+type BaseChannel = {
   id?: number,
   name: string,
   type: string,
   description?: string,
   is_archive?: boolean,
-  owner: number,
   group: number
 }
 
-export type MessengerChannel = Channel & {
+export type Channel = BaseChannel & {
+  owner: number,
+  subowner?:number
+}
+
+export type MessengerChannel = BaseChannel & {
   member_count: number,
   unread_count: number,
   last_message?: {
     created: string,
     content: string
   }
-}
-
-export type DirectChannel = Channel & {
-  counterpart: number
+  owner: User
+  subowner: User
 }
 
 export type Message = {

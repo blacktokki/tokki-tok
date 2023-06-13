@@ -4,7 +4,7 @@ import useAuthContext from '../hooks/useAuthContext';
 import useUserMembershipList from '../hooks/lists/useUserMembershipList';
 import { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import CommonButton from '../components/CommonButton';
-import { DirectChannel } from '../types';
+import { Channel } from '../types';
 import { navigate } from '../navigation';
 import useModalsContext from '../hooks/useModalsContext';
 import { Text, View } from '../components/Themed';
@@ -47,7 +47,7 @@ export default function ProfileModal({id}:{id:number}) {
     <Profile username={user.username} name={user.name} userId={user.id} />
     <CommonButton title={lang('1:1 Chat')} onPress={()=>{
       if(auth?.user?.id && auth.groupId){
-        const newChannel:DirectChannel = {name:auth.user.id!=user.id?`${auth.user.name}, ${user.name}`:auth.user.name, type:'messenger', owner:auth?.user?.id, group:auth.groupId, counterpart:user.id};
+        const newChannel:Channel = {name:"", type:'messenger', owner:auth?.user?.id, group:auth.groupId, subowner:user.id};
         channelMutation.direct(newChannel).then(v=>navigate("Main", {screen:"ChatScreen", params: {id:v.id}}))
       }
     }}/>

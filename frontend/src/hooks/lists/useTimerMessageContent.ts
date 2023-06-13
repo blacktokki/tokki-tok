@@ -31,11 +31,12 @@ export default function useTimerMessageContentList(channel_id:number){
   useEffect(()=>{
     if (sorted?.[0]?.timer){
       const id = sorted[0].id
+      const ms = Math.min(moment(sorted[0].timer).diff(moment()), Number.MAX_VALUE)
       let timeout = setTimeout(()=>{
         queryClient.setQueryData<MessengerContent[]>(["TimerMessageContentList", channel_id], (_data)=>{
-          return (_data || []).filter(v=>v.id!=id)
+          return (_data || []).filter(v=>v.id!=id || moment(v.timer).diff(moment()) > 0)
         })
-      }, moment(sorted[0].timer).diff(moment()))
+      }, ms)
       return ()=>clearTimeout(timeout)
     }
   },[sorted])
