@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import moment from "moment";
+import dayjs from "dayjs";
 import {View, TouchableOpacity} from 'react-native'
 import { Text } from "../../../components/Themed";
 import useTimerMessageContentList from "../../../hooks/lists/useTimerMessageContent";
@@ -8,10 +8,10 @@ import Avatar from "../../../components/Avatar";
 import Hyperlink from "react-native-hyperlink";
 
 export function timerFormat(datetime:string){
-    return _timerFormat(moment(datetime), moment())
+    return _timerFormat(dayjs(datetime), dayjs())
 }
 
-function _timerFormat(m:moment.Moment, now:moment.Moment){
+function _timerFormat(m:dayjs.Dayjs, now:dayjs.Dayjs){
     if (m.year() != now.year()){
         return m.format('YYYY.MM')
     }
@@ -22,12 +22,12 @@ function _timerFormat(m:moment.Moment, now:moment.Moment){
   }
 
 export function timerToString(timer:string){
-    return moment(timer).format('L HH:mm')
+    return dayjs(timer).format('YYYY.MM.DD HH:mm')
 }
 
-const TimerTag = (props:{data:MessengerContent, now:moment.Moment, isExpand:boolean, setExpand:(id?:number)=>void})=>{
-    const start = moment(props.data.created)
-    const end = moment(props.data.timer)
+const TimerTag = (props:{data:MessengerContent, now:dayjs.Dayjs, isExpand:boolean, setExpand:(id?:number)=>void})=>{
+    const start = dayjs(props.data.created)
+    const end = dayjs(props.data.timer)
     const ratio = (start.diff(props.now)/start.diff(end))
     return <TouchableOpacity onPress={()=>props.setExpand(props.isExpand?undefined:props.data.id)}>
         <View style={{backgroundColor:'lightgray', borderRadius:20, overflow:'hidden', margin:5}}>
@@ -58,11 +58,11 @@ const TimerTag = (props:{data:MessengerContent, now:moment.Moment, isExpand:bool
 
 export default (props:{channel_id:number})=>{
     const timerMessages = useTimerMessageContentList(props.channel_id)
-    const [now, setNow] = useState(moment())
+    const [now, setNow] = useState(dayjs())
     const [expand, setExpand] = useState<number>()
     useEffect(()=>{
         const timeout = setTimeout(()=>{
-            setNow(moment())
+            setNow(dayjs())
         }, 2000)
         return ()=>clearTimeout(timeout)
     }, [now])

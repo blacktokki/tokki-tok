@@ -3,19 +3,19 @@ import { useQuery, useQueryClient } from "react-query"
 import { getTimerMessageContentList } from "../../apis"
 import { MessengerContent } from "../../types"
 import useWebsocketContext from "../useWebsocketContext"
-import moment from "moment"
+import dayjs from "dayjs"
 
 export default function useTimerMessageContentList(channel_id:number){  
   const queryClient = useQueryClient()
   const { data } = useQuery<MessengerContent[]>(
     ["TimerMessageContentList", channel_id], 
-    async()=>await getTimerMessageContentList(channel_id, moment().format(moment.HTML5_FMT.DATETIME_LOCAL)), 
+    async()=>await getTimerMessageContentList(channel_id, dayjs().toISOString()), 
   )
   const { lastJsonMessage } = useWebsocketContext()
   useEffect(()=>{
     if(lastJsonMessage !=null && lastJsonMessage['data']['channel'] == channel_id){
       if(lastJsonMessage['type']=='next_message'){
-        if(lastJsonMessage['data']['timer'] && moment() < moment(lastJsonMessage['data']['timer']))
+        if(lastJsonMessage['data']['timer'] && dayjs() < dayjs(lastJsonMessage['data']['timer']))
           queryClient.setQueryData<MessengerContent[]>(["TimerMessageContentList", channel_id], (_data)=>{
             return [...(_data || []), lastJsonMessage['data']]
           })
@@ -31,10 +31,10 @@ export default function useTimerMessageContentList(channel_id:number){
   useEffect(()=>{
     if (sorted?.[0]?.timer){
       const id = sorted[0].id
-      const ms = Math.min(moment(sorted[0].timer).diff(moment()), Number.MAX_VALUE)
+      const ms = Math.min(dayjs(sorted[0].timer).diff(dayjs()), Number.MAX_VALUE)
       let timeout = setTimeout(()=>{
         queryClient.setQueryData<MessengerContent[]>(["TimerMessageContentList", channel_id], (_data)=>{
-          return (_data || []).filter(v=>v.id!=id || moment(v.timer).diff(moment()) > 0)
+          return (_data || []).filter(v=>v.id!=id || dayjs(v.timer).diff(dayjs()) > 0)
         })
       }, ms)
       return ()=>clearTimeout(timeout)

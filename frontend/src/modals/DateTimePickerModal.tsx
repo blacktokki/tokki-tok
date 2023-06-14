@@ -10,41 +10,40 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import { BottomSheet } from '../components/ModalSection';
 import Calendar from '../components/Calendar';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const dayTypes = ['AM', 'PM'].map(value=>({label:value, value}))
 const hours = [...Array(12).keys()].map((value, index)=>(index + 1).toString().padStart(2, '0')).map(value=>({label:value, value}))
 const minutes = [...Array(12).keys()].map((value, index)=>(index * 5).toString().padStart(2, '0')).map(value=>({label:value, value}))
 
 
-const getDisableDays=(date:moment.Moment)=>{
-  const startDate = date.clone().startOf('month').add(-1, 'month')
+const getDisableDays=(date:dayjs.Dayjs)=>{
+  let startDate = date.clone().startOf('month').add(-1, 'month')
   const endDate = date.clone().endOf('month').add(1, 'month')
-  const today = moment().startOf('day')
+  const today = dayjs().startOf('day')
   const result = []
   while(startDate<=endDate && startDate<today){
-    result.push(startDate.format(moment.HTML5_FMT.DATE))
-    startDate.add(1, 'day')
+    result.push(startDate.format('YYYY-MM-DD'))
+    startDate = startDate.add(1, 'day')
   }
   return result
 }
 
-const defaultMoment = ()=>{
-  const m = moment()
+const defaultDayjs = ()=>{
+  const m = dayjs()
   const restMinute = parseInt(m.format('mm')) % 5
-  m.add(5-restMinute, 'minute')
-  return m
+  return m.add(5-restMinute, 'minute')
 }
 
 export default function DateTimePickerModal({datetime, callback}:{datetime?:string, callback:(datetime?:string)=>void}) {
-  const _moment = datetime?moment(datetime):defaultMoment()
-  const { lang } = useLangContext()
+  const _dayjs = datetime?dayjs(datetime):defaultDayjs()
+  const { lang, locale } = useLangContext()
   const theme = useColorScheme()
-  const [date, setDate] = useState(_moment.format(moment.HTML5_FMT.DATE));
-  const [dayType, setDayType] = useState(_moment.locale('en').format('A'))
-  const [hour, setHour] = useState(_moment.format('hh'))
-  const [minute, setMinute] = useState(_moment.format('mm'))
-  const [disableDays, setDisableDays] = useState<string[]>(getDisableDays(_moment))
+  const [date, setDate] = useState(_dayjs.format('YYYY-MM-DD'));
+  const [dayType, setDayType] = useState(_dayjs.locale('en').format('A'))
+  const [hour, setHour] = useState(_dayjs.format('hh'))
+  const [minute, setMinute] = useState(_dayjs.format('mm'))
+  const [disableDays, setDisableDays] = useState<string[]>(getDisableDays(_dayjs))
   const { setModal } = useModalsContext()
   const back = ()=>{
     setModal(DateTimePickerModal, null)
@@ -62,11 +61,12 @@ export default function DateTimePickerModal({datetime, callback}:{datetime?:stri
       <View style={{flex:1}}/>
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <Calendar 
+    <Calendar
+      locale={locale}
       style={undefined} 
       setDate={setDate}
       disableAllTouchEventsForDisabledDays={true}
-      onMonthChange={(v)=>setDisableDays(getDisableDays(moment(v.dateString)))}
+      onMonthChange={(v)=>setDisableDays(getDisableDays(dayjs(v.dateString)))}
       markedDates={{
         ...disableDays.reduce((p, c)=>{p[c]={disabled:true};return p}, {} as Record<string, any>),
         ...(date?[date]:[]).reduce((p, c)=>{p[c]={selected:true};return p}, {} as Record<string, any>)
@@ -100,7 +100,7 @@ export default function DateTimePickerModal({datetime, callback}:{datetime?:stri
     </View>
     <View style={{flexDirection:'row'}}>
       <CommonButton title={lang('save')} onPress={()=>{
-        callback?.(moment(`${date} ${hour}:${minute} ${dayType}`).format(moment.HTML5_FMT.DATETIME_LOCAL))
+        callback?.(dayjs(`${date} ${hour}:${minute} ${dayType}`).toISOString())
         back()
       }}/>
       <CommonButton title={lang('cancel')} onPress={()=>{
