@@ -1,0 +1,8 @@
+/**
+ * @preserve XDate v@VERSION
+ * Docs & Licensing: http://arshaw.com/xdate/
+ */
+
+//! moment.js
+
+//! moment.js locale configuration
