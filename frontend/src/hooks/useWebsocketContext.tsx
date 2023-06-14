@@ -1,20 +1,18 @@
 import React, { Context, createContext,  useContext, useEffect, useState } from "react"
 import useWebSocket from "react-use-websocket"
 import { SendJsonMessage } from "react-use-websocket/dist/lib/types"
-// @ts-ignore
-import {API_URL} from "@env"
+import {websockerURL } from "../constants/Envs"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, AppStateStatus } from "react-native";
 
 type WebsocketContextType = {lastJsonMessage:any, sendJsonMessage:SendJsonMessage }
 const defaultContext = {lastJsonMessage:undefined, sendJsonMessage:()=>{}}
 const WebSocketContext = createContext<WebsocketContextType>(defaultContext);
-const [SCHEMA, DOMAIN] = `${API_URL}`.split('://')
 
 export const WebSocketInternalProvider = ({children, path, Context, useBackground}:{children:React.ReactNode, path:string, Context:Context<WebsocketContextType>, useBackground?:boolean})=>{
   const [token, setToken] = useState<string|null>(null)
   const [isActive, setIsActive] = useState<boolean>(useBackground || AppState.currentState == 'active')
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${SCHEMA=='https'?'wss':'ws'}://${DOMAIN}/${path}`,{
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${websockerURL}/${path}`,{
     shouldReconnect: (closeEvent) => true,
     protocols: token?['Authorization',  token]:undefined,
     onOpen: (e)=>{console.log(`success websocket connection(${path})`)},

@@ -1,9 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
-// @ts-ignore
-import {API_URL} from "@env"
+import {accountURL, baseURL} from "../constants/Envs"
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const accountURL =  `${API_URL}/account/`
-const baseURL =  `${API_URL}/messenger/`
 const defaultOption:AxiosRequestConfig = {
     baseURL,
     withCredentials: true,

@@ -1,6 +1,7 @@
 
 import { User, UserMembership } from '../types';
-import axios, { getToken, setToken, accountURL as baseURL } from './axios';
+import axios, { getToken, setToken } from './axios';
+import {accountURL as baseURL} from '../constants/Envs'
 
 export const login = async(username:string, password:string) => {
     if(username.endsWith('.guest') && password.length == 0)

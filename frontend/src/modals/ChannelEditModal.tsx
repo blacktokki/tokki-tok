@@ -12,6 +12,7 @@ import useModalsContext from '../hooks/useModalsContext';
 import useLangContext from '../hooks/useLangContext';
 import ModalSection from '../components/ModalSection';
 import { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
+import { avatarFromChannel } from '../components/Avatar';
 
 export default function ChannelEditModal({id, member_id, type}: {id?:number, member_id?:number, type:string}) {
   const { lang } = useLangContext()
@@ -29,7 +30,8 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
 
   useEffect(()=>{
     if (channel){
-      setName(channel.name)
+      const {name:_name} = avatarFromChannel(channel, auth.user)
+      setName(_name)
       setDescription(channel?.description || '')
     }
   }, [channel])

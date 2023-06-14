@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Navigation from './src/navigation';
 import useCachedResources from './src/hooks/useCachedResources';
 import { useInitColorScheme } from './src/hooks/useColorScheme';
 import MobileSafeAreaView from './src/components/MobileSafeAreaView';
@@ -14,6 +13,7 @@ const queryClient = new QueryClient();
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const isAppearenceComplete = useInitColorScheme()
+  const Navigation = React.lazy(()=> import('./src/navigation'))
   if (!isLoadingComplete || !isAppearenceComplete) {
     return null;
   } else {
@@ -25,7 +25,9 @@ export default function App() {
               <IntlProvider>
                 {/* devtools */}
                 {/* <ReactQueryDevtools initialIsOpen={true} /> */}
-                <Navigation/>
+                <Suspense fallback={<></>}>
+                  <Navigation/>
+                </Suspense>
                 <StatusBar />
               </IntlProvider>
             </QueryClientProvider>

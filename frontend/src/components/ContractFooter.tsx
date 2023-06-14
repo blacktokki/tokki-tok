@@ -3,6 +3,7 @@ import { View, StyleSheet, Linking, Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { AntDesign } from '@expo/vector-icons'; 
 import useColorScheme from '../hooks/useColorScheme';
+import Colors from '../constants/Colors';
 
 const openURL = Platform.OS=='web'?(url:string)=>{location.href=url}:Linking.openURL
 
@@ -10,10 +11,10 @@ export default ()=>{
     const theme = useColorScheme()
     return<View style={Styles.footer_buttons}>
         <TouchableOpacity style={Styles.footer_button} onPress={()=>openURL("https://github.com/blacktokki/tokki-tok")}>
-            <AntDesign name="github" size={24} color={theme=='light'?'black':'white'} />
+            <AntDesign name="github" size={24} color={Colors[theme].iconColor} />
         </TouchableOpacity>
         <TouchableOpacity style={Styles.footer_button} onPress={()=>Linking.openURL("mailto:ydh051541@naver.com")}>
-            <AntDesign name="mail" size={24} color={theme=='light'?'black':'white'} />
+            <AntDesign name="mail" size={24} color={Colors[theme].iconColor} />
         </TouchableOpacity>
     </View>
 }

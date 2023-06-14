@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useLayoutEffect, useMemo} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import { Text as StyledText } from 'react-native-paper';
+import { Text } from '../../../components/Themed'
 import useResizeContext from '../../../hooks/useResizeContext';
 import TabView from '../../../components/TabView';
 import HeaderRight from '../../../components/HeaderRight';
@@ -28,11 +29,12 @@ import Avatar, { avatarFromChannel } from '../../../components/Avatar';
 
 const MemberTabView = ()=>{
   const {auth} = useAuthContext()
+  const theme = useColorScheme()
   const { setModal } = useModalsContext()
   const userList = useUserMembershipList(auth)
   const memberItem = React.useMemo(
       ()=>userList && userList.map((item, index)=><MemberItem key={index} member={item} onPress={()=>setModal(ProfileModal, {id:item.id})}/>), [userList])
-  return <ScrollView style={{flex:1, backgroundColor:'white'}}>
+  return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}}>
       {memberItem}
   </ScrollView>
 }
@@ -40,9 +42,10 @@ const MemberTabView = ()=>{
 const MessengerTabView = ()=>{
   const {auth} = useAuthContext()
   const channelList = useMessengerChannelSorted(auth)
-  
+  const theme = useColorScheme()
+
   const today = (new Date()).toISOString().slice(0, 10)
-  return <ScrollView style={{flex:1, backgroundColor:'white'}}>
+  return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}}>
       {channelList?.map((item, index)=>{
           const {avatar, name} = avatarFromChannel(item, auth.user)
           const date = item.last_message?.created.slice(0,10)
@@ -52,7 +55,7 @@ const MessengerTabView = ()=>{
                     <View style={{ marginRight:20}}>
                       <Avatar name={avatar.name} size={44} userId={avatar.id}/>
                     </View>:
-                    <FontAwesome size={40} style={{ marginBottom: -3, marginRight:20 }} name='users'/>}
+                    <FontAwesome size={40} color={Colors[theme].iconColor} style={{ marginBottom: -3, marginRight:20 }} name='users'/>}
                   <View>
                       <View style={{flexDirection:'row'}}>
                           <Text style={{fontSize:18}}>{name}</Text>
@@ -72,32 +75,36 @@ const MessengerTabView = ()=>{
 
 
 const ConfigTabView = ()=>{
-  return <View style={{flex:1, backgroundColor:'white'}}>
+  const theme = useColorScheme()
+  return <View style={{flex:1, backgroundColor:Colors[theme].background}}>
     <ConfigSections/>
   </View>
 }
 
-const bottomTabs:TabViewRecord = {
-  OneTab:{
-      title:'member',
-      component:MemberTabView,
-      icon:<MaterialCommunityIcons size={32} style={{ marginBottom: -3 }} name='account'/>,
-  },
-  TwoTab:{
-      title:'chat',
-      component:MessengerTabView,
-      icon:<Ionicons size={30} style={{ marginBottom: -3 }} name='chatbox'/>
-  },
-  // ThreeTab:{
-  //     title:'board',
-  //     component:()=><></>,
-  //     icon:<></>
-  // },
-  FourTab:{
-      title:'config',
-      component:ConfigTabView,
-      icon:<SimpleLineIcons size={30} style={{ marginBottom: -3 }} name='options'/>
-  }
+const getBottomTabs = (theme:'light'|'dark')=>{
+  const color = Colors[theme].iconColor
+  return {
+    OneTab:{
+        title:'member',
+        component:MemberTabView,
+        icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='account'/>,
+    },
+    TwoTab:{
+        title:'chat',
+        component:MessengerTabView,
+        icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
+    },
+    // ThreeTab:{
+    //     title:'board',
+    //     component:()=><></>,
+    //     icon:<></>
+    // },
+    FourTab:{
+        title:'config',
+        component:ConfigTabView,
+        icon:<SimpleLineIcons size={30} color={color} style={{ marginBottom: -3 }} name='options'/>
+    }
+  } as TabViewRecord
 }
 
 
@@ -112,7 +119,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
     {title:lang('member'), headerRight:()=><HeaderRight/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
     // {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>setModal(ChannelEditModal, props:{type:'board'}}) }]}/>},
-    {title:'config', headerRight:()=><HeaderRight/>}
+    {title:lang('config'), headerRight:()=><HeaderRight/>}
   ]
   
   useLayoutEffect(() => {
@@ -139,6 +146,6 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
       </View>
       <ContractFooter/>
     </View>:
-    <TabView tabs={bottomTabs} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
+    <TabView tabs={getBottomTabs(theme)} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
 }
 

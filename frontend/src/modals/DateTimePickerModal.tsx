@@ -73,20 +73,26 @@ export default function DateTimePickerModal({datetime, callback}:{datetime?:stri
       }}
     
     />
-    <View style={{flexDirection:'row', padding:5}}>
+    <View style={{flexDirection:'row', paddingVertical:10, width:400, height:50}}>
       <Picker
+        style={{flex:1}}
+        itemStyle={{fontSize:20}}
         selectedValue={dayType}
         onValueChange={setDayType}>
         {dayTypes.map(v=><Picker.Item key={v.value} label={v.label} value={v.value} />)}
       </Picker>
-      <Text> </Text>
+      <Text style={{fontSize:20}}> </Text>
       <Picker
+        style={{flex:1}}
+        itemStyle={{fontSize:20}}
         selectedValue={hour}
         onValueChange={setHour}>
         {hours.map(v=><Picker.Item key={v.value} label={v.label} value={v.value} />)}
       </Picker>
-      <Text> : </Text>
+      <Text style={{fontSize:20}}> : </Text>
       <Picker
+        style={{flex:1}}
+        itemStyle={{fontSize:20}}
         selectedValue={minute}
         onValueChange={setMinute}>
         {minutes.map(v=><Picker.Item key={v.value} label={v.label} value={v.value} />)}

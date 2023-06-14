@@ -3,14 +3,14 @@ import { IntlShape } from "@formatjs/intl";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import intl, { translations } from "../lang";
 
-const IntlContext = createContext<{locale?:string, setLocale:(locale:string|undefined)=>void}>({setLocale:()=>{}});
+const IntlContext = createContext<{locale?:string, setLocale:(locale:string|undefined)=>void}>({locale:'auto', setLocale:()=>{}});
 
 export const IntlProvider = ({children}:{children:React.ReactNode})=>{
   const [complete, setComplete] = useState(false)
   const [locale, setLocale] = useState<string>()
   useEffect(()=>{
     AsyncStorage.getItem("locale").then(v=>{
-      setLocale(v || undefined)
+      setLocale(v || 'auto')
       setComplete(true)
     })
   }, [])

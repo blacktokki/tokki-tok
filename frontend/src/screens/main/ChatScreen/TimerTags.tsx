@@ -21,6 +21,10 @@ function _timerFormat(m:moment.Moment, now:moment.Moment){
     return m.format('HH:mm')
   }
 
+export function timerToString(timer:string){
+    return moment(timer).format('L HH:mm')
+}
+
 const TimerTag = (props:{data:MessengerContent, now:moment.Moment, isExpand:boolean, setExpand:(id?:number)=>void})=>{
     const start = moment(props.data.created)
     const end = moment(props.data.timer)
@@ -36,7 +40,7 @@ const TimerTag = (props:{data:MessengerContent, now:moment.Moment, isExpand:bool
                 </View>
                 <View style={{flexDirection:'row', alignItems:'stretch'}}>
                     <Text>⌚</Text>
-                    <Text selectable>{moment(props.data.timer).format('L HH:mm')}</Text>
+                    <Text selectable>{timerToString(props.data.timer)}</Text>
                 </View>
                 {/* @ts-ignore */}
                 <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>

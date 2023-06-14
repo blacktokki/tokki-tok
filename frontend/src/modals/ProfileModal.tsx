@@ -22,6 +22,7 @@ export default function ProfileModal({id}:{id:number}) {
   const { setModal } = useModalsContext()
   const userList = useUserMembershipList(auth)
   const user = userList?.find(v=>v.id==id)
+  const isSelf = auth.user && user && (auth.user?.id==user?.id)
   const channelMutation = useMessengerChannelMutation()
   const back = ()=>{
     setModal(ProfileModal, null)
@@ -45,9 +46,9 @@ export default function ProfileModal({id}:{id:number}) {
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     
     <Profile username={user.username} name={user.name} userId={user.id} />
-    <CommonButton title={lang('1:1 Chat')} onPress={()=>{
+    <CommonButton title={lang(isSelf?'Chat with me':'1:1 Chat')} onPress={()=>{
       if(auth?.user?.id && auth.groupId){
-        const newChannel:Channel = {name:"", type:'messenger', owner:auth?.user?.id, group:auth.groupId, subowner:user.id};
+        const newChannel:Channel = {name:"", type:'messenger', owner:auth?.user?.id, group:auth.groupId, subowner:isSelf?undefined:user.id};
         channelMutation.direct(newChannel).then(v=>navigate("Main", {screen:"ChatScreen", params: {id:v.id}}))
       }
     }}/>

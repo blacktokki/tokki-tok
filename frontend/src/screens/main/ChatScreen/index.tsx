@@ -24,8 +24,7 @@ import InviteModal from '../../../modals/InviteModal';
 import DateTimePickerModal from '../../../modals/DateTimePickerModal'
 import useLangContext from '../../../hooks/useLangContext';
 import { Entypo } from '@expo/vector-icons';
-import TimerTags, { timerFormat } from './TimerTags';
-import moment from 'moment';
+import TimerTags, { timerFormat, timerToString } from './TimerTags';
 import MessageModal from '../../../modals/MessageModal';
 import ChannelEditModal from '../../../modals/ChannelEditModal';
 
@@ -66,6 +65,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
         const isSelf = props.ownerId == content.user
         const dayChanged = next==undefined || date != next.created.slice(0, 10)
         const message = content.message_set[0]
+        const openModal = ()=>setModal(MessageModal, {id:content.id, content:message.content})
         if (isSystem)
           return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
             <Text>{message.content}</Text>
@@ -75,15 +75,15 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
             {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
             <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
-              <TouchableOpacity onLongPress={()=>setModal(MessageModal, {id:content.id, content:message.content})}>
+              <TouchableOpacity onLongPress={openModal}>
                 {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
                   <Text style={{fontSize:12}}>⌚</Text>
-                  <Text style={{fontSize:12}} selectable>{moment(content.timer).format('L HH:mm')}</Text>
+                  <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
                 </View>}
                 <View style={{width:"100%"}}>
                   {/* @ts-ignore */}
                   <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                    <Text selectable style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
+                    <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
                   </Hyperlink>
                 </View>
               {content.file_set.map((file, fileIndex)=><FilePreview key={fileIndex} file={file} isMobile={isMobile} showBorder={content.file_set.length>1 || message.content.length>0}/>)}
@@ -154,7 +154,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       back()
   }, [route])
   useEffect(()=>{
-    if (memberList===null)
+    if (memberList===null || (memberList!=undefined && memberList.find(v=>v.user==auth.user?.id)==undefined))
       back()
   }, [memberList])
   useEffect(()=>{

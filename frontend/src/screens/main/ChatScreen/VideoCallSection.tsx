@@ -10,6 +10,7 @@ import useAuthContext from '../../../hooks/useAuthContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
 import { Ionicons } from '@expo/vector-icons';
+import useIsMobile from '../../../hooks/useIsMobile';
 
 type VideoType = 'camera'|'display'|null
 type VideoCallProps = {channel_id:number, setDisable:(disable:boolean)=>void, disable?:boolean}
@@ -33,6 +34,7 @@ const VideoView = (props:{
 
 const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
   const {auth} = useAuthContext()
+  const isMobile = useIsMobile()
   const [videoMode, setVideoMode] = useState<VideoType>(null)
   const [guests, setGuests] = useState<string[]>([])
   const [focusGuest, setFocusGuest] = useState<string>()
@@ -76,7 +78,7 @@ const VideoCallContainer = ({channel_id, disable, setDisable}:VideoCallProps)=>{
           windowType=='landscape'?{bottom:0, paddingTop:15, paddingBottom:10, paddingHorizontal:19}:{backgroundColor:'transparent'}
         ]}>
         <CommonButton title={'⏺️'} style={{height:40, paddingTop:8}} onPress={()=>toggleVideoMode('camera')}/>
-        <CommonButton title={'🖥️'} style={{height:40, paddingTop:8}} onPress={()=>toggleVideoMode('display')}/>
+        {!isMobile && <CommonButton title={'🖥️'} style={{height:40, paddingTop:8}} onPress={()=>toggleVideoMode('display')}/>}
         <CommonButton title={''} style={{height:40, paddingTop:8}} onPress={()=>setDisable(true)}>
           <Ionicons size={20} name="arrow-back" color={'deepskyblue'}/>
         </CommonButton>

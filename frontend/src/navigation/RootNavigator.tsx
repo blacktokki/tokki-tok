@@ -73,6 +73,7 @@ const MainNavigator = ()=>{
     }, [auth])
 
     const {enable:noti} = useFirebaseContext(auth)
+    const headerLeftColor = 'white'
     return (auth.user!==undefined && noti!=null?<View style={{flexDirection:'row', flex:1}}>
         <ModalsProvider modals={modalValues}>
             {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
@@ -84,7 +85,7 @@ const MainNavigator = ()=>{
                                 headerTitleStyle:{color:'white'},
                                 headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
                                 headerRight:()=><HeaderRight/>,
-                                headerLeftContainerStyle:{backgroundColor:'white', borderBottomWidth:1, borderColor:Colors.borderColor},
+                                headerLeftContainerStyle:{backgroundColor:headerLeftColor, borderBottomWidth:1, borderColor:headerLeftColor},
                                 cardStyle:{flexShrink:1},
                                 animationEnabled:windowType=='portrait',
                                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS

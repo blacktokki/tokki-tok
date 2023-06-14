@@ -1,8 +1,7 @@
 import { useState,  useEffect } from "react"
 import firebase from "firebase/app";
 import "firebase/messaging";
-//@ts-ignore
-import {FCM_PUBLIC_VAPID_KEY, FCM_API_KEY} from "@env"
+import {FCM_PUBLIC_VAPID_KEY, FCM_API_KEY} from "../constants/Envs"
 import { Notification as NotificationType, UserMembership } from "../types";
 import { getNotification, postNotification, putNotification } from "../apis/notification";
 import { Auth } from "./useAuthContext";
@@ -29,7 +28,9 @@ const requestToken = async()=>{
   if (permission === 'granted') {
     const serviceWorkerRegistration = await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/firebase-messaging-sw.js?${apiKeyEncrypted}`)
     console.log('[SW]: SCOPE: ', serviceWorkerRegistration.scope);
-    const currentToken = await messaging.getToken({serviceWorkerRegistration, vapidKey: FCM_PUBLIC_VAPID_KEY })
+    const currentToken = await messaging.getToken({serviceWorkerRegistration, vapidKey: FCM_PUBLIC_VAPID_KEY }).catch(
+      async()=>await messaging.getToken({serviceWorkerRegistration, vapidKey: FCM_PUBLIC_VAPID_KEY })
+    )
     window.addEventListener('beforeunload', (event:any) => {
       event.preventDefault();
       serviceWorkerRegistration.unregister()

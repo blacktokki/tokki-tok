@@ -3,7 +3,6 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import _ from 'lodash';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
 import * as React from 'react';
 
@@ -50,7 +49,10 @@ export default function Navigation() {
 }(window.location))
     
 const ignoreWarnings = ['ReactNativeFiberHostComponent'];
-const _console = _.clone(console);
+let _console:any = ()=>{}
+import('lodash').then(_=>{
+  _console = _.clone(console);
+})
 console.warn = (message: string|Object) => {
     var warn = true;
     if (message instanceof Object)
