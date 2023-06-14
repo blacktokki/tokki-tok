@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import CommonButton from '../components/CommonButton';
 import useModalsContext from '../hooks/useModalsContext';
 import {Picker} from '@react-native-picker/picker';
@@ -9,7 +9,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import { BottomSheet } from '../components/ModalSection';
-import Calendar from '../components/Calendar';
 import dayjs from 'dayjs';
 
 const dayTypes = ['AM', 'PM'].map(value=>({label:value, value}))
@@ -45,6 +44,8 @@ export default function DateTimePickerModal({datetime, callback}:{datetime?:stri
   const [minute, setMinute] = useState(_dayjs.format('mm'))
   const [disableDays, setDisableDays] = useState<string[]>(getDisableDays(_dayjs))
   const { setModal } = useModalsContext()
+  const Calendar = React.lazy(()=> import('../components/Calendar'))
+  const CommonPicker = React.lazy(()=>import('../components/CommonPicker'))
   const back = ()=>{
     setModal(DateTimePickerModal, null)
   }
@@ -61,43 +62,26 @@ export default function DateTimePickerModal({datetime, callback}:{datetime?:stri
       <View style={{flex:1}}/>
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-    <Calendar
-      locale={locale}
-      style={undefined} 
-      setDate={setDate}
-      disableAllTouchEventsForDisabledDays={true}
-      onMonthChange={(v)=>setDisableDays(getDisableDays(dayjs(v.dateString)))}
-      markedDates={{
-        ...disableDays.reduce((p, c)=>{p[c]={disabled:true};return p}, {} as Record<string, any>),
-        ...(date?[date]:[]).reduce((p, c)=>{p[c]={selected:true};return p}, {} as Record<string, any>)
-      }}
-    
-    />
-    <View style={{flexDirection:'row', paddingVertical:10, width:400, height:50}}>
-      <Picker
-        style={{flex:1}}
-        itemStyle={{fontSize:20}}
-        selectedValue={dayType}
-        onValueChange={setDayType}>
-        {dayTypes.map(v=><Picker.Item key={v.value} label={v.label} value={v.value} />)}
-      </Picker>
-      <Text style={{fontSize:20}}> </Text>
-      <Picker
-        style={{flex:1}}
-        itemStyle={{fontSize:20}}
-        selectedValue={hour}
-        onValueChange={setHour}>
-        {hours.map(v=><Picker.Item key={v.value} label={v.label} value={v.value} />)}
-      </Picker>
-      <Text style={{fontSize:20}}> : </Text>
-      <Picker
-        style={{flex:1}}
-        itemStyle={{fontSize:20}}
-        selectedValue={minute}
-        onValueChange={setMinute}>
-        {minutes.map(v=><Picker.Item key={v.value} label={v.label} value={v.value} />)}
-      </Picker>
-    </View>
+    <Suspense fallback={<></>}>
+      <Calendar
+        locale={locale}
+        style={undefined} 
+        setDate={setDate}
+        disableAllTouchEventsForDisabledDays={true}
+        onMonthChange={(v)=>setDisableDays(getDisableDays(dayjs(v.dateString)))}
+        markedDates={{
+          ...disableDays.reduce((p, c)=>{p[c]={disabled:true};return p}, {} as Record<string, any>),
+          ...(date?[date]:[]).reduce((p, c)=>{p[c]={selected:true};return p}, {} as Record<string, any>)
+        }}
+      />
+      <View style={{flexDirection:'row', paddingVertical:10, width:400, height:50}}>
+        <CommonPicker value={dayType} setValue={setDayType} values={dayTypes}/>
+        <Text style={{fontSize:20}}> </Text>
+        <CommonPicker value={hour} setValue={setHour} values={hours}/>
+        <Text style={{fontSize:20}}> : </Text>
+        <CommonPicker value={minute} setValue={setMinute} values={minutes}/>
+      </View>
+    </Suspense>
     <View style={{flexDirection:'row'}}>
       <CommonButton title={lang('save')} onPress={()=>{
         callback?.(dayjs(`${date} ${hour}:${minute} ${dayType}`).toISOString())
