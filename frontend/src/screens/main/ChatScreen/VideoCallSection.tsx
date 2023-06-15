@@ -9,7 +9,7 @@ import useResizeContext from '../../../hooks/useResizeContext';
 import useAuthContext from '../../../hooks/useAuthContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '../../../lib/@expo/vector-icons';
 import useIsMobile from '../../../hooks/useIsMobile';
 
 type VideoType = 'camera'|'display'|null

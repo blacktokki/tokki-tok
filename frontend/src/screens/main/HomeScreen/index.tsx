@@ -16,7 +16,7 @@ import ContractFooter from '../../../components/ContractFooter';
 import { TabViewRecord } from '../../../types';
 import useAuthContext from '../../../hooks/useAuthContext';
 import useUserMembershipList from '../../../hooks/lists/useUserMembershipList';
-import { FontAwesome, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '../../../lib/@expo/vector-icons';
 import { useMessengerChannelSorted } from '../../../hooks/lists/useMessengerChannelList';
 import { ScrollView } from 'react-native-gesture-handler';
 import CommonItem from '../../../components/CommonItem';
@@ -50,7 +50,7 @@ const MessengerTabView = ()=>{
           const {avatar, name} = avatarFromChannel(item, auth.user)
           const date = item.last_message?.created.slice(0,10)
           return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
-              <View style={{flexDirection:'row'}}>
+              <View style={{flexDirection:'row', flexShrink:1}}>
                   {avatar?
                     <View style={{ marginRight:20}}>
                       <Avatar name={avatar.name} size={44} userId={avatar.id}/>

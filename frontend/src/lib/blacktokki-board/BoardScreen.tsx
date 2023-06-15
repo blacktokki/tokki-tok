@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useLayoutEffect} from 'react';
 import {FlatList, Image, Linking } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '../@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink'
 import useBoardContentList, { useBoardContentMutation } from './useBoardContentList';
 import CommonSection from '../../components/CommonSection';

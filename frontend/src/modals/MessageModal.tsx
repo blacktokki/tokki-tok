@@ -7,7 +7,7 @@ import useLangContext from '../hooks/useLangContext';
 import { BottomSheet } from '../components/ModalSection';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '../lib/@expo/vector-icons';
 import useColorScheme from '../hooks/useColorScheme';
 import { useMessengerContentMutation } from '../hooks/lists/useMessengerContentList';
 

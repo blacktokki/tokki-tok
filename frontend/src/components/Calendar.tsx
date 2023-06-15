@@ -4,25 +4,34 @@ import localeData from 'dayjs/plugin/localeData';
 import 'dayjs/locale/ko'
 import intl from "../lang";
 import { StyleSheet, Text, View,StyleProp, ViewStyle } from 'react-native';
-import {LocaleConfig, Calendar as BaseCalendar} from 'react-native-calendars';
+import LocaleConfig from 'xdate';
+import {default as BaseCalendar} from 'react-native-calendars/src/calendar';
 import { DateData, DayState, MarkedDates, MarkingTypes } from 'react-native-calendars/src/types';
 
+type locale_detail = typeof LocaleConfig.locales[''] & {
+  today:string,
+  prev:string,
+  next:string,
+  monthFormat?:string
+}
+
 dayjs.extend(localeData).localeData()
-dayjs.locale('en')
-LocaleConfig.locales['en'] = {
+dayjs.locale('en');
+
+(LocaleConfig.locales['en'] as locale_detail) = {
   monthNames: dayjs.months(),
   monthNamesShort: dayjs.monthsShort(),
   dayNames: dayjs.weekdays(),
   dayNamesShort: dayjs.weekdaysShort(),
-  today: "today",
-  prev: 'prev',
-  next: 'next',
+  today: "Today",
+  prev: 'Prev',
+  next: 'Next',
   monthFormat: undefined
 };
 
-dayjs.locale('ko')
+dayjs.locale('ko');
 
-LocaleConfig.locales['ko'] = {
+(LocaleConfig.locales['ko'] as locale_detail) = {
   monthNames: dayjs.months(),
   monthNamesShort: dayjs.monthsShort(),
   dayNames: dayjs.weekdays(),
@@ -48,7 +57,7 @@ export type CalendarProps = {
 export default function Calendar(props:CalendarProps) {
   const locale = (props.locale != undefined && props.locale !='auto')?props.locale:intl.locale
   LocaleConfig.defaultLocale = locale
-  const currentLocale = LocaleConfig.locales[locale]
+  const currentLocale = LocaleConfig.locales[locale] as locale_detail
   return (
     <View>
       <BaseCalendar

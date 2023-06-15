@@ -1,5 +1,5 @@
 import React from 'react'
-import { Ionicons } from "@expo/vector-icons"
+import { Ionicons } from '../lib/@expo/vector-icons'
 import Colors from "../constants/Colors"
 import useColorScheme from "../hooks/useColorScheme"
 import CommonButton from './CommonButton'

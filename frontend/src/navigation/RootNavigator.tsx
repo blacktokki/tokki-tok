@@ -1,7 +1,7 @@
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import React, {useMemo} from 'react';
 import { View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '../lib/@expo/vector-icons';
 import useResizeContext from '../hooks/useResizeContext';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import {main, login, modal} from '../screens';

@@ -1,4 +1,4 @@
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons"
+import { FontAwesome, FontAwesome5 } from '../@expo/vector-icons'
 import React from "react"
 import { Text, View } from "react-native"
 import CommonItem from "../../components/CommonItem"

@@ -26,7 +26,9 @@ export const getMessengerMemberList = async(channel_id:number)=>{
         return (await axios.get(`/api/v1/messengermembers/?channel=${channel_id}`) ).data as MessengerMember[]
     }
     catch(e){
-        return Promise.resolve(null)
+        if (e.response.status==400)
+            return Promise.resolve(null)
+        throw e
     }
 }
 

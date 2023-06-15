@@ -23,7 +23,7 @@ import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
 import DateTimePickerModal from '../../../modals/DateTimePickerModal'
 import useLangContext from '../../../hooks/useLangContext';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from '../../../lib/@expo/vector-icons';
 import TimerTags, { timerFormat, timerToString } from './TimerTags';
 import MessageModal from '../../../modals/MessageModal';
 import ChannelEditModal from '../../../modals/ChannelEditModal';

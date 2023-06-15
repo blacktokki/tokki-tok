@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Linking, Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign } from '../lib/@expo/vector-icons'; 
 import useColorScheme from '../hooks/useColorScheme';
 import Colors from '../constants/Colors';
 

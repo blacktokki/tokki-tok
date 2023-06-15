@@ -9,7 +9,7 @@ import { navigate } from '../navigation';
 import useModalsContext from '../hooks/useModalsContext';
 import { Text, View } from '../components/Themed';
 import useLangContext from '../hooks/useLangContext';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '../lib/@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';

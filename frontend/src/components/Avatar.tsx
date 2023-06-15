@@ -1,5 +1,4 @@
 import React from 'react';
-// import { MaterialIcons } from "@expo/vector-icons"
 import Avatar from '../lib/react-native-paper/Avatar';
 import { AvatarProps, MessengerChannel, User } from '../types';
 
@@ -14,7 +13,6 @@ export function avatarFromChannel(item:MessengerChannel, user?:User|null){
 }
 
 export default (props:AvatarProps)=>{
-    // return <MaterialIcons size={38} style={{ marginBottom: -3, marginRight:10 }} name='account-circle'/>
     return <Avatar {...props}/>
 }
 

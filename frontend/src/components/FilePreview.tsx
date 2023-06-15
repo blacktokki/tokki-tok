@@ -1,8 +1,8 @@
 import React from 'react'
-import { TouchableOpacity } from "react-native-gesture-handler"
-import CommonSection from "./CommonSection"
 import { Linking, TextStyle } from "react-native"
-import { FontAwesome } from '@expo/vector-icons'; 
+import {TouchableOpacity} from "react-native-gesture-handler"
+import CommonSection from "./CommonSection"
+import { FontAwesome } from '../lib/@expo/vector-icons'; 
 import { View, Text } from "./Themed"
 import { File } from "../types"
 import useColorScheme from '../hooks/useColorScheme';
@@ -14,10 +14,14 @@ function humanFileSize(size:number) {
   }
   
 
-export default ({file, isMobile, showBorder}:{file:File, isMobile:boolean, showBorder:boolean})=>{
+export default ({file, isMobile, showBorder}:{file:File, isMobile:boolean, showBorder:ConstrainBoolean})=>{
     const theme = useColorScheme()
     return <CommonSection containerStyle={{marginHorizontal:0}} bodyStyle={showBorder?{padding:10}:{borderWidth:0, padding:0}}>
-    <TouchableOpacity onPress={()=>Linking.openURL(file.file)} style={{flexDirection:'row', alignItems:'flex-start'}} containerStyle={{width:'100%'}}>
+    <TouchableOpacity 
+        onPress={()=>Linking.openURL(file.file)} 
+        onLongPress={()=>{}}
+        style={{flexDirection:'row', alignItems:'flex-start', width:'100%'}} 
+    >
         <FontAwesome name="file-o" size={20} color={Colors[theme].iconColor} />
         <View style={{flex:1, marginHorizontal:10}}>
             <Text style={{fontSize:18}}>{file.filename}</Text>
