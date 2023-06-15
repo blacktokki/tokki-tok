@@ -1,2 +1,0 @@
-(this.webpackJsonp=this.webpackJsonp||[]).push([[9],{749:function(e,t,a){"use strict";a.r(t);var l=a(0),n=a.n(l),u=a(750);t.default=function(e){var t=e.value,a=e.setValue,l=e.values;return n.a.createElement(u.Picker,{style:{flex:1},itemStyle:{fontSize:20},selectedValue:t,onValueChange:a},l.map((function(e,t){return n.a.createElement(u.Picker.Item,{key:t,label:e.label,value:e.value})})))}}}]);
-//# sourceMappingURL=9.b330033e.chunk.js.map
