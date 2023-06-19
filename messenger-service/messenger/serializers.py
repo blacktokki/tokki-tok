@@ -15,6 +15,12 @@ def create_enter_message(channel_id, user):
     return Message.objects.create(channel_content=channel_content, content=f'{user.name} 입장')
 
 
+def attach_enter_data(channel, validated_data, key):
+    MessengerMember.objects.create(user_id=validated_data[key].id, channel_id=channel.id)
+    channel.enter_users.append(validated_data[key].id)
+    channel.enter_messages.append(create_enter_message(channel.id, validated_data[key]).id)
+
+
 def attach_link(channel_content, validated_data):
     link_set = set(re.findall(url_extract_pattern, validated_data['content']))
     add_links = []
@@ -40,18 +46,18 @@ def attach_link(channel_content, validated_data):
 
 
 class ChannelSerializer(serializers.ModelSerializer):
-    enter_message_id = serializers.CharField(read_only=True)
-    subowner_message_id = serializers.CharField(read_only=True)
+    enter_users = serializers.ListField(child=serializers.IntegerField(), read_only=True, allow_empty=True)
+    enter_messages = serializers.ListField(child=serializers.IntegerField(), read_only=True, allow_empty=True)
 
     @transaction.atomic
     def create(self, validated_data):
         instance = super().create(validated_data)
         if instance.type == 'messenger':
-            MessengerMember.objects.create(user_id=validated_data['owner'].id, channel_id=instance.id)
-            instance.enter_message_id = create_enter_message(instance.id, validated_data['owner']).id
+            instance.enter_users = []
+            instance.enter_messages = []
+            attach_enter_data(instance, validated_data, 'owner')
             if 'subowner' in validated_data and not validated_data['owner'].id != validated_data['subowner'].id:
-                MessengerMember.objects.create(user_id=validated_data['subowner'].id, channel_id=instance.id)
-                instance.subowner_message_id = create_enter_message(instance.id, validated_data['subowner']).id
+                attach_enter_data(instance, validated_data, 'subowner')
         return instance
 
     class Meta:
