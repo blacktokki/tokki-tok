@@ -4,6 +4,7 @@ from unittest.mock import patch
 from django.conf import settings
 from rest_framework.test import APITestCase
 from channels.testing import WebsocketCommunicator
+from notifications.models import Notification
 
 from .models import *
 from .consumers import *
@@ -27,6 +28,8 @@ class MessengerTestCase(TestUserMixin, APITestCase):
         cls.user = User.objects.get_by_natural_key(cls.username)
         cls.user2 = User.objects.get_by_natural_key(cls.username2)
         cls.group = Group.objects.get(name=cls.domain)
+        cls.notification = Notification.objects.create(user=cls.user, type='WEB', token='')
+        cls.notification2 = Notification.objects.create(user=cls.user2, type='WEB', token='')
 
     def setUp(self):
         self.client.force_login(user=self.user)
@@ -51,8 +54,7 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_direct_channel(self):
         # given
-        channel_data_self = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": "",
-                        "subowner": self.user.id}
+        channel_data_self = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": ""}
         channel_data = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": "",
                         "subowner": self.user2.id}
 

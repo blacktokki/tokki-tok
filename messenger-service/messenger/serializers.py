@@ -30,7 +30,7 @@ def attach_link(channel_content, validated_data):
         if parsed_og_tags:
             add_links.append(Link(
                 channel_content=channel_content,
-                url=parsed_og_tags.get("og:url"),
+                url=parsed_og_tags.get("og:url", url),
                 title=parsed_og_tags.get("og:title"),
                 image=parsed_og_tags.get("og:image"),
                 description=parsed_og_tags.get("og:description")
@@ -62,7 +62,7 @@ class ChannelSerializer(serializers.ModelSerializer):
 class DirectChannelSerializer(ChannelSerializer):
     @transaction.atomic
     def create(self, validated_data):
-        instance = Channel.objects.filter_direct_channel(validated_data['owner'], validated_data['subowner'])
+        instance = Channel.objects.filter_direct_channel(validated_data['owner'], validated_data.get('subowner'))
         if instance:
             instance.enter_message_id = None
             instance.subowner_message_id = None
