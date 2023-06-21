@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect } from "react"
 import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from "react-query"
-import { getMessengerContentList, postMessage, deleteMessengerContent } from "../../apis"
+import { getMessengerContentList, postMessage, deleteMessengerContent, patchMessengerContent } from "../../apis"
 import { MessengerContent } from "../../types"
 import useWebsocketContext from "../useWebsocketContext"
 
@@ -35,13 +35,23 @@ export default function useMessengerContentList(channel_id:number){
           return {...(_data || {pages:[], pageParams:[]})}
         })
       }
+      if(lastJsonMessage['type']=='update_message'){
+        queryClient.setQueryData<InfiniteData<MessengerContentPage>>(["MessengerContentList", channel_id], (_data)=>{
+          _data?.pages.forEach(page=>{
+            page.current.forEach(v=>{
+              if (v.id==lastJsonMessage['data'].id){
+                v.timer = lastJsonMessage['data'].timer
+              }
+            })
+          })
+          return {...(_data || {pages:[], pageParams:[]})}
+        })
+      }
       if(lastJsonMessage['type']=='delete_message'){
         queryClient.setQueryData<InfiniteData<MessengerContentPage>>(["MessengerContentList", channel_id], (_data)=>{
-          console.log(_data?.pages)
           _data?.pages.forEach(page=>{
             const len = page.current.length
             const newCurrent = page.current.filter(v=>v.id!=lastJsonMessage['data'].id)
-            console.log(len, newCurrent)
             if (len != newCurrent.length){
               page.current = newCurrent
             }
@@ -54,7 +64,7 @@ export default function useMessengerContentList(channel_id:number){
   return { data, fetchNextPage }
 }
 
-export function useMessengerContentMutation(){
+export function useMessengerContentMutation(channelId?:number){
   // const queryClient = useQueryClient()
   const create = useMutation(postMessage, {
     onSuccess: () => {
@@ -65,6 +75,7 @@ export function useMessengerContentMutation(){
       // queryClient.invalidateQueries("MessengerContentList")
     }
   });
+  const _patch = useMutation(patchMessengerContent);
   const _delete = useMutation(deleteMessengerContent, {
     onSuccess: (d, variables) => {
       // queryClient.setQueryData(['MessengerContentList'], (data:any) => ({
@@ -73,5 +84,5 @@ export function useMessengerContentMutation(){
       // }))
     }
   })
-  return { create:create.mutate, delete:_delete.mutate }
+  return { create:create.mutate, patch:_patch.mutate, delete:_delete.mutate }
 }

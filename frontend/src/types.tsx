@@ -117,11 +117,16 @@ export type MessengerContent = {
   file_set:File[],
   user: number,
   channel: number
-  timer: string,
+  timer?: string|null,
   created: string,
   updated: string,
   name: string,
   channel_name: string
+}
+
+export type EditMessengerContent = {
+  id:number,
+  timer?: string|null
 }
 
 export type MessengerMember = {

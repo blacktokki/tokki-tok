@@ -20,6 +20,11 @@ export default function useTimerMessageContentList(channel_id:number){
             return [...(_data || []), lastJsonMessage['data']]
           })
       }
+      if(lastJsonMessage['type']=='update_message'){
+        queryClient.setQueryData<MessengerContent[]>(["TimerMessageContentList", channel_id], (_data)=>{
+          return [...(_data?.filter(v=>v.id!=lastJsonMessage['data'].id || lastJsonMessage['data']['timer']!=null) || [])]
+        })
+      }
       if(lastJsonMessage['type']=='delete_message'){
         queryClient.setQueryData<MessengerContent[]>(["TimerMessageContentList", channel_id], (_data)=>{
           return [...(_data?.filter(v=>v.id!=lastJsonMessage['data'].id) || [])]

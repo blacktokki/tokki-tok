@@ -11,7 +11,7 @@ import { Ionicons } from '../lib/@expo/vector-icons';
 import useColorScheme from '../hooks/useColorScheme';
 import { useMessengerContentMutation } from '../hooks/lists/useMessengerContentList';
 
-export default function MessageModal({id, content}:{id:number, content:string}) {
+export default function MessageModal({id,  content, isOwner, isTimer}:{id:number, content:string, isOwner:boolean, isTimer:boolean}) {
   const { lang } = useLangContext()
   const { setModal } = useModalsContext()
   const theme = useColorScheme()
@@ -33,6 +33,7 @@ export default function MessageModal({id, content}:{id:number, content:string}) 
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
       <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('copy')} onPress={()=>{Clipboard.setString(content);back()}}/>
-      <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete')} onPress={()=>{contentMutation.delete(id);back()}}/>
+      {isOwner && isTimer && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete timer')} onPress={()=>{contentMutation.patch({id, timer:null});back()}}/>}
+      {isOwner && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete')} onPress={()=>{contentMutation.delete(id);back()}}/>}
   </BottomSheet>
 }

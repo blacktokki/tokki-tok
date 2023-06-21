@@ -65,7 +65,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
         const isSelf = props.ownerId == content.user
         const dayChanged = next==undefined || date != next.created.slice(0, 10)
         const message = content.message_set[0]
-        const openModal = ()=>setModal(MessageModal, {id:content.id, content:message.content})
+        const openModal = ()=>setModal(MessageModal, {id:content.id, content:message.content, isOwner:isSelf, isTimer:content.timer?true:false})
         if (isSystem)
           return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
             <Text>{message.content}</Text>
@@ -204,8 +204,8 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         </View>
 
         {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>
-          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('Upload File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
-          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer Message')}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer')}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center'}} title={`📹\n ${lang('Video Call')}`} onPress={()=>{setVideoMode(!videoMode);setBottomTab(false)}} disabled={videoMode}/>
         </View>}
       </ThemedView>

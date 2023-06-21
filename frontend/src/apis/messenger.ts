@@ -1,4 +1,4 @@
-import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel } from '../types';
+import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel, EditMessengerContent } from '../types';
 import axios from './axios';
 
 export const getMessengerChannelList = async (user_id:number)=>{
@@ -65,6 +65,9 @@ export const postMessage = async (message:EditMessage)=>{
     }
 }
 
+export const patchMessengerContent = async (content:EditMessengerContent)=>{
+    return (await axios.patch(`/api/v1/messengercontents/${content.id}/`, content)).data as MessengerContent
+}
 export const deleteMessengerContent = async (content_id:number)=>{
     await axios.delete(`/api/v1/messengercontents/${content_id}/`)
 }

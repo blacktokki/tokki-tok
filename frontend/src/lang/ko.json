@@ -32,6 +32,7 @@
     "Message":"메시지",
     "copy":"복사",
     "delete":"삭제",
+    "delete timer":"타이머 삭제",
     "Unregistered user or incorrect password.": "가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.",
     "Guest users cannot reconnect after logging out. Please create an account or log in.": "게스트 사용자는 로그아웃 후 다시 접속할 수 없습니다.",
     "* Notification Settings":"* 알림 설정",
@@ -43,8 +44,8 @@
     "On": "켜짐",
     "Off": "꺼짐",
     "config":"설정",
-    "Upload File": "파일 업로드",
-    "Timer Message": "타이머 메시지",
+    "File": "파일",
+    "Timer": "타이머",
     "Video Call": "화상 채팅",
     "Date & Time": "날짜 & 시간"
 }
