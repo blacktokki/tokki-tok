@@ -4,7 +4,7 @@ from collections import defaultdict
 from rest_framework import viewsets
 from rest_framework.decorators import action
 
-from messenger.consumers import send_delete_message, send_enter, send_leave, send_next_message
+from messenger.consumers import send_update_message, send_delete_message, send_enter, send_leave, send_next_message
 from notifications import send_notification_message
 from .serializers import (
     ChannelSerializer,
@@ -86,6 +86,11 @@ class MessengerContentViewset(viewsets.ModelViewSet):
             filter_backends=[])
     def message(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        if self.serializer_class == MessengerContentSerializer:
+            send_update_message(serializer.instance.channel_id, serializer.data)
 
     def perform_destroy(self, instance):
         channel_id = instance.channel_id
