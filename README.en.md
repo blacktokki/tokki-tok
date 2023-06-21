@@ -1,5 +1,5 @@
 # tokki-tok
-[![Python](https://img.shields.io/badge/python-3.6.9-blue.svg?style=flat-square)](https://www.python.org/downloads/release/python-362/)
+[![Python](https://img.shields.io/badge/python-3.8.0-blue.svg?style=flat-square)](https://www.python.org/downloads/release/python-380/)
 [![Django](https://img.shields.io/badge/django-3.2.16-blue.svg?style=flat-square)](https://www.djangoproject.com/)
 [![Django Rest Framework](https://img.shields.io/badge/django_rest_framework-3.11.0-blue.svg?style=flat-square)](http://www.django-rest-framework.org/)
 

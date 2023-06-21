@@ -1,9 +1,9 @@
 django==3.2.16
 django-environ
+django-filter
 mysqlclient
 channels==3.0.1
-pyopenssl==21.0.0
-cryptography==36.0.1
+# pyopenssl==21.0.0
 django-db-views
 djangorestframework == 3.11.0
 coreapi
@@ -12,7 +12,6 @@ py_eureka_client
 gunicorn
 uvicorn
 channels-redis==3.3.1
-daphne==2.5.0
 djangorestframework-jwt
 websockets
 pyfcm==1.5.4

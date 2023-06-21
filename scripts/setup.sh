@@ -15,13 +15,12 @@ git config credential.helper store
 
 sudo add-apt-repository --yes ppa:redislabs/redis
 sudo apt-get update
-sudo apt-get --assume-yes install python3
+sudo apt-get --assume-yes install python3.8 python3.8-dev python3.8-venv
 sudo apt-get --assume-yes install python3-pip
-sudo apt-get --assume-yes install python3-venv
 sudo apt-get --assume-yes install libmysqlclient-dev
 sudo apt-get --assume-yes install redis-server
 
-python3 -m venv ../venv1
+python3.8 -m venv ../venv1
 . ../venv1/bin/activate
 pip3 install --upgrade pip
 pip3 install -r requirements.txt
