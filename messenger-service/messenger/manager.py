@@ -11,7 +11,7 @@ class ChannelManager(models.Manager):
 
     def filter_direct_channel(self, owner, subowner):
         queryset = self.annotate(member_count=models.Count('messengermember'))
-        if owner == subowner:
+        if subowner is None:
             return queryset.filter(owner=owner, member_count=1).last()
         return queryset.filter(
             models.Q(owner=owner, subowner=subowner) | models.Q(owner=subowner, subowner=owner)).filter(

@@ -1,3 +1,5 @@
+from copy import deepcopy
+from itertools import chain
 from collections import defaultdict
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -18,20 +20,22 @@ from .filtersets import ChannelFilterSet, ChannelContentFilterSet, MessengerMemb
 from .models import Message, Channel, MessengerMember, ChannelContent
 
 
-def post_create_message(channel_id, message_ids):
+def post_create_messages(message_ids):
     notification_messages = defaultdict(list)
     for instance in ChannelContent.objects.messenger_content_filter(message__id__in=message_ids):
         serializer = MessengerContentSerializer(instance=instance)
-        send_next_message(channel_id, serializer.data)
-        notification_messages[channel_id].append(serializer.data)
+        send_next_message(instance.channel_id, serializer.data)
+        notification_messages[instance.channel_id].append(serializer.data)
     for channel in Channel.objects.channel_with_notifications(notification_messages.keys()):
-        for data in notification_messages[channel_id]:
-            notifications = []
-            for mm in channel.messengermember_set.all():
-                if mm.user_id == data['user']:
-                    continue
-                notifications += list(mm.user.notification_set.all())
+        notifications_chain = chain(*[mm.user.notification_set.all() for mm in channel.messengermember_set.all()])
+        for data in notification_messages[channel.id]:
+            notifications = [n for n in deepcopy(notifications_chain) if n.user_id != data['user']]
             send_notification_message(notifications, data)
+
+
+def post_enter_channel(channel, user_ids, message_ids):
+    send_enter(channel, user_ids)
+    post_create_messages(message_ids)
 
 
 # Create your views here.
@@ -53,12 +57,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
         if serializer.data['type'] == 'messenger':
-            if serializer.data.get('enter_message_id'):
-                send_enter(serializer.instance, serializer.data["owner"])
-                post_create_message(serializer.data["id"], [serializer.data['enter_message_id']])
-            if serializer.data.get('counterpart_message_id'):
-                send_enter(serializer.instance, serializer.data["counterpart"])
-                post_create_message(serializer.data["id"], [serializer.data['counterpart_message_id']])
+            post_enter_channel(serializer.instance, serializer.data['enter_users'], serializer.data['enter_messages'])
 
     def perform_destroy(self, instance):
         id = instance.id
@@ -78,7 +77,7 @@ class MessengerContentViewset(viewsets.ModelViewSet):
             serializer_class=MessageSerializer)
     def messages(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        post_create_message(request.data['channel'], [response.data['id']])
+        post_create_messages([response.data['id']])
         return response
 
     @action(detail=True, methods=['patch'],
@@ -110,9 +109,7 @@ class MessengerMemberViewset(viewsets.ModelViewSet):
     def bulk_create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         channel = Channel.objects.get(id=response.data["channel"])
-        for user_id in response.data["user_ids"]:
-            send_enter(channel, user_id)
-        post_create_message(response.data["channel"], response.data["enter_message_ids"])
+        post_enter_channel(channel, response.data["user_ids"], response.data["enter_message_ids"])
         return response
 
     def perform_destroy(self, instance):
@@ -128,6 +125,6 @@ class MessengerMemberViewset(viewsets.ModelViewSet):
         serializer = MessageSerializer(data={"channel": channel.id, "content": f"{instance.user.name} 퇴장"})
         serializer.is_valid()
         serializer.save()
-        post_create_message(channel.id, [serializer.data['id']])
+        post_create_messages([serializer.data['id']])
         if not MessengerMember.objects.filter(channel_id=channel.id).exists():
             channel.delete()
