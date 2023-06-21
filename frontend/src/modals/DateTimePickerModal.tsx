@@ -33,6 +33,9 @@ const defaultDayjs = ()=>{
   return m.add(5-restMinute, 'minute')
 }
 
+const Calendar = React.lazy(()=> import('../components/Calendar'))
+const CommonPicker = React.lazy(()=>import('../components/CommonPicker'))
+
 export default function DateTimePickerModal({datetime, callback}:{datetime?:string, callback:(datetime?:string)=>void}) {
   const _dayjs = datetime?dayjs(datetime):defaultDayjs()
   const { lang, locale } = useLangContext()
@@ -43,8 +46,6 @@ export default function DateTimePickerModal({datetime, callback}:{datetime?:stri
   const [minute, setMinute] = useState(_dayjs.format('mm'))
   const [disableDays, setDisableDays] = useState<string[]>(getDisableDays(_dayjs))
   const { setModal } = useModalsContext()
-  const Calendar = React.lazy(()=> import('../components/Calendar'))
-  const CommonPicker = React.lazy(()=>import('../components/CommonPicker'))
   const back = ()=>{
     setModal(DateTimePickerModal, null)
   }
