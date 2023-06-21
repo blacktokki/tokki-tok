@@ -139,12 +139,12 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
         <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
         {/* <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger for teams.</Text>*/}
         <View style={{height:24}}/>
-        <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:'transparent'}}>
+        <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:theme=='light'?'transparent':"black"}}>
           <TextButton title={lang('+ New chat')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>setModal(ChannelEditModal, {type:'messenger'})}/>
         </CommonSection>
         <ConfigSections/>
       </View>
-      <ContractFooter/>
+      <ContractFooter theme={theme}/>
     </View>:
     <TabView tabs={getBottomTabs(theme)} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
 }

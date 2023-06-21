@@ -7,14 +7,13 @@ import Colors from '../constants/Colors';
 
 const openURL = Platform.OS=='web'?(url:string)=>{location.href=url}:Linking.openURL
 
-export default ()=>{
-    const theme = useColorScheme()
+export default (props:{theme:'light'|'dark'})=>{
     return<View style={Styles.footer_buttons}>
         <TouchableOpacity style={Styles.footer_button} onPress={()=>openURL("https://github.com/blacktokki/tokki-tok")}>
-            <AntDesign name="github" size={24} color={Colors[theme].iconColor} />
+            <AntDesign name="github" size={24} color={Colors[props.theme].iconColor} />
         </TouchableOpacity>
         <TouchableOpacity style={Styles.footer_button} onPress={()=>Linking.openURL("mailto:ydh051541@naver.com")}>
-            <AntDesign name="mail" size={24} color={Colors[theme].iconColor} />
+            <AntDesign name="mail" size={24} color={Colors[props.theme].iconColor} />
         </TouchableOpacity>
     </View>
 }

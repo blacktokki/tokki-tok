@@ -86,7 +86,7 @@ const MainNavigator = ()=>{
                                 headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
                                 headerRight:()=><HeaderRight/>,
                                 headerLeftContainerStyle:{backgroundColor:headerLeftColor, borderBottomWidth:1, borderColor:headerLeftColor},
-                                cardStyle:{flexShrink:1},
+                                cardStyle:[{flexShrink:1}, theme=='light'?{}:{backgroundColor:'#212121'}],
                                 animationEnabled:windowType=='portrait',
                                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
                             })}

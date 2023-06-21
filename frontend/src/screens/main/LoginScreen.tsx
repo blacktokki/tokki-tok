@@ -77,7 +77,7 @@ export default function LoginScreen({
         </TouchableOpacity>
       </> */}
     </View>
-    <ContractFooter/>
+    <ContractFooter theme='light'/>
   </View>);
 };
 
