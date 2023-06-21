@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import environ
+import socket
 from pathlib import Path
 from google.oauth2 import service_account
 
@@ -20,6 +21,9 @@ environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Get current host
+HOST = socket.gethostbyname(socket.gethostname())
 
 
 # Quick-start development settings - unsuitable for production
@@ -35,7 +39,7 @@ DEBUG = True
 TEST_USERNAME = env('TEST_USERNAME')
 TEST_USERNAME2 = env('TEST_USERNAME2')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [HOST]
 
 # Application definition
 
@@ -171,7 +175,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ACCOUNT_SERVICE_DOMAIN = 'localhost:8080'
+ACCOUNT_SERVICE_URL = 'https://blacktokki.com/account'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
