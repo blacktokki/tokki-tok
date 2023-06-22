@@ -7,7 +7,7 @@ from channels.testing import WebsocketCommunicator
 from notifications.models import Notification
 
 from .models import *
-from .consumers import *
+from .consumers import MessengerConsumer
 # Create your tests here.
 
 
@@ -99,13 +99,14 @@ class WebsocketTestCase(TestCase):
     async def test_websocket(self):
         # given
         user = await sync_to_async(User.objects.get_by_natural_key)(TestUserMixin.username)
+        channels = await sync_to_async(list)(Channel.objects.entered_channel_ids(user))
 
         # when
         communicator = WebsocketCommunicator(MessengerConsumer.as_asgi(), "ws/", {}, "Authorization")
         communicator.scope['user'] = user
+        communicator.scope['channels'] = channels
         connected, subprotocol = await communicator.connect()
         await communicator.receive_from()
-        await sync_to_async(send_next_message)(1, {})
         # await communicator.send_to(text_data="")
         await communicator.disconnect()
 

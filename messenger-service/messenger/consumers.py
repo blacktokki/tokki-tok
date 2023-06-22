@@ -2,7 +2,6 @@ import json
 
 from messenger.serializers import ChannelSerializer
 
-from .models import Channel
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from channels.generic.websocket import WebsocketConsumer
@@ -43,7 +42,7 @@ class MessengerConsumer(WebsocketConsumer):
 
     @connect
     def connect(self):
-        self.channel_ids = set(Channel.objects.entered_channel_ids(self.user))
+        self.channel_ids = set(self.scope['channels'])
         for channel_id in self.channel_ids:
             async_to_sync(self.channel_layer.group_add)(
                 f"{self.CHANNEL_PREFIX}{channel_id}",

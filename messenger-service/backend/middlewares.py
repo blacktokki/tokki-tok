@@ -4,6 +4,8 @@ from rest_framework_jwt.settings import api_settings
 from channels.auth import AuthMiddlewareStack
 from asgiref.sync import sync_to_async
 
+from messenger.models import Channel
+
 
 class TokenAuthMiddleware:
     def __init__(self, inner):
@@ -19,6 +21,9 @@ class TokenAuthMiddleware:
         except Exception:
             if 'user' not in scope:
                 scope['user'] = AnonymousUser()
+                scope['channels'] = []
+        if 'channel' not in scope:
+            scope['channels'] = await sync_to_async(list)(Channel.objects.entered_channel_ids(scope['user']))
         return await self.inner(scope, receive, send)
 
 

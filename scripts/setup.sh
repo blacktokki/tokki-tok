@@ -20,6 +20,17 @@ sudo apt-get --assume-yes install python3-pip
 sudo apt-get --assume-yes install libmysqlclient-dev
 sudo apt-get --assume-yes install redis-server
 
+sudo apt-get install build-essential python-setuptools python-smbus libffi-dev libsqlite3-dev
+PYTHON_VERSION=3.8.10
+PYTHON_PACKAGE=Python-$PYTHON_VERSION
+sudo wget https://www.python.org/ftp/python/$PYTHON_VERSION/$PYTHON_PACKAGE.tgz
+sudo tar xzf $PYTHON_PACKAGE.tgz
+cd $PYTHON_PACKAGE
+sudo ./configure --enable-optimizations
+sudo make altinstall
+cd ..
+rm -rf $PYTHON_PACKAGE $PYTHON_PACKAGE.tgz
+
 python3.8 -m venv ../venv1
 . ../venv1/bin/activate
 pip3 install --upgrade pip
