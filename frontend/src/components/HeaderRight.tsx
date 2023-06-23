@@ -6,11 +6,14 @@ import { View } from 'react-native'
 import useModalsContext from '../hooks/useModalsContext'
 import GuestLogoutModal from '../modals/GuestLogoutModal'
 import useLangContext from '../hooks/useLangContext'
+import useColorScheme from '../hooks/useColorScheme'
+import Colors from '../constants/Colors'
 
 type ButtonProps = {title:string, onPress:()=>void, windowType?:'landscape'|'portrait'}
 
 export default (props:{extra?:ButtonProps[]})=>{
     const { lang } = useLangContext()
+    const theme = useColorScheme()
     const {auth, dispatch} = useAuthContext()
     const { setModal } = useModalsContext()
     const windowType = useResizeContext()
@@ -24,7 +27,7 @@ export default (props:{extra?:ButtonProps[]})=>{
     }}]
     const buttonProps = (props.extra?[...props.extra, ...defaultButtonProps]:defaultButtonProps).filter(v=>v.windowType==windowType || v.windowType == undefined)
     return<View style={{flexDirection:'row'}}>
-        {buttonProps.map((v,k)=><TextButton key={k} {...v} textStyle={{color:'white'}} color='#gray'/>)}
+        {buttonProps.map((v,k)=><TextButton key={k} {...v} textStyle={{color:Colors[theme].text}} color='#gray'/>)}
     </View>
 }
   

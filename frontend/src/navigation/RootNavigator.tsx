@@ -17,6 +17,7 @@ import useColorScheme from '../hooks/useColorScheme';
 import { ModalsProvider } from '../hooks/useModalsContext';
 import modals from '../modals';
 import useLangContext from '../hooks/useLangContext';
+import CommonButton from '../components/CommonButton';
 
 const Root = createStackNavigator();
 
@@ -41,7 +42,7 @@ export default function RootNavigator() {
 
 const Main = createStackNavigator();
 
-function headerLeft(navigation:any, route:any, windowType:string, isMobile:boolean){
+function headerLeft(navigation:any, route:any, windowType:string, theme:'light'|'dark', isMobile:boolean){
     const canGOBackScreen = ['HomeScreen', 'LoginScreen'].findIndex(v=>v == route.name) == -1
     const goBack = ()=>{
         if (navigation.canGoBack())
@@ -50,7 +51,11 @@ function headerLeft(navigation:any, route:any, windowType:string, isMobile:boole
             navigation.replace('HomeScreen')
     }
     if (windowType=='portrait' && canGOBackScreen)
-        return <TouchableOpacity onPress={goBack}><Ionicons size={isMobile?20:24} style={{marginHorizontal:isMobile?16:20 }} name="arrow-back"/></TouchableOpacity>
+        return <TouchableOpacity onPress={goBack} disabled={!isMobile}>
+            <CommonButton title={''} color={isMobile?Colors[theme].buttonBackgroundColor:Colors[theme].hoverColor} onPress={goBack} disabled={isMobile} style={{width:32, height:32, margin:16, paddingVertical:1, paddingHorizontal:4}}>
+                <Ionicons size={24} color={Colors[theme].iconColor} name="arrow-back"/>
+            </CommonButton>
+        </TouchableOpacity>
     return null
 }
 
@@ -82,11 +87,11 @@ const MainNavigator = ()=>{
                         <Main.Navigator
                             screenOptions={({navigation, route})=>({
                                 headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
-                                headerTitleStyle:{color:'white'},
-                                headerLeft:()=>headerLeft(navigation, route, windowType, isMobile),
+                                headerTitleStyle:{color:Colors[theme].text},
+                                headerLeft:()=>headerLeft(navigation, route, windowType, theme, isMobile),
                                 headerRight:()=><HeaderRight/>,
-                                headerLeftContainerStyle:{backgroundColor:headerLeftColor, borderBottomWidth:1, borderColor:headerLeftColor},
-                                cardStyle:[{flexShrink:1}, theme=='light'?{}:{backgroundColor:'#212121'}],
+                                headerLeftContainerStyle:{backgroundColor:Colors[theme].header, borderBottomWidth:1, borderColor:Colors[theme].headerBottomColor},
+                                cardStyle:[{flexShrink:1}, theme=='light'?{}:{backgroundColor:'#010409'}],
                                 animationEnabled:windowType=='portrait',
                                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
                             })}
