@@ -10,6 +10,7 @@ import Colors from '../constants/Colors';
 import { Ionicons } from '../lib/@expo/vector-icons';
 import useColorScheme from '../hooks/useColorScheme';
 import { useMessengerContentMutation } from '../hooks/lists/useMessengerContentList';
+import useModalEffect from '../hooks/useModalEffect';
 
 export default function MessageModal({id,  content, isOwner, isTimer}:{id:number, content:string, isOwner:boolean, isTimer:boolean}) {
   const { lang } = useLangContext()
@@ -19,6 +20,7 @@ export default function MessageModal({id,  content, isOwner, isTimer}:{id:number
   const back = ()=>{
     setModal(MessageModal, null)
   }
+  useModalEffect(back, [])
   return <BottomSheet>
     <View style={{flexDirection:'row', width:'100%'}}>
       <View style={{flex:1, flexDirection:'row'}}>

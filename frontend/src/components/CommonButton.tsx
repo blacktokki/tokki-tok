@@ -4,7 +4,7 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import { CustomButtonProps } from '../types';
 
-const DefaultButton = (props:CustomButtonProps)=>{
+const DefaultButton = (props:CustomButtonProps & {borderColor:string})=>{
     const [hover, setHover] = useState(false)
     return <Pressable
         onPress={()=>props.onPress()}
@@ -18,7 +18,7 @@ const DefaultButton = (props:CustomButtonProps)=>{
                 paddingHorizontal:16
             },
             props.style,
-            (hover || props.disabled)?{backgroundColor:props.color}:{}
+            (hover || props.disabled)?{backgroundColor:props.color, borderColor:props.borderColor}:{}
         ]}>
             {props.children?props.children:
             <Text selectable={false} style={[{fontSize:14}, props.textStyle]}>{props.title}</Text>}
@@ -28,7 +28,8 @@ const DefaultButton = (props:CustomButtonProps)=>{
 export default (props:CustomButtonProps)=>{
     const theme = useColorScheme()
     const _props = {
-        color:Colors[theme].buttonColor,
+        color:Colors[theme].hoverColor,
+        borderColor:theme=='light'?Colors[theme].buttonBorderColor:'#7d8590',
         ...props,
         style:[
             styles.style,
