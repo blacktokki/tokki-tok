@@ -9,6 +9,7 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import { BottomSheet } from '../components/ModalSection';
 import dayjs from 'dayjs';
+import useModalEffect from '../hooks/useModalEffect';
 
 const dayTypes = ['AM', 'PM'].map(value=>({label:value, value}))
 const hours = [...Array(12).keys()].map((value, index)=>(index + 1).toString().padStart(2, '0')).map(value=>({label:value, value}))
@@ -49,6 +50,7 @@ export default function DateTimePickerModal({datetime, callback}:{datetime?:stri
   const back = ()=>{
     setModal(DateTimePickerModal, null)
   }
+  useModalEffect(back, [])
   return <BottomSheet>
     <View style={{flexDirection:'row', width:'100%'}}>
       <View style={{flex:1, flexDirection:'row'}}>

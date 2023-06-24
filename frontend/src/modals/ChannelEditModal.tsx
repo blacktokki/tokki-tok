@@ -13,6 +13,7 @@ import useLangContext from '../hooks/useLangContext';
 import ModalSection from '../components/ModalSection';
 import { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
 import { avatarFromChannel } from '../components/Avatar';
+import useModalEffect from '../hooks/useModalEffect';
 
 export default function ChannelEditModal({id, member_id, type}: {id?:number, member_id?:number, type:string}) {
   const { lang } = useLangContext()
@@ -35,6 +36,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
       setDescription(channel?.description || '')
     }
   }, [channel])
+  useModalEffect(back, [])
   return <ModalSection>
     <View style={{justifyContent:'space-between', flex:1, width:'100%'}}>
       <View style={{width:'100%'}}>
@@ -45,7 +47,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
       </View>
       <View style={{width:'100%', flexDirection:'row'}}>
         {member_id &&<View style={{flexDirection:'row', justifyContent:'flex-start'}}>
-          <CommonButton title={lang('leave')} style={{marginHorizontal:5}} onPress={()=>messengerMemberMutation.leave(member_id).then(back)}/>
+          <CommonButton title={lang('leave')} style={{marginHorizontal:5}} textStyle={{color:'red'}} onPress={()=>messengerMemberMutation.leave(member_id).then(back)}/>
         </View>}
         <View style={{flex:1, flexDirection:'row', justifyContent:'flex-end'}}>
           <CommonButton title={lang('save')} onPress={()=>{

@@ -5,6 +5,7 @@ import useModalsContext from '../hooks/useModalsContext';
 import { Text, View } from '../components/Themed';
 import useLangContext from '../hooks/useLangContext';
 import { BottomSheet } from '../components/ModalSection';
+import useModalEffect from '../hooks/useModalEffect';
 
 export default function GuestLogoutModal({id}:{id:number}) {
   const { lang } = useLangContext()
@@ -13,6 +14,7 @@ export default function GuestLogoutModal({id}:{id:number}) {
   const back = ()=>{
     setModal(GuestLogoutModal, null)
   }
+  useModalEffect(back, [])
   return <BottomSheet>
     <Text>{lang('Guest users cannot reconnect after logging out. Please create an account or log in.')}</Text>
     <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>

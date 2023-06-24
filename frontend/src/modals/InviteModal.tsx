@@ -15,6 +15,7 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import useLangContext from '../hooks/useLangContext';
 import MemberItem from '../components/MemberItem';
 import ModalSection from '../components/ModalSection';
+import useModalEffect from '../hooks/useModalEffect';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
@@ -61,6 +62,7 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const back = ()=>{
     setModal(InviteModal, null)
   }
+  useModalEffect(back, [])
   return <View style={{alignItems:'center', flex:1}}>
     <View style={{'width': '100%', flex:1}}>
       <TextField name={`${lang('Username')} & ${lang('Name')}`} value={searchState.keyword} setValue={search} width={'80%'}/>

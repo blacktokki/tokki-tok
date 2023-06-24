@@ -14,6 +14,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import { BottomSheet } from '../components/ModalSection';
+import useModalEffect from '../hooks/useModalEffect';
 
 export default function ProfileModal({id}:{id:number}) {
   const { lang } = useLangContext()
@@ -31,6 +32,7 @@ export default function ProfileModal({id}:{id:number}) {
     if (!(id && user) && userList)
       back()
   }, [userList])
+  useModalEffect(back, [])
   return user?<BottomSheet>
     <View style={{flexDirection:'row', width:'100%'}}>
       <View style={{flex:1, flexDirection:'row'}}>
