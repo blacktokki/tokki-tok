@@ -1,24 +1,18 @@
 import re
+from copy import deepcopy
+from itertools import chain
+from collections import defaultdict
 from opengraph_parse import parse_page
 from django.db import transaction
+from django.db.models.signals import post_delete
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
-from .models import (
-    Channel, MessengerMember, Message, ChannelContent, Link, File)
+from notifications import send_notification_message
+from .consumers import send_update_message, send_enter, send_leave, send_next_message
+from .models import Channel, MessengerMember, Message, ChannelContent, Link, File
 
 url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"  # noqa E501
-
-
-def create_enter_message(channel_id, user):
-    channel_content = ChannelContent.objects.create(channel_id=channel_id)
-    return Message.objects.create(channel_content=channel_content, content=f'{user.name} 입장')
-
-
-def attach_enter_data(channel, validated_data, key):
-    MessengerMember.objects.create(user_id=validated_data[key].id, channel_id=channel.id)
-    channel.enter_users.append(validated_data[key].id)
-    channel.enter_messages.append(create_enter_message(channel.id, validated_data[key]).id)
 
 
 def attach_link(channel_content, validated_data):
@@ -45,19 +39,59 @@ def attach_link(channel_content, validated_data):
     Link.objects.bulk_create(add_links)
 
 
+def post_create_messages(message_ids):
+    notification_messages = defaultdict(list)
+    for instance in ChannelContent.objects.messenger_content_filter(message__id__in=message_ids):
+        serializer = MessengerContentSerializer(instance=instance)
+        send_next_message(instance.channel_id, serializer.data)
+        notification_messages[instance.channel_id].append(serializer.data)
+    for channel in Channel.objects.channel_with_notifications(notification_messages.keys()):
+        notifications_chain = chain(*[mm.user.notification_set.all() for mm in channel.messengermember_set.all()])
+        for data in notification_messages[channel.id]:
+            notifications = [n for n in deepcopy(notifications_chain) if n.user_id != data['user']]
+            send_notification_message(notifications, data)
+
+
+def post_enter_channel(channel, users):
+    user_ids = []
+    message_ids = []
+    for user in users:
+        channel_content = ChannelContent.objects.create(channel=channel)
+        user_ids.append(user.id)
+        message_ids.append(Message.objects.create(channel_content=channel_content, content=f'{user.name} 입장').id)
+    send_enter(user_ids, ChannelSerializer(instance=channel).data)
+    post_create_messages(message_ids)
+
+
+def post_leave_channel(channel, user):
+    channel.save_pop_owners(user.id)
+    send_leave(channel.id, user.id)
+    if not channel.is_archive:
+        serializer = MessageSerializer(data={"channel": channel.id, "content": f"{user.name} 퇴장"})
+        serializer.is_valid()
+        serializer.save()
+        post_create_messages([serializer.data['id']])
+
+
+post_delete.connect(
+    lambda sender, instance, **kwargs: post_leave_channel(instance.channel, instance.user), sender=MessengerMember)
+
+
 class ChannelSerializer(serializers.ModelSerializer):
     enter_users = serializers.ListField(child=serializers.IntegerField(), read_only=True, allow_empty=True)
     enter_messages = serializers.ListField(child=serializers.IntegerField(), read_only=True, allow_empty=True)
+
+    def _enter_channel(self, instance, user):
+        MessengerMember.objects.create(user_id=user.id, channel=instance)
+        post_enter_channel(instance, [user])
 
     @transaction.atomic
     def create(self, validated_data):
         instance = super().create(validated_data)
         if instance.type == 'messenger':
-            instance.enter_users = []
-            instance.enter_messages = []
-            attach_enter_data(instance, validated_data, 'owner')
+            self._enter_channel(instance, validated_data['owner'])
             if 'subowner' in validated_data and not validated_data['owner'].id != validated_data['subowner'].id:
-                attach_enter_data(instance, validated_data, 'subowner')
+                self._enter_channel(instance, validated_data['subowner'])
         return instance
 
     class Meta:
@@ -126,7 +160,9 @@ class MessageSerializer(serializers.ModelSerializer):
         attach_link(validated_data['channel_content'], validated_data)
         if file:
             File.objects.create(channel_content=validated_data['channel_content'], file=file)
-        return super().create(validated_data)
+        instance = super().create(validated_data)
+        post_create_messages([instance.id])
+        return instance
 
     class Meta:
         model = Message
@@ -154,6 +190,12 @@ class MessengerContentSerializer(serializers.ModelSerializer):
     file_set = FileSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True)
     channel_name = serializers.CharField(read_only=True)
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        send_update_message(instance.channel_id, self.data)
+        return instance
 
     class Meta:
         model = ChannelContent
@@ -183,6 +225,7 @@ class MessengerUserBulkSerializer(MessengerMemberSerializer):
     def create(self, validated_data):
         user_ids = validated_data.pop("user_ids")
         members = [MessengerMember(user_id=user_id, **validated_data) for user_id in user_ids]
+        validated_data["user_ids"] = user_ids
         MessengerMember.objects.bulk_create(members)
         users = User.objects.filter(id__in=user_ids)
         channel = validated_data['channel']
@@ -192,9 +235,7 @@ class MessengerUserBulkSerializer(MessengerMemberSerializer):
         elif len(channel.name) == 0:
             channel.name = f"{channel.owner.name},{channel.subowner.name}..."
             channel.save()
-        validated_data['enter_message_ids'] = [
-            create_enter_message(channel.id, user).id for user in users]
-        validated_data["user_ids"] = user_ids
+        post_enter_channel(channel, users)
         return validated_data
 
     class Meta:

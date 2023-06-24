@@ -24,6 +24,15 @@ class Channel(models.Model):
     class Meta:
         db_table = "channel"
 
+    def save_pop_owners(self, user_id):
+        if self.owner_id == user_id or self.subowner_id == user_id:
+            self.owner_id = self.owner_id if self.owner_id != user_id else self.subowner_id
+            subowner = MessengerMember.objects.filter(channel_id=self.id).exclude(user_id=self.owner_id).first()
+            self.subowner = subowner.user if subowner else None
+            if self.owner is None:
+                self.is_archive = True
+            self.save()
+
 
 class ChannelContent(models.Model):
     objects = ChannelContentManager()

@@ -1,7 +1,5 @@
 import json
 
-from messenger.serializers import ChannelSerializer
-
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from channels.generic.websocket import WebsocketConsumer
@@ -100,11 +98,10 @@ class MessengerConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(event))
 
 
-def send_enter(channel, user_ids):
-    channel_data = ChannelSerializer(instance=channel).data
+def send_enter(user_ids, data):
     for user_id in user_ids:
         async_to_sync(get_channel_layer().group_send)(f"{MessengerConsumer.USER_PREFIX}{user_id}", {
-            "type": "enter", "data": channel_data})
+            "type": "enter", "data": data})
 
 
 def send_leave(channel_id, user_id=None):
