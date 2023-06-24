@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useLayoutEffect, useMemo} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { StyleSheet, View} from 'react-native';
+import { StyleSheet, View, ScrollView} from 'react-native';
 import { Text as StyledText } from 'react-native-paper';
 import { Text } from '../../../components/Themed'
 import useResizeContext from '../../../hooks/useResizeContext';
@@ -18,7 +18,6 @@ import useAuthContext from '../../../hooks/useAuthContext';
 import useUserMembershipList from '../../../hooks/lists/useUserMembershipList';
 import { FontAwesome, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '../../../lib/@expo/vector-icons';
 import { useMessengerChannelSorted } from '../../../hooks/lists/useMessengerChannelList';
-import { ScrollView } from 'react-native-gesture-handler';
 import CommonItem from '../../../components/CommonItem';
 import MemberItem from '../../../components/MemberItem';
 import ProfileModal from '../../../modals/ProfileModal';

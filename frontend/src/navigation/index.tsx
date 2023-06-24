@@ -12,8 +12,9 @@ import RootNavigator from './RootNavigator';
 import { useColorScheme as useDefaultColorScheme } from 'react-native';
 import { useColorScheme as useColorScheme } from 'react-native-appearance';
 import { ResizeContextProvider } from '../hooks/useResizeContext';
+import { enableScreens } from 'react-native-screens';
 
-
+enableScreens();
 const navigationRef = React.createRef<NavigationContainerRef>();
 
 export function navigate(name:string, params?:any) {

@@ -12,16 +12,17 @@ export type ItemParamList = {
 }
 
 export default function CommonItem(props:ItemParamList){
-  const [hover, setHover] = React.useState(false)
+  // const [hover, setHover] = React.useState(false)
   const [press, setPress] = React.useState(false)
   return (
     <Pressable
       style={[styles.outerContainer ,props.outerContainerStyle, (press)?{backgroundColor:'rgb(242,242,242)'}:{}]}
-      onPressIn={()=>{setPress(true)}}
-      onPressOut={()=>{setPress(false);props.onPress?.()}}
-       //@ts-ignore
-       onHoverIn={()=>setHover(true)}
-       onHoverOut={()=>setHover(false)}
+      onPressIn={()=>setPress(true)}
+      onPress={()=>props.onPress?.()}
+      onPressOut={()=>setPress(false)}
+      //  //@ts-ignore
+      //  onHoverIn={()=>setHover(true)}
+      //  onHoverOut={()=>setHover(false)}
     >
         <View style={[styles.container ,props.containerStyle]}>
             <View style={[styles.bodyView, props.bodyStyle]}>
