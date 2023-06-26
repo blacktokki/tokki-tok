@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from "react-query"
-import { getMessengerContentList, postMessage, deleteMessengerContent, patchMessengerContent } from "../../apis"
+import { InfiniteData, Query, QueryKey, useInfiniteQuery, useMutation, useQueryClient } from "react-query"
+import { getMessengerContentList, postMessage, patchMessengerContent, getNewMessengerContentList } from "../../apis"
 import { MessengerContent } from "../../types"
 import useWebsocketContext from "../useWebsocketContext"
 
@@ -9,8 +9,40 @@ export type MessengerContentPage = {
   current:MessengerContent[]
 }
 
+const updateContnetPage = (pages:MessengerContentPage[], updateMessages:MessengerContent[])=>{
+  let update_i = 0
+  pages.forEach(page=>{
+    if (update_i == updateMessages.length)
+      return
+    page.current.forEach(v=>{
+      if (update_i == updateMessages.length)
+        return
+      if (v.id==updateMessages[update_i].id){
+        v.timer = updateMessages[update_i].timer
+        v.is_archive = updateMessages[update_i].is_archive
+        update_i += 1
+      }
+    })
+    page.current = page.current.filter(v=>!v.is_archive)
+  })
+}
+
 export default function useMessengerContentList(channel_id:number){  
   const queryClient = useQueryClient()
+  const refetch = (query:Query<MessengerContentPage, unknown, InfiniteData<MessengerContentPage>, QueryKey>)=>{
+    const updated_gte = new Date(query.state.dataUpdatedAt).toISOString()
+    const newData = {...query.state.data}
+    getNewMessengerContentList(channel_id, updated_gte).then(contents=>{
+      if(newData.pages){
+        const lastMessageId = newData.pages[0].current[0].id || 0
+        const nextMessages = contents.filter(v=>v.id>lastMessageId && v.is_archive==false)
+        const updateMessages = contents.filter(v=>v.id<=lastMessageId)
+        newData.pages[0].current = [...nextMessages, ...newData.pages[0].current]
+        updateContnetPage(newData.pages, updateMessages)
+      }
+    })
+    return false
+  }
   const { data, fetchNextPage } = useInfiniteQuery<MessengerContentPage>(
     ["MessengerContentList", channel_id], 
     async({pageParam})=>getMessengerContentList(channel_id, pageParam).then(current=>({current})), 
@@ -22,7 +54,7 @@ export default function useMessengerContentList(channel_id:number){
       },
       getNextPageParam:(lastPage)=>lastPage?.current.length?lastPage.current[lastPage.current.length - 1].id:undefined,
       refetchOnReconnect:false,
-      refetchOnWindowFocus:true
+      refetchOnWindowFocus:refetch
     }
   )
   const { lastJsonMessage } = useWebsocketContext()
@@ -37,25 +69,7 @@ export default function useMessengerContentList(channel_id:number){
       }
       if(lastJsonMessage['type']=='update_message'){
         queryClient.setQueryData<InfiniteData<MessengerContentPage>>(["MessengerContentList", channel_id], (_data)=>{
-          _data?.pages.forEach(page=>{
-            page.current.forEach(v=>{
-              if (v.id==lastJsonMessage['data'].id){
-                v.timer = lastJsonMessage['data'].timer
-              }
-            })
-          })
-          return {...(_data || {pages:[], pageParams:[]})}
-        })
-      }
-      if(lastJsonMessage['type']=='delete_message'){
-        queryClient.setQueryData<InfiniteData<MessengerContentPage>>(["MessengerContentList", channel_id], (_data)=>{
-          _data?.pages.forEach(page=>{
-            const len = page.current.length
-            const newCurrent = page.current.filter(v=>v.id!=lastJsonMessage['data'].id)
-            if (len != newCurrent.length){
-              page.current = newCurrent
-            }
-          })
+          _data?.pages && updateContnetPage(_data.pages, [lastJsonMessage['data']])
           return {...(_data || {pages:[], pageParams:[]})}
         })
       }
@@ -76,13 +90,5 @@ export function useMessengerContentMutation(channelId?:number){
     }
   });
   const _patch = useMutation(patchMessengerContent);
-  const _delete = useMutation(deleteMessengerContent, {
-    onSuccess: (d, variables) => {
-      // queryClient.setQueryData(['MessengerContentList'], (data:any) => ({
-      //   pages: (data.pages as MessengerContent[][]).map(v=>v.filter(v2=>v2.id != variables)),
-      //   pageParams: data.pageParams,
-      // }))
-    }
-  })
-  return { create:create.mutate, patch:_patch.mutate, delete:_delete.mutate }
+  return { create:create.mutate, patch:_patch.mutate }
 }

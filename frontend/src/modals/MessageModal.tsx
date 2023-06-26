@@ -36,6 +36,6 @@ export default function MessageModal({id,  content, isOwner, isTimer}:{id:number
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
       <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('copy')} onPress={()=>{Clipboard.setString(content);back()}}/>
       {isOwner && isTimer && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete timer')} onPress={()=>{contentMutation.patch({id, timer:null});back()}}/>}
-      {isOwner && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete')} onPress={()=>{contentMutation.delete(id);back()}}/>}
+      {isOwner && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete')} onPress={()=>{contentMutation.patch({id, is_archive:true});back()}}/>}
   </BottomSheet>
 }
