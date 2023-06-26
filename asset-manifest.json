@@ -2,18 +2,18 @@
   "files": {
     "static/js/0.cf9c93c7.chunk.js": "/tokki-tok/static/js/0.cf9c93c7.chunk.js",
     "static/js/0.cf9c93c7.chunk.js.map": "/tokki-tok/static/js/0.cf9c93c7.chunk.js.map",
-    "app.js": "/tokki-tok/static/js/app.a94715c9.chunk.js",
-    "app.js.map": "/tokki-tok/static/js/app.a94715c9.chunk.js.map",
-    "runtime~app.js": "/tokki-tok/static/js/runtime~app.851ba4d3.js",
-    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.851ba4d3.js.map",
+    "app.js": "/tokki-tok/static/js/app.fb4f105d.chunk.js",
+    "app.js.map": "/tokki-tok/static/js/app.fb4f105d.chunk.js.map",
+    "runtime~app.js": "/tokki-tok/static/js/runtime~app.2877a029.js",
+    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.2877a029.js.map",
     "static/js/3.9ea831bf.chunk.js": "/tokki-tok/static/js/3.9ea831bf.chunk.js",
     "static/js/3.9ea831bf.chunk.js.map": "/tokki-tok/static/js/3.9ea831bf.chunk.js.map",
     "static/js/4.15e7f5b2.chunk.js": "/tokki-tok/static/js/4.15e7f5b2.chunk.js",
     "static/js/4.15e7f5b2.chunk.js.map": "/tokki-tok/static/js/4.15e7f5b2.chunk.js.map",
     "static/js/5.1c89773d.chunk.js": "/tokki-tok/static/js/5.1c89773d.chunk.js",
     "static/js/5.1c89773d.chunk.js.map": "/tokki-tok/static/js/5.1c89773d.chunk.js.map",
-    "static/js/6.ba09b121.chunk.js": "/tokki-tok/static/js/6.ba09b121.chunk.js",
-    "static/js/6.ba09b121.chunk.js.map": "/tokki-tok/static/js/6.ba09b121.chunk.js.map",
+    "static/js/6.747b262e.chunk.js": "/tokki-tok/static/js/6.747b262e.chunk.js",
+    "static/js/6.747b262e.chunk.js.map": "/tokki-tok/static/js/6.747b262e.chunk.js.map",
     "static/js/7.758aa636.chunk.js": "/tokki-tok/static/js/7.758aa636.chunk.js",
     "static/js/7.758aa636.chunk.js.map": "/tokki-tok/static/js/7.758aa636.chunk.js.map",
     "static/js/8.56b7306d.chunk.js": "/tokki-tok/static/js/8.56b7306d.chunk.js",
@@ -53,8 +53,8 @@
     "static/js/8.56b7306d.chunk.js.LICENSE.txt": "/tokki-tok/static/js/8.56b7306d.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime~app.851ba4d3.js",
+    "static/js/runtime~app.2877a029.js",
     "static/js/4.15e7f5b2.chunk.js",
-    "static/js/app.a94715c9.chunk.js"
+    "static/js/app.fb4f105d.chunk.js"
   ]
 }
