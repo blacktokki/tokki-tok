@@ -11,7 +11,7 @@ import { WebSocketProvider } from '../hooks/useWebsocketContext';
 import HeaderRight from '../components/HeaderRight'
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import useFirebaseContext from '../hooks/useFirebaseContext';
+import useFirebaseContext, { FirebaseProvider } from '../hooks/useFirebaseContext';
 import useIsMobile from '../hooks/useIsMobile';
 import useColorScheme from '../hooks/useColorScheme';
 import { ModalsProvider } from '../hooks/useModalsContext';
@@ -76,14 +76,12 @@ const MainNavigator = ()=>{
             return []
         return auth.user === null?[]:modals
     }, [auth])
-
-    const {enable:noti} = useFirebaseContext(auth)
-    const headerLeftColor = 'white'
-    return (auth.user!==undefined && noti!=null?<View style={{flexDirection:'row', flex:1}}>
+    return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
         <ModalsProvider modals={modalValues}>
             {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
             <View style={{flex:1}}>
                 <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
+                    <FirebaseProvider user={auth.user}>
                         <Main.Navigator
                             screenOptions={({navigation, route})=>({
                                 headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
@@ -99,6 +97,7 @@ const MainNavigator = ()=>{
                             {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: lang(screen.title) }} />)}
                             <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
                         </Main.Navigator>
+                    </FirebaseProvider>
                 </WebSocketProvider>
             </View>
         </ModalsProvider>

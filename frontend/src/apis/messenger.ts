@@ -45,6 +45,10 @@ export const getMessengerContentList = async (channel_id:number, id_lt?:number)=
     return (await axios.get(`/api/v1/messengercontents/?limit=30&channel=${channel_id}${id_lt_param}`)).data.results as MessengerContent[]
 }
 
+export const getNewMessengerContentList = async (channel_id:number, updated_gte:string)=>{
+    return (await axios.get(`/api/v1/messengercontents/?channel=${channel_id}&with_archive=true&updated_gte=${updated_gte}`)).data as MessengerContent[]
+}
+
 export const getTimerMessageContentList = async (channel_id:number, timer_gt:string)=>{
     return (await axios.get(`/api/v1/messengercontents/?channel=${channel_id}&timer_gt=${timer_gt}`)).data as MessengerContent[]
 }
@@ -67,7 +71,4 @@ export const postMessage = async (message:EditMessage)=>{
 
 export const patchMessengerContent = async (content:EditMessengerContent)=>{
     return (await axios.patch(`/api/v1/messengercontents/${content.id}/`, content)).data as MessengerContent
-}
-export const deleteMessengerContent = async (content_id:number)=>{
-    await axios.delete(`/api/v1/messengercontents/${content_id}/`)
 }

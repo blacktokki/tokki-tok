@@ -4,7 +4,8 @@
 [![Django Rest Framework](https://img.shields.io/badge/django_rest_framework-3.11.0-blue.svg?style=flat-square)](http://www.django-rest-framework.org/)
 
 > #### 파이썬과 타입스크립트로 만든 화상회의 및 메신저 서비스입니다.
-![제목 없는 다이어그램 drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/df1d177c-07dc-4d36-b964-f217409b902d)
+![제목 없는 다이어그램 drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/86ed7f8c-f37e-4801-9f15-a08d4f687745)
+
 
 ## Overview
 

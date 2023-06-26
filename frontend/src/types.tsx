@@ -118,6 +118,7 @@ export type MessengerContent = {
   user: number,
   channel: number
   timer?: string|null,
+  is_archive:boolean,
   created: string,
   updated: string,
   name: string,
@@ -126,6 +127,7 @@ export type MessengerContent = {
 
 export type EditMessengerContent = {
   id:number,
+  is_archive?:boolean,
   timer?: string|null
 }
 
