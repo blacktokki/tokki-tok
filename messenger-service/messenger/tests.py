@@ -87,12 +87,16 @@ class MessengerTestCase(TestUserMixin, APITestCase):
         channel = Channel.objects.create(owner=self.user, group=self.group, type='messenger', name='name')
         MessengerMember.objects.create(channel=channel, user=self.user2)
         content_data = {"user": self.user.id, "channel": channel.id, 'content': 'content'}
+        archive_data = {'is_archive': True}
 
         # when
         create_response = self.client.post('/api/v1/messengercontents/', content_data)
+        content_id = create_response.data['id']
+        update_response = self.client.patch(f'/api/v1/messengercontents/{content_id}/', archive_data)
 
         # then
         self.assertEqual(create_response.status_code, 201)
+        self.assertEqual(update_response.status_code, 200)
 
 
 class WebsocketTestCase(TestCase):

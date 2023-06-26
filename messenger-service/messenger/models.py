@@ -39,6 +39,7 @@ class ChannelContent(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='')
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='')
     timer = models.DateTimeField(db_column='cc_timer', null=True, blank=True, help_text='')
+    is_archive = models.BooleanField(db_column="cc_is_archive", default=False, help_text='')
     created = models.DateTimeField(db_column='cc_created', null=True, auto_now_add=True)
     updated = models.DateTimeField(db_column='cc_updated', null=True, auto_now=True)
 
