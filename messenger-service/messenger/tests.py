@@ -69,7 +69,7 @@ class MessengerTestCase(TestUserMixin, APITestCase):
     def test_messenger_member(self):
         # given
         channel = Channel.objects.create(owner=self.user, group=self.group, type='messenger', name='name')
-        messengermember_data = {"user_ids": [self.user2.id], "channel": channel.id}
+        messengermember_data = {"user_ids": [self.user.id], "channel": channel.id}
 
         # when
         create_response = self.client.post('/api/v1/messengermembers/bulk/', messengermember_data)
@@ -85,6 +85,7 @@ class MessengerTestCase(TestUserMixin, APITestCase):
     def test_messenger_content(self):
         # given
         channel = Channel.objects.create(owner=self.user, group=self.group, type='messenger', name='name')
+        MessengerMember.objects.create(channel=channel, user=self.user)
         MessengerMember.objects.create(channel=channel, user=self.user2)
         content_data = {"user": self.user.id, "channel": channel.id, 'content': 'content'}
         archive_data = {'is_archive': True}

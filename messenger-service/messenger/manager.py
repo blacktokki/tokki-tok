@@ -49,4 +49,5 @@ class MessageManager(models.Manager):
 
 
 class MessengerMemberManager(models.Manager):
-    pass
+    def is_entered(self, channel_id, user_id):
+        return self.filter(user_id=user_id, channel_id=channel_id).exists()
