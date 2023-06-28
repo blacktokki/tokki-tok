@@ -78,11 +78,9 @@ export const FirebaseProvider = ({user, children}:{user?:UserMembership|null, ch
     }
     return ()=>{isMount=false}
   }, [user])
-  return enable!=undefined?
-  <FirebaseContext.Provider value={{enable, setEnable}}>
-    {children}
-  </FirebaseContext.Provider>:
-  <></>
+  return <FirebaseContext.Provider value={{enable, setEnable}}>
+    {(enable!=undefined || user===null) && children}
+  </FirebaseContext.Provider>
 }
 
 export default ()=>{

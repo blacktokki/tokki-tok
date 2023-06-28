@@ -24,7 +24,7 @@ export default {
     hoverColor: '#010409',//'rgb(1,4,9)',
     buttonBackgroundColor: '#010409',//'#282624',
     header:'#010409',
-    headerBottomColor:'rgb(216, 216, 216)',
+    headerBottomColor:'rgb(40, 40, 40)',
     buttonBorderColor:'rgba(229,225,220,0.15)',
     iconColor: 'white'
   },
