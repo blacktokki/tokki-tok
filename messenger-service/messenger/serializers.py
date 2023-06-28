@@ -67,10 +67,9 @@ def post_leave_channel(channel, user):
     channel.save_pop_owners(user.id)
     send_leave(channel.id, user.id)
     if not channel.is_archive:
-        serializer = MessageSerializer(data={"channel": channel.id, "content": f"{user.name} 퇴장"})
-        serializer.is_valid()
-        serializer.save()
-        post_create_messages([serializer.data['id']])
+        channel_content = ChannelContent.objects.create(channel=channel)
+        message_id = Message.objects.create(channel_content=channel_content, content=f'{user.name} 퇴장').id
+        post_create_messages([message_id])
 
 
 post_delete.connect(

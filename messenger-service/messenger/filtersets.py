@@ -16,9 +16,6 @@ class ChannelContentFilterSet(django_filters.FilterSet):
             kwargs['data'] = kwargs['data'].copy()
             kwargs['data']['with_archive'] = 'false'
         super().__init__(*args, **kwargs)
-        # if self.form.initial.get('with_archive') is None:
-        #     self.form.initial['with_archive'] = False
-        # print(self.form.__dict__)
 
     id_lt = django_filters.NumberFilter(field_name='id', lookup_expr='lt')
     timer_gt = django_filters.DateTimeFilter(field_name='timer', lookup_expr='gt')
