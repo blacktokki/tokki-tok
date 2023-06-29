@@ -45,7 +45,6 @@
     "firebase-messaging-sw.js": "/tokki-tok/firebase-messaging-sw.js",
     "index.html": "/tokki-tok/index.html",
     "manifest.json": "/tokki-tok/manifest.json",
-    "preview.png": "/tokki-tok/preview.png",
     "serve.json": "/tokki-tok/serve.json",
     "static/js/3.9ea831bf.chunk.js.LICENSE.txt": "/tokki-tok/static/js/3.9ea831bf.chunk.js.LICENSE.txt",
     "static/js/4.15e7f5b2.chunk.js.LICENSE.txt": "/tokki-tok/static/js/4.15e7f5b2.chunk.js.LICENSE.txt",
