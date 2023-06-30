@@ -5,7 +5,6 @@ import useColorScheme, { setColorScheme } from "../../../hooks/useColorScheme"
 import { StyleSheet, Text, View} from 'react-native';
 import useLangContext from "../../../hooks/useLangContext";
 import { useColorScheme as useConfigColorScheme} from 'react-native-appearance';
-import useAuthContext from "../../../hooks/useAuthContext";
 import useFirebaseContext from "../../../hooks/useFirebaseContext";
 import TextButton from "../../../components/TextButton";
 
@@ -23,8 +22,7 @@ export default ()=>{
   const { lang, locale, setLocale } = useLangContext()
   const theme = useColorScheme()
   const configTheme = useConfigColorScheme()
-  const { auth } = useAuthContext()
-  const {enable:noti, setEnable:setNoti} = useFirebaseContext(auth)
+  const {enable:noti, setEnable:setNoti} = useFirebaseContext()
   const color = Colors[theme].text
   return <>
     <ConfigSection title={lang('* Notification Settings')}>

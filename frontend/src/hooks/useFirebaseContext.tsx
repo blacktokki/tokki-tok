@@ -45,8 +45,8 @@ const FirebaseContext = createContext<{enable?:boolean, setEnable:(enable:boolea
 
 export const FirebaseProvider = ({user, children}:{user?:UserMembership|null, children:React.ReactNode})=>{
   const tokenRef = useRef<string|null>()
-  const [notification, setNotification] = useState<NotificationType>()
-  const enable = useMemo(()=>notification==undefined?undefined:(notification.token?true:false), [notification])
+  const [notification, setNotification] = useState<NotificationType|null>()
+  const enable = useMemo(()=>notification===undefined?undefined:(notification?.token?true:false), [notification])
   const setEnable = (enable:boolean)=>{
     if(user && notification){
       putNotification({...notification, token:enable?(tokenRef.current==undefined?null:tokenRef.current):null}).then((noti)=>{
@@ -65,19 +65,28 @@ export const FirebaseProvider = ({user, children}:{user?:UserMembership|null, ch
           })
         }
       });
-      (async ()=>{
-        let noti = await getNotification(user.id)
-        if(noti==undefined){
-          noti = await postNotification({user:user.id, type:'WEB', token:null})
-        }
-        else if (noti.token && tokenRef.current){
-          noti = await putNotification({...noti, token:tokenRef.current})
-        }
-        if(isMount)setNotification(noti)
-      })()
+      getNotification(user.id).then((noti)=>{
+        if(isMount)setNotification(noti || null)
+      })
     }
     return ()=>{isMount=false}
   }, [user])
+  useEffect(()=>{
+    let isMount = true;
+    if(user && notification !== undefined){
+      if(notification===null){
+        postNotification({user:user.id, type:'WEB', token:null}).then((noti)=>{
+          if(isMount)setNotification(noti)
+        })
+      }
+      else if (notification.token && tokenRef.current && tokenRef.current != notification.token){
+        putNotification({...notification, token:tokenRef.current}).then((noti)=>{
+          if(isMount)setNotification(noti)
+        })
+      }
+    }
+    return ()=>{isMount=false}
+  })
   return <FirebaseContext.Provider value={{enable, setEnable}}>
     {(enable!=undefined || user===null) && children}
   </FirebaseContext.Provider>

@@ -20,9 +20,11 @@ export default (props:ProfileProps)=>{
     }
     return <View style={{width:'100%', height:135, justifyContent:'space-evenly', alignItems:'center'}}>
         <Avatar {...props} size={75}/>
-        {name===undefined?
-            <TextButton textStyle={{fontWeight:'bold', fontSize:15}} onPress={()=>isSelf && setName(props.name)} title={props.name} disabled={!isSelf}/>:
-            <CommonTextInput value={name} style={{textAlign:'center'}} setValue={setName} onBlur={onChange} onEndEditing={onChange} />}
+        {isSelf?
+        (name===undefined?
+            <TextButton textStyle={{fontWeight:'bold', fontSize:15}} onPress={()=>setName(props.name)} title={props.name}/>:
+            <CommonTextInput value={name} style={{textAlign:'center'}} setValue={setName} onBlur={onChange} onEndEditing={onChange} />
+        ):<Text style={{fontWeight:'bold', fontSize:15}}>{props.name}</Text>}
         <Text style={{fontWeight:'normal', fontSize:14}}>{props.username}</Text>
     </View>
 }

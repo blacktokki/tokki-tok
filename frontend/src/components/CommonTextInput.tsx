@@ -18,7 +18,8 @@ export default (props:CustomTextInputProps)=>{
             backgroundColor:Colors[theme].background,
             color:Colors[theme].text,
             height:props.multiline?contentHeight:minHeight,
-        }, props.style]} 
+        }, props.style]}
+        placeholder={props.placeholder}
         editable={!props.disabled} 
         value={props.value} 
         onChangeText={props.setValue}
