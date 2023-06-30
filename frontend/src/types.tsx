@@ -21,6 +21,7 @@ export type CustomTextInputProps = {
   disabled?:boolean
   multiline?:boolean
   minHeight?:number
+  placeholder?:string
   style?:StyleProp<TextStyle>
   onEndEditing?:(value:string)=>void,
   onBlur?:(value:string)=>void

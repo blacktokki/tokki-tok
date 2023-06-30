@@ -65,7 +65,7 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   useModalEffect(back, [])
   return <View style={{alignItems:'center', flex:1}}>
     <View style={{'width': '100%', flex:1}}>
-      <TextField name={`${lang('Username')} & ${lang('Name')}`} value={searchState.keyword} setValue={search} width={'80%'}/>
+      <TextField name={`${lang('Username')} & ${lang('Name')}`} placeholder={auth.user?.name} value={searchState.keyword} setValue={search} width={'80%'}/>
       {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
     </View>
     <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
@@ -88,6 +88,7 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const [keyword, setKeyword] = useState('')
   const [copied, setCopied] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout>()
+  const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const memberList = useMessengerMemberList(id)
   const externalMemberList = useExternalMembershipList(keyword)
@@ -113,7 +114,7 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
     {copied && <Text style={{fontSize:12, color:'red'}}>{lang("copied")}</Text>}
   </TouchableOpacity>
   <View style={{'width': '100%', flex:1}}>
-    <TextField name={lang('Username')} value={value} setValue={setValue} width={'80%'}/>
+    <TextField name={lang('Username')} placeholder={auth.user?.username} value={value} setValue={setValue} width={'80%'}/>
     {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
   </View>
   <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
