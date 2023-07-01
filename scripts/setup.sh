@@ -44,7 +44,7 @@ flush privileges;
 "
 
 sudo mysql -u root -p" " -e"
-SET character_set_server = 'utf8';
+SET character_set_server = 'utf8mb4';
 create database db1_messenger;
 "
 

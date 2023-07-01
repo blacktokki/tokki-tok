@@ -110,8 +110,12 @@ DATABASES = {
         'PASSWORD': env('DATABASE_PASS'),
         'HOST': env('DATABASE_HOST'),
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True,
+        },
         'TEST': {
-            'CHARSET': 'utf8'
+            'CHARSET': 'utf8mb4'
         }
     }
 }
