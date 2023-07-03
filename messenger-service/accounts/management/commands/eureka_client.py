@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def add_arguments(self, parser):
-        parser.add_argument('--port', type=int, default=8000)
+        parser.add_argument('--port', type=int, default=80)
 
     def handle(self, *args, **options):
         host = settings.HOST

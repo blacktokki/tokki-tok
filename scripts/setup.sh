@@ -17,6 +17,7 @@ sudo add-apt-repository --yes ppa:redislabs/redis
 sudo apt-get update
 sudo apt-get --assume-yes install python3.8 python3.8-dev python3.8-venv
 sudo apt-get --assume-yes install python3-pip
+sudo apt-get --assume-yes install nginx
 sudo apt-get --assume-yes install libmysqlclient-dev
 sudo apt-get --assume-yes install redis-server
 
@@ -43,12 +44,14 @@ flush privileges;
 "
 
 sudo mysql -u root -p" " -e"
-SET character_set_server = 'utf8';
+SET character_set_server = 'utf8mb4';
 create database db1_messenger;
 "
 
-sudo sysctl net.ipv4.conf.all.route_localnet=1
-sudo iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination 127.0.0.1:8000
+# sudo sysctl net.ipv4.conf.all.route_localnet=1
+# sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 127.0.0.1:8000
+sudo cp ./scripts/nginx.conf /etc/nginx/conf.d/messenger.conf
+sudo unlink /etc/nginx/sites-enabled/default
 
 echo "DATABASE_HOST=127.0.0.1" >> $PROPERTY_FILE
 echo "DATABASE_USER=$2" >> $PROPERTY_FILE
