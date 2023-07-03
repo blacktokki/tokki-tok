@@ -21,7 +21,9 @@ export default (props:CustomTextInputProps)=>{
         }, props.style]}
         placeholder={props.placeholder}
         editable={!props.disabled} 
-        value={props.value} 
+        keyboardType={props.keyboardType}
+        secureTextEntry={props.secureTextEntry}
+        value={props.value}
         onChangeText={props.setValue}
         onContentSizeChange={props.multiline?(e) => setContentHeight(Math.max(e.nativeEvent.contentSize.height, minHeight) + 2):undefined}
         onBlur={()=>props.onBlur?.(props.value)}

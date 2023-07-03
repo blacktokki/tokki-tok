@@ -8,6 +8,10 @@ import useModalsContext from "../hooks/useModalsContext";
 import { View, Text } from "../components/Themed";
 import RowField from "../components/RowField";
 import CommonButton from "../components/CommonButton";
+import CommonTextInput from "../components/CommonTextInput";
+import TextButton from "../components/TextButton";
+import Colors from "../constants/Colors";
+import useColorScheme from "../hooks/useColorScheme";
 
 type ErrorMessages = {
     username?:string,
@@ -26,21 +30,23 @@ const ErrorView = (props:{message?:string})=>{
 export default function RegistrationModal() {
   const { lang } = useLangContext()
   const {auth} = useAuthContext()
+  const theme = useColorScheme()
+  const color = Colors[theme].text
   const { setModal } = useModalsContext()
   const [username, setUsername] = useState("");
   const [name, setName] = useState("")
   const [password, setPassword] = useState("");
   const [checkPassword, setCheckPassword] = useState("")
+  const [isStaff, setIsStaff] = useState(false)
   const [error, setError] = useState<ErrorMessages>({})
   const userList = useUserMembershipList(auth)
   const userMembershipMutation = useUserMembershipMutation()
   const _register = ()=>{
     let newError:ErrorMessages = {};
     if (userList?.find(v=>v.username == username)) newError.username = "The username is already in use."
-    if (username.length > 64) newError.username = "Write in 64 characters or less."
-    if (name.length > 64) newError.name = "Write in 64 characters or less."
-    if (password.length > 64) newError.password = "Write in 64 characters or less."
-    if (password.length < 10 || !password.match('^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W_])[a-zA-Z0-9\W_]+$')) newError.password = "Set over 10 characters with a combination of letters/numbers/valid special characters."
+    if (username.length < 10 || username.length > 64) newError.username = "Set 10-64 characters."
+    if (name.length < 1 || name.length > 64) newError.name = "Set 1-64 characters."
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,64}$/.test(password)) newError.password = "Set 10-64 characters with a combination of letters/numbers/valid special characters."
     if (password != checkPassword) newError.checkPassword = "Incorrect between password and check password."
     if (Object.keys(newError).length > 0){
         setError(newError)
@@ -50,8 +56,8 @@ export default function RegistrationModal() {
         username,
         name,
         password,
+        is_staff:isStaff,
         inviteGroupId:auth.groupId,
-        is_staff:false,
 
     }).then(back)
   }
@@ -65,41 +71,42 @@ export default function RegistrationModal() {
         <Text style={{fontSize:20}}>{lang('Create User')}</Text>
         <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
         <RowField name={lang('Username')} width={'60%'}>
-          <TextInput
-              style={styles.input}
+          <CommonTextInput
               value={username}
-              onChangeText={(text) => setUsername(text)}
-              autoCapitalize={"none"}
+              setValue={(text) => setUsername(text)}
               keyboardType={'email-address'}
           />
           <ErrorView message={error.username}/>
         </RowField>
         <RowField name={lang('Name')} width={'60%'}>
-          <TextInput
-              style={styles.input}
+          <CommonTextInput
               value={name}
-              onChangeText={(text) => setName(text)}
-              autoCapitalize={"none"}
+              setValue={(text) => setName(text)}
           />
           <ErrorView message={error.name}/>
         </RowField>
         <RowField name={lang('Password')} width={'60%'}>
-          <TextInput
-              style={styles.input}
+          <CommonTextInput
               value={password}
               secureTextEntry
-              onChangeText={(text) => setPassword(text)}
+              setValue={(text) => setPassword(text)}
           />
           <ErrorView message={error.password}/>
         </RowField>
         <RowField name={lang('Check Password')} width={'60%'}>
-          <TextInput
-              style={styles.input}
+          <CommonTextInput
               value={checkPassword}
               secureTextEntry
-              onChangeText={(text) => setCheckPassword(text)}
+              setValue={(text) => setCheckPassword(text)}
           />
           <ErrorView message={error.checkPassword}/>
+        </RowField>
+        <RowField name={lang('Manager Permission')} width={'60%'}>
+          <View style={{flexDirection:'row'}}>
+            {[[lang('Yes'), true], [lang('No'), false]].map(([title, value])=><TextButton 
+              key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:isStaff==value?'underline':'none'}} style={{borderRadius:20}} onPress={(
+              )=>setIsStaff(value)}/>)}
+          </View>
         </RowField>
       </View>
       <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
@@ -111,11 +118,6 @@ export default function RegistrationModal() {
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    marginBottom: 10,
-    backgroundColor: "#fff",
-  },
   form_error: {
     height: 22,
     width:'100%',

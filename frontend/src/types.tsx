@@ -4,7 +4,7 @@
  */
 
 import { PathConfig } from "@react-navigation/native"
-import { ButtonProps, StyleProp, TextStyle, ViewStyle } from "react-native"
+import { ButtonProps, KeyboardTypeOptions, StyleProp, TextStyle, ViewStyle } from "react-native"
 
 export type Screens = Record<string, PathConfig & {title:string, component:React.ComponentType<any>}>
 
@@ -23,6 +23,8 @@ export type CustomTextInputProps = {
   minHeight?:number
   placeholder?:string
   style?:StyleProp<TextStyle>
+  keyboardType?:KeyboardTypeOptions,
+  secureTextEntry?:boolean
   onEndEditing?:(value:string)=>void,
   onBlur?:(value:string)=>void
 }
