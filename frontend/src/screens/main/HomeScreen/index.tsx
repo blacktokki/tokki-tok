@@ -25,6 +25,7 @@ import { navigate } from '../../../navigation';
 import CommonSection from '../../../components/CommonSection';
 import ConfigSections from './ConfigSections';
 import Avatar, { avatarFromChannel } from '../../../components/Avatar';
+import GroupInviteModal from '../../../modals/GroupInviteModal';
 
 const MemberTabView = ()=>{
   const {auth} = useAuthContext()
@@ -115,7 +116,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const [ home, setHome ] = useState(windowType == 'landscape')
   const color = Colors[theme].text
   const options = [
-    {title:lang('member'), headerRight:()=><HeaderRight/>},
+    {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(GroupInviteModal, {})}]}/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
     // {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>setModal(ChannelEditModal, props:{type:'board'}}) }]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}

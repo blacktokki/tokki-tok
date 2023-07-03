@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Suspense, useMemo } from "react"
 import CommonSection from "../../../components/CommonSection"
 import Colors from "../../../constants/Colors"
 import useColorScheme, { setColorScheme } from "../../../hooks/useColorScheme"
@@ -7,7 +7,9 @@ import useLangContext from "../../../hooks/useLangContext";
 import { useColorScheme as useConfigColorScheme} from 'react-native-appearance';
 import useFirebaseContext from "../../../hooks/useFirebaseContext";
 import TextButton from "../../../components/TextButton";
+import useAuthContext from "../../../hooks/useAuthContext";
 
+const CommonPicker = React.lazy(()=>import('../../../components/CommonPicker'))
 
 const ConfigSection = ({title, children}:{title:string, children?: React.ReactNode})=>{
   const theme = useColorScheme()
@@ -19,11 +21,13 @@ const ConfigSection = ({title, children}:{title:string, children?: React.ReactNo
 }
 
 export default ()=>{
+  const {auth, dispatch} = useAuthContext()
   const { lang, locale, setLocale } = useLangContext()
   const theme = useColorScheme()
   const configTheme = useConfigColorScheme()
   const {enable:noti, setEnable:setNoti} = useFirebaseContext()
   const color = Colors[theme].text
+  const groups = useMemo(()=>auth.user?.membership_set.map(v=>({label:v.groupname, value:v.group})) || [], [auth])
   return <>
     <ConfigSection title={lang('* Notification Settings')}>
       <View style={{flexDirection:'row'}}>
@@ -42,6 +46,16 @@ export default ()=>{
         {[[lang('Auto'), 'no-preference'], [lang('Light'), 'light'], [lang('Dark'), 'dark']].map(([title, colorScheme])=><TextButton 
           key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:configTheme==colorScheme?'underline':'none'}} style={{borderRadius:20}} onPress={(
             )=>setColorScheme(colorScheme)}/>)}
+      </View>
+    </ConfigSection>
+    <ConfigSection title={lang('* Group Settings')}>
+      <View style={{flexDirection:'row'}}>
+        <View>
+          <Suspense fallback={<></>}>
+            <CommonPicker value={auth.groupId} setValue={()=>{}} values={groups}/>
+          </Suspense>
+          {groups.length>1 && <TextButton textStyle={{color:'red'}} title={lang('leave')} onPress={()=>{}}/>}
+        </View>
       </View>
     </ConfigSection>
   </>

@@ -6,7 +6,7 @@ import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
 import useResizeContext from '../hooks/useResizeContext';
 import TabView from '../components/TabView';
-import { MessengerChannel, TabViewRecord, User, UserMembership } from '../types';
+import { MessengerChannel, TabViewRecord, UserMembership } from '../types';
 import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
 import CommonItem from '../components/CommonItem';
@@ -15,6 +15,9 @@ import useAuthContext, { Auth } from '../hooks/useAuthContext';
 import { useMessengerChannelSorted } from '../hooks/lists/useMessengerChannelList';
 import { navigate } from '.'
 import { avatarFromChannel } from '../components/Avatar';
+import useColorScheme from '../hooks/useColorScheme';
+import { Ionicons, MaterialCommunityIcons } from '../lib/@expo/vector-icons';
+import GroupInviteModal from '../modals/GroupInviteModal';
 
 const DrawerTabView = (props:{auth:Auth, data:(MessengerChannel & {onPress?:()=>void})[]})=><View style={{flex:1}}>
     {props.data.map((item, index)=>{
@@ -25,33 +28,49 @@ const DrawerTabView = (props:{auth:Auth, data:(MessengerChannel & {onPress?:()=>
     })}
 </View>
 
-const MessengerTabView = ()=>{
+
+const MemberTabView = ()=>{
   const {auth} = useAuthContext()
   const channelList = useMessengerChannelSorted(auth);
   return <DrawerTabView auth={auth} data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
 }
 
-const drawerTabs:TabViewRecord = {
-  MessengerTab:{
-      title:'messenger',
-      component:MessengerTabView,
-      icon:<></>
-  },
+const MessengerTabView = ()=>{
+  const {auth} = useAuthContext()
+  const channelList = useMessengerChannelSorted(auth);
+  return <DrawerTabView auth={auth} data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
+}
+const getDrawerTabs = (theme:'light'|'dark')=>{
+  const color = Colors[theme].iconColor
+  return {
+    MemberTab:{
+      title:'member',
+      component:MemberTabView,
+      icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='account'/>,
+    },
+    ChatTab:{
+        title:'chat',
+        component:MessengerTabView,
+        icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
+    },
+  } as TabViewRecord
 }
 
 export default ({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
+  const theme = useColorScheme();
   const windowType = useResizeContext();
   const [index, setIndex] = useState(0);
   const { setModal } = useModalsContext()
   const onAddList = [
+    ()=>setModal(GroupInviteModal, {}),
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
-    ()=>setModal(ChannelEditModal, {type:'board'})
   ]
+  const drawerTabs = getDrawerTabs(theme)
   return <View style={windowType=='landscape'?[
       styles.tabBar,
       {
-        backgroundColor: colors.card,
+        backgroundColor: Colors[theme].background,
         borderTopColor: colors.border,
       },
       // tabBarStyle,

@@ -60,6 +60,10 @@ export const patchUser = async (user:{id:number, name:string})=>{
     await axios.patch(`/api/v1/user/`, {ids:[user.id], updated: {name:user.name}}, {baseURL})
 }
 
+export const patchUserGroup = async (body:{user_ids:number[], invite_group_id?:number, leave_group_id?:number})=>{
+    await axios.patch(`/api/v1/user/`, {ids:body.user_ids, updated: {inviteGroupId:body.invite_group_id, leaveGroupId:body.leave_group_id}}, {baseURL})
+}
+
 export const getUserMembershipList = async (group_id:number)=>{
     return (await axios.get(`/api/v1/users/memberships/?group_id=${group_id}`) ).data as UserMembership[]
 }

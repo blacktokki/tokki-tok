@@ -6,7 +6,7 @@ import useResizeContext from '../hooks/useResizeContext';
 
 type Props = {
   name: string,
-  width?:number,
+  width?:any,
   children: React.ReactNode
   textStyle?: StyleProp<TextProps>
 }

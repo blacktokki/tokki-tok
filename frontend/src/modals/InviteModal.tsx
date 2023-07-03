@@ -1,38 +1,21 @@
-import React, {useRef,MutableRefObject, useMemo, useState, useEffect } from 'react';
-import Clipboard from '@react-native-clipboard/clipboard/dist';
+import React, {useRef,MutableRefObject, useMemo } from 'react';
 import { View, Text } from '../components/Themed';
 import useAuthContext from '../hooks/useAuthContext';
 import useUserMembershipList from '../hooks/lists/useUserMembershipList';
-import { TabViewRecord, UserMembership } from '../types';
+import { TabViewRecord } from '../types';
 import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
 import useModalsContext from '../hooks/useModalsContext';
-import useExternalMembershipList from '../hooks/lists/useExternalMembershipList';
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
 import TabView from '../components/TabView';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import useLangContext from '../hooks/useLangContext';
-import MemberItem from '../components/MemberItem';
 import ModalSection from '../components/ModalSection';
 import useModalEffect from '../hooks/useModalEffect';
+import { ExternalMembershipView, InviteItem } from './GroupInviteModal';
 
-const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
-  const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
-  return <View style={selected?{borderWidth:1, borderColor:'blue'}:{}}>
-    <MemberItem member={props.item} onPress={()=>{
-      if (selected){
-        setSelected(false)
-        props.selectedRef.current.delete(props.item.id)
-      }
-      else{
-        setSelected(true)
-        props.selectedRef.current.add(props.item.id)
-      }
-    }}/>
-  </View>
 
-}
 type InviteTabViewProps = {
   id:number,
   selectedRef:MutableRefObject<Set<number>>
@@ -80,53 +63,28 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   </View>
 }
 
-const DELAY = 500
 
 const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
-  const { lang } = useLangContext()
-  const [value, setValue] = useState('')
-  const [keyword, setKeyword] = useState('')
-  const [copied, setCopied] = useState(false)
-  const timeoutRef = useRef<NodeJS.Timeout>()
-  const {auth} = useAuthContext()
-  const { setModal } = useModalsContext()
-  const memberList = useMessengerMemberList(id)
-  const externalMemberList = useExternalMembershipList(keyword)
-  const data = useMemo(()=>{
-    const memberSet = new Set(memberList?.map(v=>v.user))
-    return externalMemberList?.filter(v=>!memberSet.has(v.id)) || []
-  }, [externalMemberList, memberList])
   const messengerMemberMutation = useMessengerMemberMutation()
-  useEffect(()=>{
-    timeoutRef.current = setTimeout(()=>{
-      setKeyword(value)
-    }, DELAY)
-    return ()=>{timeoutRef.current && clearTimeout(timeoutRef.current)}
-  }, [value])
+  const { setModal } = useModalsContext()
   const back = ()=>{
     setModal(InviteModal, null)
   }
+  const memberList = useMessengerMemberList(id)
+  const memberSet = useMemo(()=>new Set(memberList?.map(v=>v.user)), [memberList])
   const inviteLink = location.href.replace('chat', 'invitee')
-  return <View style={{alignItems:'center', flex:1}}>
-  <TouchableOpacity style={{paddingVertical:10, flexDirection:"row"}} onPress={()=>{Clipboard.setString(inviteLink);setCopied(true)}}>
-    <Text style={{fontSize:14}}>{lang('invite link')}{": "}</Text>
-    <Text style={{fontSize:14, color:'#12b886'}}>{inviteLink}{" "}</Text>
-    {copied && <Text style={{fontSize:12, color:'red'}}>{lang("copied")}</Text>}
-  </TouchableOpacity>
-  <View style={{'width': '100%', flex:1}}>
-    <TextField name={lang('Username')} placeholder={auth.user?.username} value={value} setValue={setValue} width={'80%'}/>
-    {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
-  </View>
-  <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
-    <CommonButton title={lang('invite')} onPress={()=>{
+  return <ExternalMembershipView
+    memberSet={memberSet}
+    selectedRef={selectedRef}
+    inviteLink={inviteLink}
+    onInvite={()=>{
       messengerMemberMutation.invite({
         channel_id:id,
         user_ids:[...selectedRef.current]
       }).then(back)
-    }}/>
-    <CommonButton title={lang('cancel')} onPress={back}/>
-  </View>
-</View>
+    }}
+    back={back}
+  />
 }
 
 export default function InviteModal({id}:{id:number}) {

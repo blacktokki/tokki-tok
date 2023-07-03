@@ -6,6 +6,7 @@ import InviteeScreen from "./main/InviteeScreen";
 // import BoardScreen from "../lib/blacktokki-board/BoardScreen";
 // import BoardEditScreen from "../lib/blacktokki-board/BoardEditScreen";
 import { Screens } from "../types";
+import GroupInviteeScreen from "./main/GroupInviteeScreen";
 
 export const main = {
     HomeScreen:{
@@ -28,6 +29,11 @@ export const main = {
     //     component:TabOneScreen,
     //     path:'one'
     // },
+    GroupInviteeScreen:{
+        title: '',        
+        component:GroupInviteeScreen,
+        path:'group-invitee'
+    },
     InviteeScreen:{
         title: '',        
         component:InviteeScreen,
