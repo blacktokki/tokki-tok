@@ -4,6 +4,7 @@ import ChannelEditModal from "./ChannelEditModal"
 import GuestLogoutModal from "./GuestLogoutModal";
 import DateTimePickerModal from "./DateTimePickerModal"
 import MessageModal from "./MessageModal";
+import RegistrationModal from "./RegistrationModal";
 
 export default [
     InviteModal,
@@ -11,5 +12,6 @@ export default [
     ChannelEditModal,
     GuestLogoutModal,
     DateTimePickerModal,
-    MessageModal
+    MessageModal,
+    RegistrationModal
 ]

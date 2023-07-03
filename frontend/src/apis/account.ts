@@ -1,5 +1,5 @@
 
-import { User, UserMembership } from '../types';
+import { CreateUser, User, UserMembership } from '../types';
 import axios, { getToken, setToken } from './axios';
 import {accountURL as baseURL} from '../constants/Envs'
 
@@ -54,6 +54,18 @@ export const checkLogin = async() => {
 
 export const getUserList = async (group_id:number)=>{
     return (await axios.get(`/api/v1/users/?group_id=${group_id}`) ).data as User[]
+}
+
+export const postUser = async (user:CreateUser)=>{
+    await axios.post(`/api/v1/user/`, {
+        imageUrl:user.imageUrl,
+        inviteGroupId: user.inviteGroupId,
+        isAdmin: user.is_staff,
+        isGuest: false,
+        name: user.name,
+        password: user.password,
+        username: user.username
+    }, {baseURL})
 }
 
 export const patchUser = async (user:{id:number, name:string})=>{

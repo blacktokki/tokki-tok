@@ -16,6 +16,7 @@ import useLangContext from '../hooks/useLangContext';
 import MemberItem from '../components/MemberItem';
 import ModalSection from '../components/ModalSection';
 import useModalEffect from '../hooks/useModalEffect';
+import CopyField from '../components/CopyField';
 
 const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
@@ -108,12 +109,9 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   }
   const inviteLink = location.href.replace('chat', 'invitee')
   return <View style={{alignItems:'center', flex:1}}>
-  <TouchableOpacity style={{paddingVertical:10, flexDirection:"row"}} onPress={()=>{Clipboard.setString(inviteLink);setCopied(true)}}>
-    <Text style={{fontSize:14}}>{lang('invite link')}{": "}</Text>
-    <Text style={{fontSize:14, color:'#12b886'}}>{inviteLink}{" "}</Text>
-    {copied && <Text style={{fontSize:12, color:'red'}}>{lang("copied")}</Text>}
-  </TouchableOpacity>
-  <View style={{'width': '100%', flex:1}}>
+  <View style={{'width': '100%', flex:1, paddingVertical:10}}>
+    <CopyField name={lang('invite link')} width={'80%'} value={inviteLink}/>
+    <View style={{marginVertical: 10, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
     <TextField name={lang('Username')} placeholder={auth.user?.username} value={value} setValue={setValue} width={'80%'}/>
     {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
   </View>

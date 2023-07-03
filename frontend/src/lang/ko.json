@@ -12,6 +12,7 @@
     "member": "멤버",
     "Username": "사용자명",
     "Password": "비밀번호",
+    "Check Password": "비밀번호 확인",
     "Name": "멤버명",
     "Group": "그룹",
     "External members": "외부 사용자",
@@ -47,5 +48,10 @@
     "File": "파일",
     "Timer": "타이머",
     "Video Call": "화상 채팅",
-    "Date & Time": "날짜 & 시간"
+    "Date & Time": "날짜 & 시간",
+    "Create User": "사용자 생성",
+    "The username is already in use.": "이미 사용중인 아이디입니다.",
+    "Write in 64 characters or less.": "64자 이내로 작성되어야 합니다.",
+    "Set over 10 characters with a combination of letters/numbers/valid special characters.": "10자이상의 영문/숫자/유효한 특수문자의 조합을 사용해야 합니다.",
+    "Incorrect between password and check password.": "작성된 비밀번호가 일치하지 않습니다."
 }

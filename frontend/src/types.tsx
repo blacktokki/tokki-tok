@@ -41,12 +41,20 @@ export type AvatarProps = {
 
 export type TabViewRecord = Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}>
 
-export type User = {
-  id:number,
+type BaseUser = {
   is_staff:boolean,
   name:string,
   username:string,
   imageUrl?:string
+}
+
+export type User = BaseUser & {
+  id:number,
+}
+
+export type CreateUser = BaseUser & {
+  password:string,
+  inviteGroupId: number
 }
 
 export type Membership = {

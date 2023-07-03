@@ -6,7 +6,7 @@ import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
 import useResizeContext from '../hooks/useResizeContext';
 import TabView from '../components/TabView';
-import { MessengerChannel, TabViewRecord, User, UserMembership } from '../types';
+import { TabViewRecord, UserMembership } from '../types';
 import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
 import CommonItem from '../components/CommonItem';
@@ -15,43 +15,69 @@ import useAuthContext, { Auth } from '../hooks/useAuthContext';
 import { useMessengerChannelSorted } from '../hooks/lists/useMessengerChannelList';
 import { navigate } from '.'
 import { avatarFromChannel } from '../components/Avatar';
+import useColorScheme from '../hooks/useColorScheme';
+import { Ionicons, MaterialCommunityIcons } from '../lib/@expo/vector-icons';
+import RegistrationModal from '../modals/RegistrationModal';
+import useUserMembershipList from '../hooks/lists/useUserMembershipList';
+import ProfileModal from '../modals/ProfileModal';
 
-const DrawerTabView = (props:{auth:Auth, data:(MessengerChannel & {onPress?:()=>void})[]})=><View style={{flex:1}}>
-    {props.data.map((item, index)=>{
-      const {name} = avatarFromChannel(item, props.auth.user)
-      return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={item.onPress}>
-        <Text style={{marginLeft:20}}>{name}</Text>
+
+const MemberTabView = ()=>{
+  const {auth} = useAuthContext()
+  const { setModal } = useModalsContext()
+  const userList = useUserMembershipList(auth)
+  return <View style={{flex:1}}>
+    {userList?.map((item, index)=>{
+      return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>setModal(ProfileModal, {id:item.id})}>
+        <Text style={{marginLeft:20}}>{item.name}</Text>
       </CommonItem>
     })}
-</View>
+  </View>
+}
 
 const MessengerTabView = ()=>{
   const {auth} = useAuthContext()
   const channelList = useMessengerChannelSorted(auth);
-  return <DrawerTabView auth={auth} data={(channelList || []).map(item=>({...item, onPress:()=>navigate("ChatScreen", {id:item.id})}))}/>
+  return <View style={{flex:1}}>
+    {channelList?.map((item, index)=>{
+      const {name} = avatarFromChannel(item, auth.user)
+      return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
+        <Text style={{marginLeft:20}}>{name}</Text>
+      </CommonItem>
+    })}
+  </View>
 }
-
-const drawerTabs:TabViewRecord = {
-  MessengerTab:{
-      title:'messenger',
-      component:MessengerTabView,
-      icon:<></>
-  },
+const getDrawerTabs = (theme:'light'|'dark')=>{
+  const color = Colors[theme].iconColor
+  return {
+    MemberTab:{
+      title:'member',
+      component:MemberTabView,
+      icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='account'/>,
+    },
+    ChatTab:{
+        title:'chat',
+        component:MessengerTabView,
+        icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
+    },
+  } as TabViewRecord
 }
 
 export default ({user}:{user:UserMembership})=> {
   const { colors } = useTheme();
+  const theme = useColorScheme();
   const windowType = useResizeContext();
   const [index, setIndex] = useState(0);
   const { setModal } = useModalsContext()
   const onAddList = [
+    ()=>setModal(RegistrationModal, {}),
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
-    ()=>setModal(ChannelEditModal, {type:'board'})
   ]
+  const drawerTabs = getDrawerTabs(theme)
   return <View style={windowType=='landscape'?[
       styles.tabBar,
       {
-        backgroundColor: colors.card,
+        backgroundColor: Colors[theme].background,
         borderTopColor: colors.border,
       },
       // tabBarStyle,
