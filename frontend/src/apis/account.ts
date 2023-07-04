@@ -61,15 +61,19 @@ export const postUser = async (user:CreateUser)=>{
         imageUrl:user.imageUrl,
         inviteGroupId: user.inviteGroupId,
         isAdmin: user.is_staff,
-        isGuest: false,
+        isGuest: user.is_guest,
         name: user.name,
         password: user.password,
         username: user.username
     }, {baseURL})
 }
 
-export const patchUser = async (user:{id:number, name:string})=>{
-    await axios.patch(`/api/v1/user/`, {ids:[user.id], updated: {name:user.name}}, {baseURL})
+export const patchUser = async (user:{id:number, name:string, password?:string})=>{
+    await axios.patch(`/api/v1/user/`, {ids:[user.id], updated: {name:user.name, password:user.password}}, {baseURL})
+}
+
+export const deleteUser = async (userId:number)=>{
+    await axios.delete(`/api/v1/user/${userId}/`, {baseURL})
 }
 
 export const getUserMembershipList = async (group_id:number)=>{

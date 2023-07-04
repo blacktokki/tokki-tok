@@ -4,7 +4,7 @@ import useAuthContext from "../hooks/useAuthContext"
 import useResizeContext from '../hooks/useResizeContext'
 import { View } from 'react-native'
 import useModalsContext from '../hooks/useModalsContext'
-import GuestLogoutModal from '../modals/GuestLogoutModal'
+import AlertModal from '../modals/AlertModal'
 import useLangContext from '../hooks/useLangContext'
 import useColorScheme from '../hooks/useColorScheme'
 import Colors from '../constants/Colors'
@@ -18,8 +18,8 @@ export default (props:{extra?:ButtonProps[]})=>{
     const { setModal } = useModalsContext()
     const windowType = useResizeContext()
     const defaultButtonProps:ButtonProps[] = [{title:lang('sign out'), onPress:()=>{
-        if (auth?.user?.username.endsWith(".guest")){
-            setModal(GuestLogoutModal, {})
+        if (auth?.user?.is_guest){
+            setModal(AlertModal, {type:"GUEST_LOGOUT"})
         }
         else{
             dispatch({type:"LOGOUT_REQUEST"})

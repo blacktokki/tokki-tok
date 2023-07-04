@@ -7,18 +7,27 @@ import useLangContext from '../hooks/useLangContext';
 import { BottomSheet } from '../components/ModalSection';
 import useModalEffect from '../hooks/useModalEffect';
 
-export default function GuestLogoutModal({id}:{id:number}) {
+
+export default function AlertModal({type}:{type:string}) {
   const { lang } = useLangContext()
   const { setModal } = useModalsContext()
   const {dispatch} = useAuthContext()
   const back = ()=>{
-    setModal(GuestLogoutModal, null)
+    setModal(AlertModal, null)
   }
+  const messages = {
+    "GUEST_LOGOUT":{
+      message: 'Guest users cannot reconnect after logging out. Please create an account or log in.',
+      title: 'sign out',
+      onPress: ()=>dispatch({type:"LOGOUT_REQUEST"})
+    }
+  } as Record<string, {message:string, title:string, onPress:()=>void}>
+
   useModalEffect(back, [])
   return <BottomSheet>
-    <Text>{lang('Guest users cannot reconnect after logging out. Please create an account or log in.')}</Text>
+    <Text>{lang(messages[type].message)}</Text>
     <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>
-      <CommonButton title={lang('sign out')} onPress={()=>dispatch({type:"LOGOUT_REQUEST"})}/>
+      <CommonButton title={lang(messages[type].title)} onPress={messages[type].onPress}/>
       <CommonButton title={lang('cancel')} onPress={()=>back()}/>
     </View>
   </BottomSheet>

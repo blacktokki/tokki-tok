@@ -18,7 +18,7 @@ export default function RowField(props:Props) {
     {flexDirection:'column', alignItems:'flex-start'} as any
   , [windowType])
   return (
-    <View style={[{paddingVertical:5, width:'100%'}, rowStyle]}>
+    <View style={[{paddingVertical:windowType=='landscape'?15:5, width:'100%'}, rowStyle]}>
         <Text style={[windowType=='landscape'?{flex:1}:{width:'100%'},{paddingHorizontal: 15, fontSize:16}, props.textStyle]}>{props.name}</Text>
         <View style={[windowType=='landscape'?{flex:6}:{width:'100%'},{paddingHorizontal: 15}]}>
           <View style={{width:props.width}}>

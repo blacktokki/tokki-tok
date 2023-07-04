@@ -76,9 +76,9 @@ const MessengerTabView = ()=>{
 
 const ConfigTabView = ()=>{
   const theme = useColorScheme()
-  return <View style={{flex:1, backgroundColor:Colors[theme].background}}>
+  return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}}>
     <ConfigSections/>
-  </View>
+  </ScrollView>
 }
 
 const getBottomTabs = (theme:'light'|'dark')=>{
@@ -133,8 +133,8 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
     setHome(windowType == 'landscape')
   }, [windowType])
   return home?
-    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-      <View style={{width:'80%', flex:1, marginTop:72}}>
+    <ScrollView contentContainerStyle={{flex:1, alignItems:'center'}}>
+      <View style={{flexGrow:1, width:'80%', marginTop:72}}>
         <StyledText style={{fontSize:32, color}}>Tokki Tok</StyledText>
         <View style={{backgroundColor:Colors.borderColor, height:1, width:'100%'}}/>
         {/* <Text style={{fontSize:20, color:'gray'}}>Welcome! This is a messenger for teams.</Text>*/}
@@ -145,7 +145,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
         <ConfigSections/>
       </View>
       <ContractFooter theme={theme}/>
-    </View>:
+    </ScrollView>:
     <TabView tabs={getBottomTabs(theme)} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
 }
 

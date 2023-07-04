@@ -39,6 +39,7 @@
     "* Notification Settings":"* 알림 설정",
     "* Language Settings": "* 언어 설정",
     "* Skin Settings":"* 스킨 설정",
+    "> Account Settings": "> 계정 설정",
     "Auto": "자동",
     "Light": "라이트",
     "Dark": "다크",
@@ -54,5 +55,9 @@
     "Set 10-64 characters.": "10-64자 이내로 작성되어야 합니다.",
     "Set 1-64 characters.": "1-64자 이내로 작성되어야 합니다.",
     "Set 10-64 characters with a combination of letters/numbers/valid special characters.": "10-64자 이내로 영문/숫자/유효한 특수문자의 조합을 사용해야 합니다.",
-    "Incorrect between password and check password.": "작성된 비밀번호가 일치하지 않습니다."
+    "Incorrect between password and check password.": "작성된 비밀번호가 일치하지 않습니다.",
+    "Manager Permission": "관리자 권한",
+    "Yes": "예",
+    "No": "아니요",
+    "delete account": "계정 삭제"
 }

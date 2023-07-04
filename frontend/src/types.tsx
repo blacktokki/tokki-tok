@@ -45,6 +45,7 @@ export type TabViewRecord = Record<string, {title:string, component:React.Compon
 
 type BaseUser = {
   is_staff:boolean,
+  is_guest:boolean,
   name:string,
   username:string,
   imageUrl?:string

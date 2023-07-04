@@ -7,6 +7,9 @@ import useLangContext from "../../../hooks/useLangContext";
 import { useColorScheme as useConfigColorScheme} from 'react-native-appearance';
 import useFirebaseContext from "../../../hooks/useFirebaseContext";
 import TextButton from "../../../components/TextButton";
+import useModalsContext from "../../../hooks/useModalsContext";
+import RegistrationModal from "../../../modals/RegistrationModal";
+import useAuthContext from "../../../hooks/useAuthContext";
 
 
 const ConfigSection = ({title, children}:{title:string, children?: React.ReactNode})=>{
@@ -20,6 +23,8 @@ const ConfigSection = ({title, children}:{title:string, children?: React.ReactNo
 
 export default ()=>{
   const { lang, locale, setLocale } = useLangContext()
+  const { setModal } = useModalsContext()
+  const {auth} = useAuthContext()
   const theme = useColorScheme()
   const configTheme = useConfigColorScheme()
   const {enable:noti, setEnable:setNoti} = useFirebaseContext()
@@ -44,5 +49,8 @@ export default ()=>{
             )=>setColorScheme(colorScheme)}/>)}
       </View>
     </ConfigSection>
+    {!auth.user?.is_guest && <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:theme=='light'?'transparent':"black"}}>
+      <TextButton title={lang('> Account Settings')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>setModal(RegistrationModal, {id:auth.user?.id})}/>
+    </CommonSection>}
   </>
 }

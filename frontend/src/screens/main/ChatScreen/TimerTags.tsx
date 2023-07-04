@@ -15,7 +15,7 @@ function _timerFormat(m:dayjs.Dayjs, now:dayjs.Dayjs){
     if (m.year() != now.year()){
         return m.format('YYYY.MM')
     }
-    if(m.month()!= now.month() || m.day() != now.day()){
+    if(m.month()!= now.month() || m.date() != now.date()){
         return m.format('MM.DD')
     }
     return m.format('HH:mm')
@@ -38,10 +38,11 @@ const TimerTag = (props:{data:MessengerContent, now:dayjs.Dayjs, isExpand:boolea
                     <Avatar name={props.data.name} userId={props.data.user} size={20}/>
                     <View style={{paddingHorizontal:5}}><Text>{props.data.name}</Text></View>
                 </View>
+                {props.data.timer &&
                 <View style={{flexDirection:'row', alignItems:'stretch'}}>
                     <Text>⌚</Text>
                     <Text selectable>{timerToString(props.data.timer)}</Text>
-                </View>
+                </View>}
                 {/* @ts-ignore */}
                 <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
                     <Text selectable>{props.data.message_set[0].content}</Text>

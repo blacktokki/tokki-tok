@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput } from "react-native";
 import useLangContext from "../hooks/useLangContext";
 import useUserMembershipList, { useUserMembershipMutation } from "../hooks/lists/useUserMembershipList";
@@ -9,9 +9,9 @@ import { View, Text } from "../components/Themed";
 import RowField from "../components/RowField";
 import CommonButton from "../components/CommonButton";
 import CommonTextInput from "../components/CommonTextInput";
-import TextButton from "../components/TextButton";
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
+// import TextButton from "../components/TextButton";
+// import Colors from "../constants/Colors";
+// import useColorScheme from "../hooks/useColorScheme";
 
 type ErrorMessages = {
     username?:string,
@@ -22,16 +22,16 @@ type ErrorMessages = {
 
 const ErrorView = (props:{message?:string})=>{
   const { lang } = useLangContext()
-  return <View style={styles.form_error}>
-  <Text style={styles.form_error_text}>{lang(props.message || "")}</Text>
-</View>
+  return props.message?<View style={styles.form_error}>
+  <Text style={styles.form_error_text}>{lang(props.message)}</Text>
+</View>:<></>
 }
 
-export default function RegistrationModal() {
+export default function RegistrationModal({id}:{id?:number}) {
   const { lang } = useLangContext()
   const {auth} = useAuthContext()
-  const theme = useColorScheme()
-  const color = Colors[theme].text
+  // const theme = useColorScheme()
+  // const color = Colors[theme].text
   const { setModal } = useModalsContext()
   const [username, setUsername] = useState("");
   const [name, setName] = useState("")
@@ -41,25 +41,42 @@ export default function RegistrationModal() {
   const [error, setError] = useState<ErrorMessages>({})
   const userList = useUserMembershipList(auth)
   const userMembershipMutation = useUserMembershipMutation()
+  const user = userList?.find(v=>v.id==id)
+  useEffect(()=>{
+    if (user){
+      setUsername(user.username)
+      setName(user.name)
+    }
+  }, [user])
   const _register = ()=>{
     let newError:ErrorMessages = {};
-    if (userList?.find(v=>v.username == username)) newError.username = "The username is already in use."
+    if (userList?.find(v=>v.username == username) && !id) newError.username = "The username is already in use."
     if (username.length < 10 || username.length > 64) newError.username = "Set 10-64 characters."
     if (name.length < 1 || name.length > 64) newError.name = "Set 1-64 characters."
-    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,64}$/.test(password)) newError.password = "Set 10-64 characters with a combination of letters/numbers/valid special characters."
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,64}$/.test(password) && !(id && password.length==0)) newError.password = "Set 10-64 characters with a combination of letters/numbers/valid special characters."
     if (password != checkPassword) newError.checkPassword = "Incorrect between password and check password."
     if (Object.keys(newError).length > 0){
         setError(newError)
         return
     }
-    auth?.groupId && userMembershipMutation.create({
-        username,
+    if (id){
+      userMembershipMutation.update({
+        id,
         name,
-        password,
-        is_staff:isStaff,
-        inviteGroupId:auth.groupId,
+        password:password.length>0?password:undefined,
+      }).then(()=>{id!=auth.user?.id && back()})
+    }
+    else{
+      auth?.groupId && userMembershipMutation.create({
+          username,
+          name,
+          password,
+          is_guest:false,
+          is_staff:isStaff,
+          inviteGroupId:auth.groupId,
 
-    }).then(back)
+      }).then(back)
+    }
   }
   const back = ()=>{
     setModal(RegistrationModal, null)
@@ -71,11 +88,11 @@ export default function RegistrationModal() {
         <Text style={{fontSize:20}}>{lang('Create User')}</Text>
         <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
         <RowField name={lang('Username')} width={'60%'}>
-          <CommonTextInput
+          {id?<Text style={{fontSize:16}}>{username}</Text>:<CommonTextInput
               value={username}
               setValue={(text) => setUsername(text)}
               keyboardType={'email-address'}
-          />
+          />}
           <ErrorView message={error.username}/>
         </RowField>
         <RowField name={lang('Name')} width={'60%'}>
@@ -101,17 +118,22 @@ export default function RegistrationModal() {
           />
           <ErrorView message={error.checkPassword}/>
         </RowField>
-        <RowField name={lang('Manager Permission')} width={'60%'}>
+        {/* <RowField name={lang('Manager Permission')} width={'60%'}>
           <View style={{flexDirection:'row'}}>
             {[[lang('Yes'), true], [lang('No'), false]].map(([title, value])=><TextButton 
               key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:isStaff==value?'underline':'none'}} style={{borderRadius:20}} onPress={(
               )=>setIsStaff(value)}/>)}
           </View>
-        </RowField>
+        </RowField> */}
       </View>
-      <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
-        <CommonButton title={lang('save')} onPress={_register}/>
-        <CommonButton title={lang('cancel')} style={{marginHorizontal:5}} onPress={back}/>
+      <View style={{width:'100%', flexDirection:'row'}}>
+        {id && <View style={{flexDirection:'row', justifyContent:'flex-start'}}>
+          <CommonButton title={lang('delete account')} style={{marginHorizontal:5}} textStyle={{color:'red'}} onPress={()=>userMembershipMutation.delete(id).then(back)}/>
+        </View>}
+        <View style={{flex:1, flexDirection:'row', justifyContent:'flex-end'}}>
+          <CommonButton title={lang('save')} onPress={_register}/>
+          <CommonButton title={lang('cancel')} style={{marginHorizontal:5}} onPress={back}/>
+        </View>
       </View>
     </View>
   </ModalSection>

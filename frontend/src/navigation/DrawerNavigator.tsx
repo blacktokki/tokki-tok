@@ -11,7 +11,7 @@ import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
 import CommonItem from '../components/CommonItem';
 import { Text } from '../components/Themed';
-import useAuthContext, { Auth } from '../hooks/useAuthContext';
+import useAuthContext from '../hooks/useAuthContext';
 import { useMessengerChannelSorted } from '../hooks/lists/useMessengerChannelList';
 import { navigate } from '.'
 import { avatarFromChannel } from '../components/Avatar';
@@ -84,14 +84,14 @@ export default ({user}:{user:UserMembership})=> {
     ]:{width:0}}
     pointerEvents={false ? 'none' : 'auto'}
   >
-    <Profile userId={user.id} username={user.username} name={user.name}/>
     {windowType=='landscape' && <>
+      <Profile userId={user.id} username={user.username} name={user.name}/>
       <View style={{flexDirection:'row-reverse'}}>
           <TextButton title='+' textStyle={{fontSize:20}} style={{borderRadius:20}} onPress={onAddList[index]}/>
       </View>
       <View accessibilityRole="tablist" style={styles.content}>
         {Object.keys(drawerTabs).length>1 ? 
-          <TabView tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex}/>: 
+          <TabView tabs={drawerTabs} tabBarPosition={"top"} onTab={setIndex} index={index}/>: 
           <View style={{borderTopWidth:1, flex:1, borderColor:colors.border}}>            
             {Object.values(drawerTabs).map(drawerTab=>{const Tab = drawerTab.component; return <Tab key={drawerTab.title}/>})}
           </View>
