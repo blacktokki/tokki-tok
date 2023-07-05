@@ -23,7 +23,7 @@
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
 ## Architecture
-![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/e509396a-7ccf-4257-bc9f-6bedcea243be)
+![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/44c81853-47c7-4792-96af-94c80201ddcc)
 + Spring Cloud를 사용하여 계정 서비스와 메신저 서비스로 구성된 마이크로서비스 아키텍처입니다.
 + 모든 정적 리소스는 Github Pages에 배포되며, 정적 리소스에 대한 요청은 Github Pages에서 호스팅됩니다.
 + 계정 및 메신저 서비스는 데이터베이스 Replication을 통해 계정 데이터를 공유합니다.
