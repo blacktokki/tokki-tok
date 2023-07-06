@@ -7,13 +7,15 @@ import { CustomTextInputProps } from '../types';
 import CommonButton from './CommonButton';
 import RowField from './RowField';
 import { Text } from './Themed';
+import useResizeContext from '../hooks/useResizeContext';
 
 export default function CopyField(props:CustomTextInputProps & {name: string, width?:any, textStyle?:StyleProp<TextStyle>}) {
   const { lang } = useLangContext()
+  const windowType = useResizeContext()
   const [copied, setCopied] = useState(false)
   return (
     <RowField name={props.name} width={props.width} textStyle={props.textStyle}>
-      <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+      <View style={{flexDirection:windowType=='landscape'?'row':'column', justifyContent:'space-between'}}>
         <View style={{justifyContent:'center'}}>
           <Text style={{fontSize:16}}>{props.value}</Text>
         </View>

@@ -57,24 +57,23 @@ export const FirebaseProvider = ({user, children}:{user?:UserMembership|null, ch
   useEffect(()=>{
     let isMount = true;
     if(user){
-      requestToken().then((t)=>{
-        tokenRef.current = t
-        if (notification){
-          putNotification({...notification, token:tokenRef.current}).then((noti)=>{
-            if(isMount)setNotification(noti)
-          })
-        }
-      });
-      getNotification(user.id).then((noti)=>{
-        if(isMount)setNotification(noti || null)
-      })
-    }
-    return ()=>{isMount=false}
-  }, [user])
-  useEffect(()=>{
-    let isMount = true;
-    if(user && notification !== undefined){
-      if(notification===null){
+      if (tokenRef.current ===undefined){
+        tokenRef.current = null
+        requestToken().then((t)=>{
+          tokenRef.current = t
+          if (notification){
+            putNotification({...notification, token:tokenRef.current}).then((noti)=>{
+              if(isMount)setNotification(noti)
+            })
+          }
+        });
+      }
+      if (notification===undefined){
+        getNotification(user.id).then((noti)=>{
+          if(isMount)setNotification(noti || null)
+        })
+      }
+      else if(notification===null){
         postNotification({user:user.id, type:'WEB', token:null}).then((noti)=>{
           if(isMount)setNotification(noti)
         })
@@ -86,7 +85,7 @@ export const FirebaseProvider = ({user, children}:{user?:UserMembership|null, ch
       }
     }
     return ()=>{isMount=false}
-  })
+  }, [user, notification])
   return <FirebaseContext.Provider value={{enable, setEnable}}>
     {(enable!=undefined || user===null) && children}
   </FirebaseContext.Provider>

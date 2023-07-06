@@ -18,11 +18,13 @@ import { ModalsProvider } from '../hooks/useModalsContext';
 import modals from '../modals';
 import useLangContext from '../hooks/useLangContext';
 import CommonButton from '../components/CommonButton';
+import useInvitee from '../hooks/useInvitee';
 
 const Root = createStackNavigator();
 
 export default function RootNavigator() {
     const windowType = useResizeContext();
+    useInvitee()
     return <Root.Navigator
         mode= 'modal'
         headerMode= 'screen'
