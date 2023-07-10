@@ -37,8 +37,10 @@ export default function useMessengerContentList(channel_id:number){
         const lastMessageId = newData.pages[0].current[0].id || 0
         const nextMessages = contents.filter(v=>v.id>lastMessageId && v.is_archive==false)
         const updateMessages = contents.filter(v=>v.id<=lastMessageId)
+        const timerMessageRefetch = nextMessages.findIndex(v=>v.timer) >= 0 || updateMessages.length > 0
         newData.pages[0].current = [...nextMessages, ...newData.pages[0].current]
         updateContnetPage(newData.pages, updateMessages)
+        timerMessageRefetch && queryClient.invalidateQueries(["TimerMessageContentList", channel_id])
       }
     })
     return false

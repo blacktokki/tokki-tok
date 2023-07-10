@@ -10,6 +10,10 @@ export default function useTimerMessageContentList(channel_id:number){
   const { data } = useQuery<MessengerContent[]>(
     ["TimerMessageContentList", channel_id], 
     async()=>await getTimerMessageContentList(channel_id, dayjs().toISOString()), 
+    {
+      refetchOnReconnect:false,
+      refetchOnWindowFocus:false
+    }
   )
   const { lastJsonMessage } = useWebsocketContext()
   useEffect(()=>{
