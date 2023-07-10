@@ -1,9 +1,12 @@
 import json
+import logging
 from django.contrib.auth import get_user_model
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync, sync_to_async
 from pyforkurento import client
 from messenger.consumers import connect, disconnect
+
+logger = logging.getLogger("custom")
 
 
 class BroadcastMixin:
@@ -67,7 +70,7 @@ class P2PConsumer(BroadcastMixin, WebsocketConsumer):
             self.receive_broadcast(data["channel_id"])
             return
         receiver = text_data_json['receiver']
-        print(f"{self.channel_name}(id: {self.user.id})", "send", message_type, "to", receiver)
+        logger.info(f"{self.channel_name}(id: {self.user.id})", "send", message_type, "to", receiver)
         async_to_sync(self.channel_layer.send)(receiver, {
             'type': 'send_message',
             'message': {'sender': self.channel_name, 'type': message_type, 'data': data}
@@ -148,7 +151,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
         return _func
 
     def _post_host_finished(self, host_id, guest_id):
-        print('guest start', guest_id)
+        # logger.info(f'guest start {guest_id}')
         host = self.get_endpoint(host_id)
         guest = self.pipeline.add_endpoint("WebRtcEndpoint")
         self.setVideoSendBandwidth(guest, self.BAND_WIDTH)
@@ -167,7 +170,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
             user = get_user_model().objects.get_by_natural_key(text_data_json['username']).id
         else:
             user = text_data_json['user']
-        print('@@@', self.user.id, "send", message_type, "to", user)
+        logger.info(f'{self.user.id} send {message_type} to {user}')
         message = {'sender': self.user.id, 'type': message_type, 'data': data}
         if message_type in ["start", "end"] or data.get("target") == 'host':
             async_to_sync(self.channel_layer.group_send)(f"{self.USER_PREFIX}{user}", {
@@ -227,7 +230,7 @@ class KurentoConsumer(KurentoMemoryMixin, WebsocketConsumer):
                         "type": "answer", "sdp": answer_sdp}}}
                 })
                 guest.add_event_listener("OnIceCandidate", self._guest_sendICE(event['guest']))
-                guest.add_event_listener("OnIceGatheringDone", lambda e: print('guest finish'))
+                # guest.add_event_listener("OnIceGatheringDone", lambda e: logger.info('guest finish'))
         elif (message_type == 'ICEcandidate'):
             ice = data["rtcMessage"]
             if data['target'] == 'guest':

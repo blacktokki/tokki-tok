@@ -203,19 +203,42 @@ JWT_AUTH = {
     'JWT_PAYLOAD_GET_USERNAME_HANDLER': lambda payload: payload.get('sub')
 }
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console':{
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler'
-#         }
-#     },
-#     'loggers':{
-#         'django.db.backends':{
-#             'handlers': ['console'],
-#             'level': 'DEBUG'
-#         }
-#     }
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime}.{msecs:3.0f} {levelname} {filename}:{lineno} {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler'
+        },
+        # 'custom_file': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.FileHandler',
+        #     'filename': Path.joinpath(BASE_DIR, 'custom.log'),
+        #     'formatter': 'verbose',
+        # },
+    },
+    'loggers': {
+        # 'django.db.backends':{
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG'
+        # },
+        'custom': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        # 'custom_file': {
+        #     'handlers': ['custom_file'],
+        #     'level': 'DEBUG',
+        #     'propagate': True,
+        # },
+    }
+}
