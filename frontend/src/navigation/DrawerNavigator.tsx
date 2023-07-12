@@ -78,7 +78,7 @@ export default ({auth}:{auth:Auth})=> {
   const drawerTabs = getDrawerTabs(theme)
 
   useEffect(()=>{
-    if(index===undefined && channelList!=undefined){
+    if(index===undefined && channelList){
       setIndex(channelList.length>0?1:0)
     }
   }, [channelList])

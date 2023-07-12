@@ -1,7 +1,9 @@
 import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel, EditMessengerContent } from '../types';
 import axios from './axios';
 
-export const getMessengerChannelList = async (user_id:number)=>{
+export const getMessengerChannelList = async (user_id?:number)=>{
+    if(user_id==undefined)
+        return Promise.resolve(null)
     return (await axios.get(`/api/v1/channels/messenger/?type=messenger&messenger_user_id=${user_id}`) ).data as MessengerChannel[]
 }
 

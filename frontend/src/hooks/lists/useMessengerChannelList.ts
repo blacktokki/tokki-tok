@@ -8,7 +8,7 @@ import useWebsocketContext from "../useWebsocketContext";
 export default function useMessengerChannelList(auth?:Auth){
   const queryClient = useQueryClient()
   const {lastJsonMessage} = useWebsocketContext()
-  const { data } = useQuery("MessengerChannelList" , async()=>auth?.user?.id?(await getMessengerChannelList(auth.user.id)):[])
+  const { data } = useQuery("MessengerChannelList" , async()=>await getMessengerChannelList(auth?.user?.id))
 
   useEffect(()=>{
     if(lastJsonMessage !=null){

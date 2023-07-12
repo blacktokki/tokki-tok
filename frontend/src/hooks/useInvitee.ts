@@ -23,7 +23,7 @@ export default ()=>{
     const messengerMemberMutation = useMessengerMemberMutation()
     useEffect(()=>{
         if (auth.user){
-            if (invitee_id && channelList!==undefined){
+            if (invitee_id && channelList){
                 var id = invitee_id;
                 var redirect = ()=>navigate("Main", {screen:"ChatScreen", params: {id}})
                 invitee_id = undefined;
