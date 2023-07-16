@@ -22,17 +22,12 @@ Main modules are available below:
 + Account server(SpringBoot): [https://github.com/blacktokki/blacktokki-account](https://github.com/blacktokki/blacktokki-account)
 
 ## Architecture
-![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/e509396a-7ccf-4257-bc9f-6bedcea243be)
-+ This project is a microservice architecture composed of account service and messenger service using Spring Cloud.
-+ All static resources are deployed to Github Pages, and requests for static resources are entirely hosted on Github Pages.
-+ Account and messenger service share account data using database replication.
-+ Redis Pub/Sub and FCM were used to send messages to users participating in the chat. 
-+ Cloud Storage was used for file upload and download.
-+ Video call uses web rtc and is connected to p2p or sfu through kurento media server.
+![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/c8dbadb6-7eaa-42c7-a773-187ee5d885d7)
 
 ## Installation
 ### Install account server
-    $ git clone https://github.com/blacktokki/blacktokki-account
+    $ git clone https://github.com/blacktokki/blacktokki-account![Uploading kitok.drawio.png…]()
+
     $ cd blacktokki-account
     $ bash scripts/setup.sh <github username> <database username> <database password>
 ### Install messenger server
