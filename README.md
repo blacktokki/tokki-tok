@@ -24,12 +24,6 @@
 
 ## Architecture
 ![kitok drawio](https://github.com/blacktokki/tokki-tok/assets/39031723/44c81853-47c7-4792-96af-94c80201ddcc)
-+ Spring Cloud를 사용하여 계정 서비스와 메신저 서비스로 구성된 마이크로서비스 아키텍처입니다.
-+ 모든 정적 리소스는 Github Pages에 배포되며, 정적 리소스에 대한 요청은 Github Pages에서 호스팅됩니다.
-+ 계정 및 메신저 서비스는 데이터베이스 Replication을 통해 계정 데이터를 공유합니다.
-+ 채팅 참여자에게 메시지를 전송하기 위해 Redis Pub/Sub 및 FCM이 사용되었습니다.
-+ 파일 업로드 및 다운로드에는 Cloud Storage가 사용되었습니다.
-+ 화상회의는 WebRTC를 사용하며, P2P 또는 Kurento 미디어 서버를 통해 SFU방식으로 연결됩니다.
 
 ## Installation
 ### account server 설치
