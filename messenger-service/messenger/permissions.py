@@ -17,7 +17,8 @@ class MessengerPermission(BasePermission):
 
     def has_data_permission(self, request, view, data):
         for k, v in data.items():
-            if k in ['channel'] and not MessengerMember.objects.is_entered(int(v), request.user.id):
+            if k in ['channel'] and not (request.path.startswith(
+                    '/api/v1/messengermembers') or MessengerMember.objects.is_entered(int(v), request.user.id)):
                 return False
             if k in ['owner', 'messenger_user_id'] and int(v) != request.user.id:
                 return False

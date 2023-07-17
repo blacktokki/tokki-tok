@@ -68,8 +68,8 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_messenger_member(self):
         # given
-        channel = Channel.objects.create(owner=self.user, group=self.group, type='messenger', name='name')
-        messengermember_data = {"user_ids": [self.user.id], "channel": channel.id}
+        channel = Channel.objects.create(owner=self.user2, group=self.group, type='messenger', name='name')
+        messengermember_data = {"user_ids": [self.user2.id, self.user.id], "channel": channel.id}
 
         # when
         create_response = self.client.post('/api/v1/messengermembers/bulk/', messengermember_data)

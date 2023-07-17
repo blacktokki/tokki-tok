@@ -18,6 +18,7 @@ class CustomUserManager(UserManager):
 # Create your models here.
 class User(AbstractUser, DBView):
     objects = CustomUserManager()
+    is_guest = models.BooleanField(help_text='')
     image_url = models.CharField(max_length=255, help_text='')
 
     view_definition = """
@@ -27,6 +28,7 @@ class User(AbstractUser, DBView):
         '' as first_name,
         us.us_name as last_name,
         us.us_image_url as image_url,
+        us.us_is_guest as is_guest,
         us.us_is_admin as is_staff,
         us.dt_created as date_joined,
         '' as password,

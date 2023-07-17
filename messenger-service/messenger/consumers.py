@@ -1,8 +1,10 @@
 import json
-
+import logging
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from channels.generic.websocket import WebsocketConsumer
+
+logger = logging.getLogger("custom")
 
 
 def connect(func):
@@ -59,7 +61,6 @@ class MessengerConsumer(WebsocketConsumer):
     # Receive message from client WebSocket
     def receive(self, text_data):
         # text_data_json = json.loads(text_data)
-        # print(text_data_json)
 
         # eventType = text_data_json['type']
 
@@ -70,7 +71,7 @@ class MessengerConsumer(WebsocketConsumer):
 
     def enter(self, event):
         channel_id = event['data']['id']
-        print(event, self.scope["user"])
+        logger.info(str((event, self.scope["user"])))
         self.channel_ids.add(channel_id)
         self.send(text_data=json.dumps(event))
         async_to_sync(self.channel_layer.group_add)(

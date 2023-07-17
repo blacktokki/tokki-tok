@@ -18,11 +18,13 @@ import { ModalsProvider } from '../hooks/useModalsContext';
 import modals from '../modals';
 import useLangContext from '../hooks/useLangContext';
 import CommonButton from '../components/CommonButton';
+import useInvitee from '../hooks/useInvitee';
 
 const Root = createStackNavigator();
 
 export default function RootNavigator() {
     const windowType = useResizeContext();
+    useInvitee()
     return <Root.Navigator
         mode= 'modal'
         headerMode= 'screen'
@@ -76,10 +78,11 @@ const MainNavigator = ()=>{
             return []
         return auth.user === null?[]:modals
     }, [auth])
+    const backgroundStyle = theme=='light'?{}:{backgroundColor:'#010409'}
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
         <ModalsProvider modals={modalValues}>
-            {auth.user?<DrawerNavigator user={auth.user}/>:undefined}
-            <View style={{flex:1}}>
+            {auth.user?<DrawerNavigator auth={auth}/>:undefined}
+            <View style={[{flex:1}, backgroundStyle]}>
                 <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                     <FirebaseProvider user={auth.user}>
                         <Main.Navigator
@@ -89,7 +92,7 @@ const MainNavigator = ()=>{
                                 headerLeft:()=>headerLeft(navigation, route, windowType, theme, isMobile),
                                 headerRight:()=><HeaderRight/>,
                                 headerLeftContainerStyle:{backgroundColor:Colors[theme].header, borderBottomWidth:1, borderColor:Colors[theme].headerBottomColor},
-                                cardStyle:[{flexShrink:1}, theme=='light'?{}:{backgroundColor:'#010409'}],
+                                cardStyle:[{flexShrink:1}, backgroundStyle],
                                 animationEnabled:windowType=='portrait',
                                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
                             })}

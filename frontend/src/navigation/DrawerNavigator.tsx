@@ -1,5 +1,5 @@
 import { useTheme } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Profile from '../components/Profile';
 import TextButton from '../components/TextButton';
@@ -11,7 +11,7 @@ import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
 import CommonItem from '../components/CommonItem';
 import { Text } from '../components/Themed';
-import useAuthContext from '../hooks/useAuthContext';
+import useAuthContext, { Auth } from '../hooks/useAuthContext';
 import { useMessengerChannelSorted } from '../hooks/lists/useMessengerChannelList';
 import { navigate } from '.'
 import { avatarFromChannel } from '../components/Avatar';
@@ -63,17 +63,25 @@ const getDrawerTabs = (theme:'light'|'dark')=>{
   } as TabViewRecord
 }
 
-export default ({user}:{user:UserMembership})=> {
+export default ({auth}:{auth:Auth})=> {
   const { colors } = useTheme();
   const theme = useColorScheme();
   const windowType = useResizeContext();
-  const [index, setIndex] = useState(0);
+  const channelList = useMessengerChannelSorted(auth);
+  const [index, setIndex] = useState<number>();
   const { setModal } = useModalsContext()
+  
   const onAddList = [
     ()=>setModal(RegistrationModal, {}),
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
   ]
   const drawerTabs = getDrawerTabs(theme)
+
+  useEffect(()=>{
+    if(index===undefined && channelList){
+      setIndex(channelList.length>0?1:0)
+    }
+  }, [channelList])
   return <View style={windowType=='landscape'?[
       styles.tabBar,
       {
@@ -84,8 +92,8 @@ export default ({user}:{user:UserMembership})=> {
     ]:{width:0}}
     pointerEvents={false ? 'none' : 'auto'}
   >
-    {windowType=='landscape' && <>
-      <Profile userId={user.id} username={user.username} name={user.name}/>
+    {windowType=='landscape' && auth.user && index!==undefined && <>
+      <Profile userId={auth.user.id} username={auth.user.username} name={auth.user.name}/>
       <View style={{flexDirection:'row-reverse'}}>
           <TextButton title='+' textStyle={{fontSize:20}} style={{borderRadius:20}} onPress={onAddList[index]}/>
       </View>
