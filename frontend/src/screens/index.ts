@@ -1,10 +1,10 @@
 import LoginScreen from "./main/LoginScreen";
 import ChatScreen from "./main/ChatScreen";
 import HomeScreen from "./main/HomeScreen";
-// import TabOneScreen from "./main/TabOneScreen";
 // import BoardScreen from "../lib/blacktokki-board/BoardScreen";
 // import BoardEditScreen from "../lib/blacktokki-board/BoardEditScreen";
 import { Screens } from "../types";
+import DemoScreen from "./main/DemoScreen";
 
 export const main = {
     HomeScreen:{
@@ -22,11 +22,6 @@ export const main = {
     //     component:BoardScreen,
     //     path:'board'
     // },
-    // TabOneScreen:{
-    //     title:'tab one',
-    //     component:TabOneScreen,
-    //     path:'one'
-    // },
 } as Screens
 
 export const login = {
@@ -35,6 +30,11 @@ export const login = {
         title: 'Sign in',
         component:LoginScreen
     },
+    DemoScreen:{
+        title:'',
+        component:DemoScreen,
+        path:'demo'
+    }
 } as Screens
 
 export const modal = {
