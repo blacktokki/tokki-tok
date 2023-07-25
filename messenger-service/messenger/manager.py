@@ -26,8 +26,8 @@ class ChannelManager(models.Manager):
             member_count=models.Subquery(self.filter(id=models.OuterRef('id')).annotate(
                 member_count=models.Count('messengermember')).values('member_count')[:1]),
             unread_count=models.Count('channelcontent', filter=models.Q(channelcontent__message__id__gt=models.F(
-                'messengermember__last_message'))),
-            last_message_id=models.Max('channelcontent__message'),
+                'messengermember__last_message'), channelcontent__is_archive=False)),
+            last_message_id=models.Max('channelcontent__message', filter=models.Q(channelcontent__is_archive=False)),
         ).select_related('owner', 'subowner')
 
 
