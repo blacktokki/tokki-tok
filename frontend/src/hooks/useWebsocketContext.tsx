@@ -21,8 +21,8 @@ export const WebSocketInternalProvider = ({children, path, Context, useBackgroun
   useEffect(()=>{
     AsyncStorage.getItem('Authorization').then(setToken)
     const onChange = (nextState:AppStateStatus)=>setIsActive(useBackground || nextState == 'active')
-    AppState.addEventListener("change", onChange)
-    return ()=>AppState.removeEventListener("change", onChange)
+    const listener = AppState.addEventListener("change", onChange)
+    return ()=> listener.remove()
   }, [])
   return <Context.Provider value={token!=null?{lastJsonMessage, sendJsonMessage}:defaultContext}>
       {children}

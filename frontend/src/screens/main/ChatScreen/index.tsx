@@ -74,7 +74,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           {dayChanged?<View style={{flexDirection:'row', justifyContent:'center', width:'100%'}}><Text>{date}</Text></View>:undefined}
           <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
             {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
-            <CommonSection outerContainerStyle={{width:undefined, maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
+            <CommonSection autoScale outerContainerStyle={{maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
               <TouchableOpacity onLongPress={openModal}>
                 {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
                   <Text style={{fontSize:12}}>⌚</Text>
@@ -174,7 +174,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     windowType=='landscape'?{flexDirection:'row-reverse', minWidth:480}:{flexDirection:'column'}
   ]}>
     <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
-    <View style={[{flex:videoMode?undefined:1, flexShrink:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
+    <View style={[videoMode?{flexShrink:1}:{flex:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
       <FlatList
         style={{flexDirection: 'column-reverse'}}
         contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
