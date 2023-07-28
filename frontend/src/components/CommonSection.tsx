@@ -11,12 +11,13 @@ export type SectionParamList = {
     bodyStyle?:StyleProp<ViewStyle>
     subtitle?: string
     withSeparator?: boolean
+    autoScale?:boolean
     children?: React.ReactNode
 }
 
 export default function CommonSection(props:SectionParamList){
   return (
-    <View style={[styles.outerContainer, props.outerContainerStyle]}>
+    <View style={[styles.outerContainer, props.autoScale?{}:styles.outerContainerFill, props.outerContainerStyle]}>
         <View style={[styles.container, props.containerStyle]}>
             {props.withSeparator?<View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />:undefined}
             {props.title?<View style={styles.titleView}>
@@ -33,11 +34,13 @@ export default function CommonSection(props:SectionParamList){
 
 const styles = StyleSheet.create({
   outerContainer:{
-    width:'100%',
-    maxWidth:1080,
     alignItems:'stretch',
     backgroundColor:'transparent'
-  },  
+  },
+  outerContainerFill:{
+    width:'100%',
+    maxWidth:1080,
+  },
   container: {
       marginHorizontal:20,
       marginVertical: 10,

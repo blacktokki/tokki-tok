@@ -24,6 +24,14 @@ export function navigate(name:string, params?:any) {
   navigationRef.current?.navigate(name);
 }
 
+let electronVersion:string|undefined;
+try{
+  electronVersion = process?.versions?.['electron']
+}
+catch(e){
+  electronVersion = undefined
+}
+
 export default function Navigation() {
   const defaultColorScheme = useDefaultColorScheme()
   const userColorScheme = useColorScheme()
@@ -31,7 +39,7 @@ export default function Navigation() {
   return <NavigationContainer
     ref={navigationRef}
     documentTitle={{formatter: (options, route) => {return `TOKKI TOK`}}}
-    linking={(process.versions && process.versions['electron'])?undefined:LinkingConfiguration}
+    linking={electronVersion?undefined:LinkingConfiguration}
     theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <ResizeContextProvider>
           <RootNavigator />
@@ -52,24 +60,20 @@ export default function Navigation() {
 
 replaceInviteeState(window.location)
 
-const ignoreWarnings = ['ReactNativeFiberHostComponent'];
-let _console:any = ()=>{}
-import('lodash').then(_=>{
-  _console = _.clone(console);
-})
+const IGNORE_WERNINGS:string[] = ['setNativeProps', 'useNativeDriver'];
+
+const warnLogger = console.warn
+
 console.warn = (message: string|Object) => {
     var warn = true;
-    if (message instanceof Object)
-    warn = false;
-    else{
-    ignoreWarnings.forEach((value)=>{
-        if (message.indexOf && message.indexOf(value) <= -1) {
-            warn = false;
-        }
-    })
+    if (message instanceof Object){
+      warn = false;
+    }
+    else if (IGNORE_WERNINGS.some(log=>message.includes(log))){
+      warn = false
     };
     if (warn){
-        _console.warn(message);
+      warnLogger(message);
     }
     else{
         // console.log(message)
