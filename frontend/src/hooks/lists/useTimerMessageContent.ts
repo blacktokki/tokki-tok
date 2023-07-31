@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react"
 import { useQuery, useQueryClient } from "react-query"
-import { getTimerMessageContentList } from "../../apis"
+import { getTimerMessageContentList } from "../../services"
 import { MessengerContent } from "../../types"
 import useWebsocketContext from "../useWebsocketContext"
 import dayjs from "dayjs"

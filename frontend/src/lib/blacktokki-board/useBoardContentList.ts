@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query"
-import { deleteBoardContent, getBoardContentList, patchBoard, postBoard } from "./apis"
+import { deleteBoardContent, getBoardContentList, patchBoard, postBoard } from "./services"
 
 
 export default function useBoardContentList(channel_id:number){

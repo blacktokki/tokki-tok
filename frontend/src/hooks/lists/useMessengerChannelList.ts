@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { getMessengerChannelList, postChannel, postDirectChannel, putChannel } from "../../apis";
+import { getMessengerChannelList, postChannel, postDirectChannel, putChannel } from "../../services";
 import { MessengerChannel, MessengerContent } from "../../types";
 import { Auth } from "../useAuthContext";
 import useWebsocketContext from "../useWebsocketContext";

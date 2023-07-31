@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { deleteUser, getUserMembershipList, patchUser, postUser } from "../../apis";
+import { deleteUser, getUserMembershipList, patchUser, postUser } from "../../services";
 import useAuthContext, { Auth } from "../useAuthContext";
 
 export default function useUserMembershipList(auth?:Auth){

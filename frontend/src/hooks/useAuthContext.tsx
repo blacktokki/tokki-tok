@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer, useMemo, Dispatch, useState } from "react"
-import { checkLogin, login, logout } from "../apis"
-import { getNotification, putNotification } from "../apis/notification"
+import { checkLogin, login, logout } from "../services"
+import { getNotification, putNotification } from "../services/notification"
 import { UserMembership } from "../types"
 
 type AuthAction = {type:string, username?:string, password?:string, user?:UserMembership|null}
