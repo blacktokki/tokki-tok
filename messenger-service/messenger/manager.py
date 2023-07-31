@@ -32,9 +32,6 @@ class ChannelManager(models.Manager):
 
 
 class ChannelContentManager(models.Manager):
-    def annotate_board_viewset(self):
-        return self.filter(channel__type='board').annotate(name=models.F('user__last_name')).order_by('-id')
-
     def annotate_messenger_viewset(self):
         return self.messenger_content_filter(channel__type='messenger').order_by('-id')
 

@@ -9,7 +9,6 @@ from .manager import ChannelManager, ChannelContentManager, MessageManager, Mess
 class Channel(models.Model):
     TYPES = (
         ('messenger', 'messenger'),
-        ('board', 'board'),
     )
     objects = ChannelManager()
     owner = models.ForeignKey(User, db_column='user_id', on_delete=models.SET_NULL, help_text='', null=True)
