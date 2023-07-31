@@ -3,19 +3,23 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { NavigationContainer, DefaultTheme, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
 import * as React from 'react';
-
-import LinkingConfiguration from './LinkingConfiguration';
-import RootNavigator from './RootNavigator';
-
 import { useColorScheme as useDefaultColorScheme } from 'react-native';
 import { useColorScheme as useColorScheme } from 'react-native-appearance';
-import { ResizeContextProvider } from '../hooks/useResizeContext';
 import { enableScreens } from 'react-native-screens';
-import { replaceInviteeState } from '../hooks/useInvitee';
+import { NavigationContainer, DefaultTheme, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
+
+import useResizeContext, { ResizeContextProvider } from '../hooks/useResizeContext';
+import useInvitee, { replaceInviteeState } from '../hooks/useInvitee';
+import { modal } from '../screens';
+import LinkingConfiguration from './LinkingConfiguration';
+import MainNavigator from './MainNavigator';
+import './init';
+
 
 enableScreens();
+
 const navigationRef = React.createRef<NavigationContainerRef>();
 
 export function navigate(name:string, params?:any) {
@@ -46,6 +50,32 @@ export default function Navigation() {
         </ResizeContextProvider>
   </NavigationContainer>
 }
+
+
+// A root stack navigator is often used for displaying modals on top of all other content
+// Read more here: https://reactnavigation.org/docs/modal
+const Root = createStackNavigator();
+
+function RootNavigator() {
+    const windowType = useResizeContext();
+    useInvitee()
+    return <Root.Navigator
+        mode= 'modal'
+        headerMode= 'screen'
+        screenOptions={{
+            cardStyle:{backgroundColor:"white"},
+            animationEnabled: true,
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+        }}
+    >
+        <Root.Screen name="Main" component={MainNavigator} options={{headerShown:false}}/>
+        {Object.entries(modal).map(([key, screen])=><Root.Screen key={key} name={key} component={screen.component} options={{
+            title: screen.title,
+            gestureDirection: windowType == 'landscape'?'vertical-inverted':'vertical'
+        }} />)}
+    </Root.Navigator>
+}
+
 
 (function(l) {  // for github-page
     if (l !== undefined && l.search[1] === '/' ) {

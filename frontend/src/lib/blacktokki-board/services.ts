@@ -1,4 +1,4 @@
-import axios from "../../apis/axios"
+import axios from "../../services/axios"
 import { Channel } from "../../types"
 import { Board, BoardContent, EditBoard } from "./types"
 

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { postBulkMessengerMember, deleteMessengerMember, getMessengerMemberList } from "../../apis";
+import { postBulkMessengerMember, deleteMessengerMember, getMessengerMemberList } from "../../services";
 
 export default function useMessengerMemberList(channel_id:number){
   const { data } = useQuery(["MessengerMemberList", channel_id] , async()=>await getMessengerMemberList(channel_id))

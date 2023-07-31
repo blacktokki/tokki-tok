@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { deleteChannel, postChannel, putChannel } from "../../apis";
+import { deleteChannel, postChannel, putChannel } from "../../services";
 import { Auth } from "../../hooks/useAuthContext";
-import { getBoardChannelList } from "./apis"
+import { getBoardChannelList } from "./services"
 
 
 export default function useBoardChannelList(auth?:Auth){

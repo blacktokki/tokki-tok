@@ -4,43 +4,20 @@ import { View } from 'react-native';
 import { Ionicons } from '../lib/@expo/vector-icons';
 import useResizeContext from '../hooks/useResizeContext';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import {main, login, modal} from '../screens';
-import DrawerNavigator from './DrawerNavigator';
+import {main, login} from '../screens';
+import Drawer from './Drawer';
 import useAuthContext from '../hooks/useAuthContext';
 import { WebSocketProvider } from '../hooks/useWebsocketContext';
 import HeaderRight from '../components/HeaderRight'
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import useFirebaseContext, { FirebaseProvider } from '../hooks/useFirebaseContext';
+import { FirebaseProvider } from '../hooks/useFirebaseContext';
 import useIsMobile from '../hooks/useIsMobile';
 import useColorScheme from '../hooks/useColorScheme';
 import { ModalsProvider } from '../hooks/useModalsContext';
 import modals from '../modals';
 import useLangContext from '../hooks/useLangContext';
 import CommonButton from '../components/CommonButton';
-import useInvitee from '../hooks/useInvitee';
-
-const Root = createStackNavigator();
-
-export default function RootNavigator() {
-    const windowType = useResizeContext();
-    useInvitee()
-    return <Root.Navigator
-        mode= 'modal'
-        headerMode= 'screen'
-        screenOptions={{
-            cardStyle:{backgroundColor:"white"},
-            animationEnabled: true,
-            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-        }}
-    >
-        <Root.Screen name="Main" component={MainNavigator} options={{headerShown:false}}/>
-        {Object.entries(modal).map(([key, screen])=><Root.Screen key={key} name={key} component={screen.component} options={{
-            title: screen.title,
-            gestureDirection: windowType == 'landscape'?'vertical-inverted':'vertical'
-        }} />)}
-    </Root.Navigator>
-}
 
 const Main = createStackNavigator();
 
@@ -61,7 +38,7 @@ function headerLeft(navigation:any, route:any, windowType:string, theme:'light'|
     return null
 }
 
-const MainNavigator = ()=>{
+export default ()=>{
     const windowType = useResizeContext();
     const isMobile = useIsMobile()
     const {auth} = useAuthContext()
@@ -81,7 +58,7 @@ const MainNavigator = ()=>{
     const backgroundStyle = theme=='light'?{}:{backgroundColor:'#010409'}
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
         <ModalsProvider modals={modalValues}>
-            {auth.user?<DrawerNavigator auth={auth}/>:undefined}
+            {auth.user?<Drawer auth={auth}/>:undefined}
             <View style={[{flex:1}, backgroundStyle]}>
                 <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                     <FirebaseProvider user={auth.user}>

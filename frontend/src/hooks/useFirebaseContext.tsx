@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import "firebase/messaging";
 import {FCM_PUBLIC_VAPID_KEY, FCM_API_KEY} from "../constants/Envs"
 import { Notification as NotificationType, UserMembership } from "../types";
-import { getNotification, postNotification, putNotification } from "../apis/notification";
+import { getNotification, postNotification, putNotification } from "../services/notification";
 
 const firebaseConfig = require("../../web/firebase-config.js")
 // Initialize Firebase

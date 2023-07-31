@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { InfiniteData, Query, QueryKey, useInfiniteQuery, useMutation, useQueryClient } from "react-query"
-import { getMessengerContentList, postMessage, patchMessengerContent, getNewMessengerContentList } from "../../apis"
+import { getMessengerContentList, postMessage, patchMessengerContent, getNewMessengerContentList } from "../../services"
 import { MessengerContent } from "../../types"
 import useWebsocketContext from "../useWebsocketContext"
 
