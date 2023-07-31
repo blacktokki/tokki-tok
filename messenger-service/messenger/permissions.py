@@ -5,17 +5,20 @@ from .models import Channel, ChannelContent, Message, MessengerMember
 
 class MessengerPermission(BasePermission):
     def has_permission(self, request, view):
-        if view.detail is False:
+        if hasattr(view, 'detail') and view.detail is False:
             if request.method == 'GET':
-                return self.has_data_permission(request, view, request.query_params)
+                return self._has_data_permission(request, view, request.query_params)
             elif request.method == 'POST':
-                return self.has_data_permission(request, view, request.data)
+                return self._has_data_permission(request, view, request.data)
         return super().has_permission(request, view)
 
     def has_object_permission(self, request, view, obj):
         return self._has_object_permission(obj, request)
 
-    def has_data_permission(self, request, view, data):
+    def _has_data_permission(self, request, view, data):
+        """
+        data내 key 기준으로 권한 체크
+        """
         for k, v in data.items():
             if k in ['channel'] and not (request.path.startswith(
                     '/api/v1/messengermembers') or MessengerMember.objects.is_entered(int(v), request.user.id)):
@@ -26,6 +29,9 @@ class MessengerPermission(BasePermission):
 
     @singledispatchmethod
     def _has_object_permission(self, obj, request):
+        """
+        obj의 model type에 따라 동적 권한 체크
+        """
         return True
 
     @_has_object_permission.register(Channel)

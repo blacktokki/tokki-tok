@@ -16,4 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
             queryset=User.objects.annotate_membership_set(),
             serializer_class=UserMembershipSerializer)
     def memberships(self, request, *args, **kwargs):
+        """
+        소속 그룹을 포함한 사용자 목록
+        """
         return super().list(request, *args, **kwargs)

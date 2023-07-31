@@ -39,7 +39,7 @@ DEBUG = True
 TEST_USERNAME = env('TEST_USERNAME')
 TEST_USERNAME2 = env('TEST_USERNAME2')
 
-ALLOWED_HOSTS = [HOST]
+ALLOWED_HOSTS = [HOST, 'localhost']
 
 # Application definition
 

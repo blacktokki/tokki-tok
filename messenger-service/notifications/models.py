@@ -10,9 +10,9 @@ class Notification(models.Model):
         ('IOS', 'IOS'),
         ('WEB', 'WEB')
     )
-    user = models.ForeignKey(User, db_column='user_id', on_delete=models.CASCADE, help_text='')
-    type = models.CharField(db_column='nt_type', choices=TYPES, max_length=10)
-    token = models.CharField(db_column='nt_token', max_length=255, null=True, blank=True, help_text='')
+    user = models.ForeignKey(User, db_column='user_id', on_delete=models.CASCADE, help_text='사용자 id')
+    type = models.CharField(db_column='nt_type', choices=TYPES, max_length=10, help_text='알림 유형(ANDROID|IOS|WEB)')
+    token = models.CharField(db_column='nt_token', max_length=255, null=True, blank=True, help_text='FCM token')
 
     class Meta:
         db_table = "notification"

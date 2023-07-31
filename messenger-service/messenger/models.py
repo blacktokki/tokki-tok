@@ -11,19 +11,22 @@ class Channel(models.Model):
         ('messenger', 'messenger'),
     )
     objects = ChannelManager()
-    owner = models.ForeignKey(User, db_column='user_id', on_delete=models.SET_NULL, help_text='', null=True)
-    subowner = models.ForeignKey(User, db_column='subuser_id', on_delete=models.SET_NULL, help_text='', null=True,
-                                 related_name='subchannel_set')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, help_text='')
-    name = models.CharField(db_column='ch_name', max_length=255, blank=True, default='', help_text='')
-    type = models.CharField(db_column='ch_type', choices=TYPES, default='messenger', max_length=100)
-    is_archive = models.BooleanField(db_column="ch_is_archive", default=False, help_text='')
-    description = models.TextField(db_column="ch_description", blank=True, null=True, help_text='')
+    owner = models.ForeignKey(User, db_column='user_id', on_delete=models.SET_NULL, help_text='채널 소유자', null=True)
+    subowner = models.ForeignKey(User, db_column='subuser_id', on_delete=models.SET_NULL, help_text='채널 예비소유자',
+                                 null=True, related_name='subchannel_set')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, help_text='그룹')
+    name = models.CharField(db_column='ch_name', max_length=255, blank=True, default='', help_text='채널명')
+    type = models.CharField(db_column='ch_type', choices=TYPES, default='messenger', max_length=100, help_text='채널유형')
+    is_archive = models.BooleanField(db_column="ch_is_archive", default=False, help_text='채널 비활성 여부')
+    description = models.TextField(db_column="ch_description", blank=True, null=True, help_text='설명')
 
     class Meta:
         db_table = "channel"
 
     def save_pop_owners(self, user_id):
+        """
+        채널 퇴장시 소유자 전환
+        """
         if self.owner_id == user_id or self.subowner_id == user_id:
             self.owner_id = self.owner_id if self.owner_id != user_id else self.subowner_id
             subowner = MessengerMember.objects.filter(channel_id=self.id).exclude(user_id=self.owner_id).first()
@@ -35,10 +38,10 @@ class Channel(models.Model):
 
 class ChannelContent(models.Model):
     objects = ChannelContentManager()
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='')
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='')
-    timer = models.DateTimeField(db_column='cc_timer', null=True, blank=True, help_text='')
-    is_archive = models.BooleanField(db_column="cc_is_archive", default=False, help_text='')
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='작성자')
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='채널')
+    timer = models.DateTimeField(db_column='cc_timer', null=True, blank=True, help_text='타이머 메시지 종료시점')
+    is_archive = models.BooleanField(db_column="cc_is_archive", default=False, help_text='컨텐츠 비활성 여부')
     created = models.DateTimeField(db_column='cc_created', null=True, auto_now_add=True)
     updated = models.DateTimeField(db_column='cc_updated', null=True, auto_now=True)
 
@@ -58,10 +61,10 @@ class ContentMixin:
 
 class Message(ContentMixin, models.Model):
     objects = MessageManager()
-    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
+    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
     comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True,
-                                        on_delete=models.CASCADE, help_text='')
-    content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='')
+                                        on_delete=models.CASCADE, help_text='답글 컨텐츠')
+    content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='내용')
 
     class Meta:
         db_table = "message"
@@ -72,8 +75,8 @@ def upload_to(instance, filename):
 
 
 class File(ContentMixin, models.Model):
-    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
-    file = models.FileField(db_column='fi_file', null=True, blank=True, upload_to=upload_to, help_text='')
+    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
+    file = models.FileField(db_column='fi_file', null=True, blank=True, upload_to=upload_to, help_text='첨부파일')
 
     @property
     def filename(self):
@@ -90,11 +93,11 @@ class File(ContentMixin, models.Model):
 
 
 class Link(ContentMixin, models.Model):
-    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='')
-    title = models.CharField(db_column='li_title', max_length=255, help_text='')
-    description = models.TextField(db_column='li_description', null=True, blank=True, help_text='')
-    url = models.TextField(db_column='li_url', null=True, blank=True, help_text='')
-    image = models.TextField(db_column='li_image', null=True, blank=True, help_text='')
+    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
+    title = models.CharField(db_column='li_title', max_length=255, help_text='제목')
+    description = models.TextField(db_column='li_description', null=True, blank=True, help_text='설명')
+    url = models.TextField(db_column='li_url', null=True, blank=True, help_text='링크 URL')
+    image = models.TextField(db_column='li_image', null=True, blank=True, help_text='미리보기 이미지')
 
     class Meta:
         db_table = "link"
@@ -102,11 +105,11 @@ class Link(ContentMixin, models.Model):
 
 class MessengerMember(models.Model):
     objects = MessengerMemberManager()
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='')
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='')
-    last_message = models.ForeignKey(Message, null=True, blank=True, on_delete=models.CASCADE, help_text='')
-    notification = models.BooleanField(db_column="ms_notification", default=True, help_text='')
-    mobile_notification = models.BooleanField(db_column="ms_mobile_notification", default=True, help_text='')
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, help_text='채널 참가자')
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, help_text='채널')
+    last_message = models.ForeignKey(Message, null=True, blank=True, on_delete=models.CASCADE, help_text='마지막 메시지(id)')
+    notification = models.BooleanField(db_column="ms_notification", default=True, help_text='알림 여부')
+    mobile_notification = models.BooleanField(db_column="ms_mobile_notification", default=True, help_text='모바일 알림 여부')
 
     class Meta:
         db_table = "messenger_member"

@@ -16,6 +16,9 @@ url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.
 
 
 def attach_link(channel_content, validated_data):
+    """
+    link 컨텐츠 추가
+    """
     link_set = set(re.findall(url_extract_pattern, validated_data['content']))
     add_links = []
     delete_link_ids = []
@@ -40,6 +43,9 @@ def attach_link(channel_content, validated_data):
 
 
 def post_create_messages(message_ids):
+    """
+    메시지 생성후 알림
+    """
     notification_messages = defaultdict(list)
     for instance in ChannelContent.objects.messenger_content_filter(message__id__in=message_ids):
         serializer = MessengerContentSerializer(instance=instance)
@@ -53,6 +59,9 @@ def post_create_messages(message_ids):
 
 
 def post_enter_channel(channel, users):
+    """
+    채널 입장후 알림
+    """
     user_ids = []
     message_ids = []
     for user in users:
@@ -64,6 +73,9 @@ def post_enter_channel(channel, users):
 
 
 def post_leave_channel(channel, user):
+    """
+    채널 퇴장후 알림
+    """
     channel.save_pop_owners(user.id)
     send_leave(channel.id, user.id)
     if not channel.is_archive:
@@ -77,9 +89,6 @@ post_delete.connect(
 
 
 class ChannelSerializer(serializers.ModelSerializer):
-    enter_users = serializers.ListField(child=serializers.IntegerField(), read_only=True, allow_empty=True)
-    enter_messages = serializers.ListField(child=serializers.IntegerField(), read_only=True, allow_empty=True)
-
     def _enter_channel(self, instance, user):
         MessengerMember.objects.create(user_id=user.id, channel=instance)
         post_enter_channel(instance, [user])
@@ -116,14 +125,14 @@ class DirectChannelSerializer(ChannelSerializer):
 
 class LastMessageSerializer(serializers.Serializer):
     created = serializers.DateTimeField(source='channel_content__created', read_only=True)
-    content = serializers.CharField(read_only=True)
+    content = serializers.CharField(read_only=True, help_text='마지막 메시지 내용')
 
 
 class MessengerChannelSerializer(serializers.ModelSerializer):
     last_message_id = serializers.HiddenField(default=None)
     last_message = LastMessageSerializer(read_only=True, required=False)
-    member_count = serializers.IntegerField(read_only=True)
-    unread_count = serializers.IntegerField(read_only=True)
+    member_count = serializers.IntegerField(read_only=True, help_text='채널 참가자 수')
+    unread_count = serializers.IntegerField(read_only=True, help_text='안읽음 메시지 수')
     owner = UserSerializer(read_only=True)
     subowner = UserSerializer(read_only=True)
 
@@ -144,10 +153,12 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(write_only=True, required=False, queryset=User.objects.all())
-    channel = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Channel.objects.filter(type='messenger'))
-    timer = serializers.DateTimeField(required=False, write_only=True)
-    file = serializers.FileField(required=False, write_only=True)
+    user = serializers.PrimaryKeyRelatedField(
+        write_only=True, required=False, queryset=User.objects.all(), help_text='작성자 id')
+    channel = serializers.PrimaryKeyRelatedField(
+        write_only=True, queryset=Channel.objects.filter(type='messenger'), help_text='채널')
+    timer = serializers.DateTimeField(required=False, write_only=True, help_text='타이머 메시지 종료시점')
+    file = serializers.FileField(required=False, write_only=True, help_text='첨부파일')
 
     @transaction.atomic
     def create(self, validated_data):
@@ -175,8 +186,8 @@ class LinkSerializer(serializers.ModelSerializer):
 
 
 class FileSerializer(serializers.ModelSerializer):
-    filename = serializers.CharField(read_only=True)
-    filesize = serializers.IntegerField(read_only=True)
+    filename = serializers.CharField(read_only=True, help_text='파일명')
+    filesize = serializers.IntegerField(read_only=True, help_text='파일크기(byte)')
 
     class Meta:
         model = File
@@ -187,8 +198,8 @@ class MessengerContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
     link_set = LinkSerializer(many=True, read_only=True)
     file_set = FileSerializer(many=True, read_only=True)
-    name = serializers.CharField(read_only=True)
-    channel_name = serializers.CharField(read_only=True)
+    name = serializers.CharField(read_only=True, help_text='작성자 이름')
+    channel_name = serializers.CharField(read_only=True, help_text='채널 이름')
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -216,9 +227,9 @@ class MessengerUserSerializer(MessengerMemberSerializer):
 
 
 class MessengerUserBulkSerializer(MessengerMemberSerializer):
-    user_ids = serializers.ListField(child=serializers.IntegerField())
+    user_ids = serializers.ListField(child=serializers.IntegerField(), help_text='참가자 id 목록')
     user = serializers.HiddenField(default=None)
-    enter_message_ids = serializers.ListField(child=serializers.CharField(), read_only=True)
+    enter_message_ids = serializers.ListField(child=serializers.CharField(), read_only=True, help_text='입장 메시지 목록')
 
     @transaction.atomic
     def create(self, validated_data):
