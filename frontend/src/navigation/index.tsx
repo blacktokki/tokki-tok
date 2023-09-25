@@ -15,7 +15,6 @@ import useInvitee, { replaceInviteeState } from '../hooks/useInvitee';
 import { modal } from '../screens';
 import LinkingConfiguration from './LinkingConfiguration';
 import MainNavigator from './MainNavigator';
-import './init';
 
 
 enableScreens();

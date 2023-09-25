@@ -116,6 +116,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const [autoFocus, setAutoFocus] = useState<boolean|null>(null)
   const [videoMode, setVideoMode] = useState<boolean>(false)
   const [bottomTab, setBottomTab] = useState<boolean>(false)
+  const valueLines = useMemo(()=>bottomTab?1:value.split("\n").length, [value, bottomTab])
 
   const theme = useColorScheme()
   const postValue = ()=>{
@@ -147,6 +148,15 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       else{
         navigation.navigate('HomeScreen', {tab:2})
       }
+  }
+  const onKeyPress = (e:any) => {
+    if (!isMobile){
+      const event = e as KeyboardEvent;
+        if (!event.shiftKey && event.key === "Enter"){
+          postValue()
+          event.preventDefault()
+      }
+    }
   }
   useEffect(()=>{
     setModal(null, null)
@@ -191,16 +201,22 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       </View>
       <ThemedView style={{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
         <View style={{alignItems:'center', width:'100%',flexDirection:'row'}}>
-          <CommonButton title={''} style={{height:40, paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0}} onPress={()=>setBottomTab(!bottomTab)}>
+          <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>setBottomTab(!bottomTab)}>
             <View style={{top:-2}}>
               <Entypo name={bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
             </View>
           </CommonButton>
-          {timer && <CommonButton style={{height:40, paddingTop:8, borderRadius:0}} title={`⌚${timerFormat(timer)}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>}
-          <TextInput ref={inputRef} value={value} onChangeText={setValue} style={{
-            flex:1, borderWidth:1, height:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text
-          }} onSubmitEditing={postValue} blurOnSubmit={true} onFocus={()=>setBottomTab(false)}/>
-          <CommonButton style={{height:40, paddingTop:8, borderTopLeftRadius:0, borderBottomLeftRadius:0}} title={'💬'} onPress={postValue}/>
+          {timer && <CommonButton style={{height:'100%', paddingTop:8, borderRadius:0}} title={`⌚${timerFormat(timer)}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>}
+          <TextInput 
+            ref={inputRef} 
+            value={value} 
+            onChangeText={setValue}
+            onKeyPress={onKeyPress}
+            style={{flex:1, borderWidth:1, minHeight:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text}}
+            onFocus={()=>setBottomTab(false)}
+            multiline 
+            numberOfLines={valueLines}/>
+          <CommonButton style={{height:'100%', paddingTop:8, borderTopLeftRadius:0, borderBottomLeftRadius:0, justifyContent:'center'}} title={'💬'} onPress={postValue}/>
         </View>
 
         {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>

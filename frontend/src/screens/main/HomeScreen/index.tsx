@@ -61,7 +61,7 @@ const MessengerTabView = ()=>{
                           <Text style={{fontSize:18}}>{name}</Text>
                           <Text style={{fontSize:18, opacity: 0.4, paddingLeft:5}}>{item.member_count}</Text>
                       </View>
-                      <Text style={{fontSize:16, opacity: 0.4}}>{item.last_message?.content}</Text>
+                      <Text style={{fontSize:16, opacity: 0.4}}>{item.last_message?.content.replaceAll('\n', ' ')}</Text>
                   </View>
               </View>
               <View>
