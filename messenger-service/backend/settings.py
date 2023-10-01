@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'django_db_views',
+    'easy_thumbnails',
     'accounts',
     'notifications',
     'messenger',
@@ -128,6 +129,14 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     Path.joinpath(BASE_DIR, 'virtual-metrics-355712-e207b739a975.json'))
 GS_BUCKET_NAME = 'blacktokki-storage'
 GS_LOCATION = 'messenger'
+
+# Thumbnail
+THUMBNAIL_ALIASES = {
+    '': {
+        'preview': {'size': (150, 150), 'crop': False},
+    },
+}
+THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 # Auth settings
 AUTH_USER_MODEL = "accounts.user"

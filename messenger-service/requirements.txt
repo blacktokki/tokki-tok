@@ -18,5 +18,6 @@ pyfcm==1.5.4
 opengraph_parse
 pyforkurento
 django-storages[google]
+easy-thumbnails
 flake8
 coverage

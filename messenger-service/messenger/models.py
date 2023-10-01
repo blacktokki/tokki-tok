@@ -1,5 +1,7 @@
 import os
 from django.db import models
+from easy_thumbnails.fields import ThumbnailerField
+from easy_thumbnails.exceptions import InvalidImageFormatError
 
 from accounts.models import Group, User
 from .manager import ChannelManager, ChannelContentManager, MessageManager, MessengerMemberManager
@@ -65,7 +67,7 @@ class Message(ContentMixin, models.Model):
     comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True,
                                         on_delete=models.CASCADE, help_text='답글 컨텐츠')
     content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='내용')
-    preview_content = models.CharField(max_length=128, null=True, blank=True, db_column='ms_preview_only', 
+    preview_content = models.CharField(max_length=128, null=True, blank=True, db_column='ms_preview_only',
                                        help_text='미리보기 내용')
 
     class Meta:
@@ -84,7 +86,7 @@ class Attatchment(ContentMixin, models.Model):
 
     channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
     type = models.CharField(db_column='at_type', choices=TYPES, max_length=100, help_text='채널유형')
-    file = models.FileField(db_column='at_file', null=True, blank=True, upload_to=upload_to, help_text='첨부파일')
+    file = ThumbnailerField(db_column='at_file', null=True, blank=True, upload_to=upload_to, help_text='첨부파일')
     title = models.CharField(db_column='at_title', max_length=255, help_text='제목')
     description = models.TextField(db_column='at_description', null=True, blank=True, help_text='설명')
     url = models.TextField(db_column='at_url', null=True, blank=True, help_text='링크 URL')
@@ -99,6 +101,13 @@ class Attatchment(ContentMixin, models.Model):
     def filesize(self):
         if self.file:
             return self.file.size
+
+    @property
+    def thumbnail(self):
+        try:
+            return self.file['preview'].url
+        except InvalidImageFormatError:
+            pass
 
     class Meta:
         db_table = "attatchment"

@@ -186,6 +186,7 @@ class MessageSerializer(serializers.ModelSerializer):
 class AttatchmentSerializer(serializers.ModelSerializer):
     filename = serializers.CharField(read_only=True, help_text='파일명')
     filesize = serializers.IntegerField(read_only=True, help_text='파일크기(byte)')
+    thumbnail = serializers.CharField(read_only=True, help_text='썸네일')
 
     class Meta:
         model = Attatchment
