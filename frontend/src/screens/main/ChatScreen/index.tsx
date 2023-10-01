@@ -86,8 +86,14 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                     <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
                   </Hyperlink>
                 </View>
-              {content.file_set.map((file, fileIndex)=><FilePreview key={fileIndex} file={file} isMobile={isMobile} showBorder={content.file_set.length>1 || message.content.length>0}/>)}
-              {content.link_set.map((link, linkIndex)=><LinkPreview key={linkIndex} link={link} isMobile={isMobile}/>)}
+              {
+                content.attatchment_set.map((attatchment, aIndex)=>{
+                  if (attatchment.type=='file')
+                    return <FilePreview key={aIndex} file={attatchment} isMobile={isMobile} showBorder={false}/>
+                  if (attatchment.type=='link')
+                    return <LinkPreview key={aIndex} link={attatchment} isMobile={isMobile}/>
+                })
+              }
               </TouchableOpacity>        
             </CommonSection>
           </View>

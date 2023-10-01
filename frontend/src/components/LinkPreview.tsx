@@ -14,7 +14,7 @@ export default ({link, isMobile}:{link:Link, isMobile:boolean})=>{
         onLongPress={()=>{}}
         style={{width:'100%', flexDirection:'row'}}
     >
-        {link.image?<Image source={{uri:link.image}} resizeMode="cover" style={{ width:'100%', maxWidth:isMobile?120:150, maxHeight:isMobile?120:150, borderWidth:1}}/>:undefined}
+        {link.image_url?<Image source={{uri:link.image_url}} resizeMode="cover" style={{ width:'100%', maxWidth:isMobile?120:150, maxHeight:isMobile?120:150, borderWidth:1}}/>:undefined}
         <View style={{flex:1, marginHorizontal:20}}>
             <Text style={{fontSize:18}}>{link.title}</Text>
             <Text style={{fontSize:14}}>{link.description}</Text>

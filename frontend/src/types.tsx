@@ -110,23 +110,24 @@ export type EditMessage = Message & {
 }
 
 export type File = {
+  type: 'file'
   file: string
   filename: string
   filesize: number
 }
 
 export type Link = {
+  type: 'link',
   url:string,
   title:string,
   description:string|null,
-  image:string|null,
+  image_url:string|null,
 }
 
 export type MessengerContent = {
   id: number,
   message_set:Message[]
-  link_set:Link[],
-  file_set:File[],
+  attatchment_set:(File | Link)[],
   user: number,
   channel: number
   timer?: string|null,
