@@ -12,7 +12,7 @@
     "eject": "expo eject",
     "test": "jest --watchAll",
     "mobile:android": "expo build:android",
-    "github": "expo build:web && replace-in-file --configFile=scripts/seo.js && gh-pages -d web-build",
+    "github": "npx expo export:web && replace-in-file --configFile=scripts/seo.js && gh-pages -d web-build",
     "desktop:mac": "electron-webpack && electron-builder --dir -c.compression=store -c.mac.identity=null",
     "desktop:windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --dir -c.compression=store",
     "mac": "electron-webpack && electron-builder --mac -c.compression=store",
