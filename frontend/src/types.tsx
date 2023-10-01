@@ -91,7 +91,8 @@ export type MessengerChannel = BaseChannel & {
   unread_count: number,
   last_message?: {
     created: string,
-    content: string
+    content: string,
+    preview_content?: string
   }
   owner: User
   subowner: User

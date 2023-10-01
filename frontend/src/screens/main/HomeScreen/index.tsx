@@ -49,6 +49,7 @@ const MessengerTabView = ()=>{
       {channelList?.map((item, index)=>{
           const {avatar, name} = avatarFromChannel(item, auth.user)
           const date = item.last_message?.created.slice(0,10)
+          const content = item.last_message?.preview_content || item.last_message?.content || ''
           return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
               <View style={{flexDirection:'row', flexShrink:1}}>
                   {avatar?
@@ -61,7 +62,7 @@ const MessengerTabView = ()=>{
                           <Text style={{fontSize:18}}>{name}</Text>
                           <Text style={{fontSize:18, opacity: 0.4, paddingLeft:5}}>{item.member_count}</Text>
                       </View>
-                      <Text style={{fontSize:16, opacity: 0.4}}>{item.last_message?.content.replaceAll('\n', ' ')}</Text>
+                      <Text style={{fontSize:16, opacity: 0.4}}>{content.replaceAll('\n', ' ')}</Text>
                   </View>
               </View>
               <View>
