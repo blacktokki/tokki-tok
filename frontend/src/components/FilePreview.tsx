@@ -1,5 +1,5 @@
 import React from 'react'
-import { Linking, TextStyle } from "react-native"
+import { Image, Linking, TextStyle } from "react-native"
 import {TouchableOpacity} from "react-native-gesture-handler"
 import CommonSection from "./CommonSection"
 import { FontAwesome } from '../lib/@expo/vector-icons'; 
@@ -16,13 +16,16 @@ function humanFileSize(size:number) {
 
 export default ({file, isMobile, showBorder}:{file:File, isMobile:boolean, showBorder:ConstrainBoolean})=>{
     const theme = useColorScheme()
+    console.log(file.thumbnail)
     return <CommonSection containerStyle={{marginHorizontal:0}} bodyStyle={showBorder?{padding:10}:{borderWidth:0, padding:0}}>
     <TouchableOpacity 
         onPress={()=>Linking.openURL(file.file)} 
         onLongPress={()=>{}}
         style={{flexDirection:'row', alignItems:'flex-start', width:'100%'}} 
     >
-        <FontAwesome name="file-o" size={20} color={Colors[theme].iconColor} />
+        {   file.thumbnail?
+            <Image source={{uri:file.thumbnail}} resizeMode="cover" style={{width:isMobile?120:150, height:isMobile?120:150, borderWidth:1}}/>:
+            <FontAwesome name="file-o" size={20} color={Colors[theme].iconColor} />}
         <View style={{flex:1, marginHorizontal:10}}>
             <Text style={{fontSize:18}}>{file.filename}</Text>
             <Text style={{fontSize:14}}>{humanFileSize(file.filesize)}</Text>

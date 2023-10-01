@@ -111,6 +111,7 @@ export type EditMessage = Message & {
 }
 
 export type File = {
+  thumbnail?: string
   type: 'file'
   file: string
   filename: string
