@@ -6,7 +6,7 @@
 # * param2: database password, secret key
 
 PROPERTY_FILE=./messenger-service/backend/.env
-MYSQL_CONFIG_FILE=/etc/mysql./my.cnf
+MYSQL_CONFIG_FILE=/etc/mysql/my.cnf
 
 sudo add-apt-repository --yes ppa:redislabs/redis
 sudo apt-get update
