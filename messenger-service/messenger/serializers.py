@@ -10,7 +10,7 @@ from accounts.models import User
 from accounts.serializers import UserSerializer
 from notifications import send_notification_message
 from .consumers import send_update_message, send_enter, send_leave, send_next_message
-from .models import Channel, MessengerMember, Message, ChannelContent, Link, File
+from .models import Channel, MessengerMember, Message, ChannelContent, Attatchment
 
 url_extract_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"  # noqa E501
 
@@ -31,8 +31,9 @@ def attach_link(channel_content, validated_data):
         parsed_og_tags = parse_page(url, [
             "og:url", "og:title", "og:image", "og:description"], fallback_tags={'og:title': 'title'})
         if parsed_og_tags:
-            add_links.append(Link(
+            add_links.append(Attatchment(
                 channel_content=channel_content,
+                type='link',
                 url=parsed_og_tags.get("og:url", url),
                 title=parsed_og_tags.get("og:title"),
                 image=parsed_og_tags.get("og:image"),
@@ -169,7 +170,7 @@ class MessageSerializer(serializers.ModelSerializer):
         validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel, timer=timer)
         attach_link(validated_data['channel_content'], validated_data)
         if file:
-            File.objects.create(channel_content=validated_data['channel_content'], file=file)
+            Attatchment.objects.create(type='file', channel_content=validated_data['channel_content'], file=file)
         instance = super().create(validated_data)
         post_create_messages([instance.id])
         return instance
@@ -179,25 +180,18 @@ class MessageSerializer(serializers.ModelSerializer):
         exclude = ['channel_content']
 
 
-class LinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Link
-        exclude = ['channel_content']
-
-
-class FileSerializer(serializers.ModelSerializer):
+class AttatchmentSerializer(serializers.ModelSerializer):
     filename = serializers.CharField(read_only=True, help_text='파일명')
     filesize = serializers.IntegerField(read_only=True, help_text='파일크기(byte)')
 
     class Meta:
-        model = File
+        model = Attatchment
         exclude = ['channel_content']
 
 
 class MessengerContentSerializer(serializers.ModelSerializer):
     message_set = MessageSerializer(many=True, read_only=True)
-    link_set = LinkSerializer(many=True, read_only=True)
-    file_set = FileSerializer(many=True, read_only=True)
+    attatchment_set = AttatchmentSerializer(many=True, read_only=True)
     name = serializers.CharField(read_only=True, help_text='작성자 이름')
     channel_name = serializers.CharField(read_only=True, help_text='채널 이름')
 

@@ -74,9 +74,19 @@ def upload_to(instance, filename):
     return os.path.join(str(instance.channel_content_id), filename)
 
 
-class File(ContentMixin, models.Model):
+class Attatchment(ContentMixin, models.Model):
+    TYPES = (
+        ('file', '파일'),
+        ('link', '링크')
+    )
+
     channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
-    file = models.FileField(db_column='fi_file', null=True, blank=True, upload_to=upload_to, help_text='첨부파일')
+    type = models.CharField(db_column='at_type', choices=TYPES, max_length=100, help_text='채널유형')
+    file = models.FileField(db_column='at_file', null=True, blank=True, upload_to=upload_to, help_text='첨부파일')
+    title = models.CharField(db_column='at_title', max_length=255, help_text='제목')
+    description = models.TextField(db_column='at_description', null=True, blank=True, help_text='설명')
+    url = models.TextField(db_column='at_url', null=True, blank=True, help_text='링크 URL')
+    image_url = models.TextField(db_column='at_image', null=True, blank=True, help_text='이미지 URL')
 
     @property
     def filename(self):
@@ -89,18 +99,7 @@ class File(ContentMixin, models.Model):
             return self.file.size
 
     class Meta:
-        db_table = "file"
-
-
-class Link(ContentMixin, models.Model):
-    channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
-    title = models.CharField(db_column='li_title', max_length=255, help_text='제목')
-    description = models.TextField(db_column='li_description', null=True, blank=True, help_text='설명')
-    url = models.TextField(db_column='li_url', null=True, blank=True, help_text='링크 URL')
-    image = models.TextField(db_column='li_image', null=True, blank=True, help_text='미리보기 이미지')
-
-    class Meta:
-        db_table = "link"
+        db_table = "attatchment"
 
 
 class MessengerMember(models.Model):
