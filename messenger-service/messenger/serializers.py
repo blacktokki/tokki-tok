@@ -22,7 +22,7 @@ def attach_link(channel_content, validated_data):
     link_set = set(re.findall(url_extract_pattern, validated_data['content']))
     add_links = []
     delete_link_ids = []
-    for link in channel_content.link_set.all():
+    for link in channel_content.attatchment_set.filter(type='link'):
         if link.url not in link_set:
             delete_link_ids.append(link.id)
         else:
@@ -39,8 +39,8 @@ def attach_link(channel_content, validated_data):
                 image=parsed_og_tags.get("og:image"),
                 description=parsed_og_tags.get("og:description")
             ))
-    Link.objects.filter(id__in=delete_link_ids).delete()
-    Link.objects.bulk_create(add_links)
+    Attatchment.objects.filter(id__in=delete_link_ids).delete()
+    Attatchment.objects.bulk_create(add_links)
 
 
 def post_create_messages(message_ids):
@@ -127,6 +127,7 @@ class DirectChannelSerializer(ChannelSerializer):
 class LastMessageSerializer(serializers.Serializer):
     created = serializers.DateTimeField(source='channel_content__created', read_only=True)
     content = serializers.CharField(read_only=True, help_text='마지막 메시지 내용')
+    preview_content = serializers.CharField(read_only=True, help_text='마지막 메시지 미리보기 내용')
 
 
 class MessengerChannelSerializer(serializers.ModelSerializer):
@@ -170,7 +171,9 @@ class MessageSerializer(serializers.ModelSerializer):
         validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel, timer=timer)
         attach_link(validated_data['channel_content'], validated_data)
         if file:
-            Attatchment.objects.create(type='file', channel_content=validated_data['channel_content'], file=file)
+            attatchment = Attatchment.objects.create(
+                type='file', channel_content=validated_data['channel_content'], file=file)
+            validated_data['preview_content'] = attatchment.filename
         instance = super().create(validated_data)
         post_create_messages([instance.id])
         return instance

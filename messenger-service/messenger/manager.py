@@ -63,7 +63,7 @@ class MessageManager(models.Manager):
         각 last message에 대한 상세정보
         """
         return self.filter(id__in=last_message_ids).values(
-            'channel_content__channel_id', 'channel_content__created', 'content')
+            'channel_content__channel_id', 'channel_content__created', 'content', 'preview_content')
 
 
 class MessengerMemberManager(models.Manager):

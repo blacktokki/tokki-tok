@@ -65,6 +65,8 @@ class Message(ContentMixin, models.Model):
     comment_content = models.ForeignKey(ChannelContent, related_name='children_message_set', null=True, blank=True,
                                         on_delete=models.CASCADE, help_text='답글 컨텐츠')
     content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='내용')
+    preview_content = models.CharField(max_length=128, null=True, blank=True, db_column='ms_preview_only', 
+                                       help_text='미리보기 내용')
 
     class Meta:
         db_table = "message"
