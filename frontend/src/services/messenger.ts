@@ -27,7 +27,7 @@ export const getMessengerMemberList = async(channel_id:number)=>{
     try{
         return (await axios.get(`/api/v1/messengermembers/?channel=${channel_id}`) ).data as MessengerMember[]
     }
-    catch(e){
+    catch(e:any){
         if (e.response.status==400 || e.response.status==403)
             return Promise.resolve(null)
         throw e
@@ -55,16 +55,22 @@ export const getTimerMessageContentList = async (channel_id:number, timer_gt:str
     return (await axios.get(`/api/v1/messengercontents/?channel=${channel_id}&timer_gt=${timer_gt}`)).data as MessengerContent[]
 }
 
-export const postMessage = async (message:EditMessage)=>{
+export const postMessage = async (message:EditMessage, callback?:(args:{channel:number, filename:string, progress:number})=>void)=>{
     if (message.file){
         const formData = new FormData(); // formData 객체를 생성한다.
         formData.append("file", message.file)
         Object.entries(message).forEach(value=>{
             formData.append(value[0], `${value[1]}`)
         })
-        await axios.post(`/api/v1/messengercontents/messages/`, formData, {headers:{
-            ...(axios.defaults.headers as any), "Content-Type": "multipart/form-data",
-        }})
+        const filename = message.file.name
+        await axios.post(`/api/v1/messengercontents/messages/`, formData, {
+            headers:{
+                ...(axios.defaults.headers as any), "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress:(p)=>{
+                callback?.({channel:message.channel, filename, progress:p.loaded/(p.total || 1)})
+            }
+        })
     }
     else{
         await axios.post(`/api/v1/messengercontents/messages/`, message)

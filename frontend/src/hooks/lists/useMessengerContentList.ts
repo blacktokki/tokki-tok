@@ -1,8 +1,9 @@
 import { useEffect } from "react"
 import { InfiniteData, Query, QueryKey, useInfiniteQuery, useMutation, useQueryClient } from "react-query"
 import { getMessengerContentList, postMessage, patchMessengerContent, getNewMessengerContentList } from "../../services"
-import { MessengerContent } from "../../types"
+import { EditMessage, MessengerContent } from "../../types"
 import useWebsocketContext from "../useWebsocketContext"
+import useUploadContext from "../useUploadContext"
 
 export type MessengerContentPage = {
   next?:MessengerContentPage
@@ -82,7 +83,8 @@ export default function useMessengerContentList(channel_id:number){
 
 export function useMessengerContentMutation(channelId?:number){
   // const queryClient = useQueryClient()
-  const create = useMutation(postMessage, {
+  const {dispatch:uploadDispatch} = useUploadContext()
+  const create = useMutation((message:EditMessage)=>postMessage(message, uploadDispatch), {
     onSuccess: () => {
       // queryClient.setQueryData(['MessengerContentList'], (data:any) => ({
       //   pages: data.pages.slice(0, 1),

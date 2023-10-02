@@ -16,7 +16,6 @@ function humanFileSize(size:number) {
 
 export default ({file, isMobile, showBorder}:{file:File, isMobile:boolean, showBorder:ConstrainBoolean})=>{
     const theme = useColorScheme()
-    console.log(file.thumbnail)
     return <CommonSection containerStyle={{marginHorizontal:0}} bodyStyle={showBorder?{padding:10}:{borderWidth:0, padding:0}}>
     <TouchableOpacity 
         onPress={()=>Linking.openURL(file.file)} 

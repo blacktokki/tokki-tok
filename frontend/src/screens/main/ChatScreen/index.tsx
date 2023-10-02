@@ -27,6 +27,7 @@ import { Entypo } from '../../../lib/@expo/vector-icons';
 import TimerTags, { timerFormat, timerToString } from './TimerTags';
 import MessageModal from '../../../modals/MessageModal';
 import ChannelEditModal from '../../../modals/ChannelEditModal';
+import UploadTags from './UploadTags';
 
 
 function uploadFile(){
@@ -202,7 +203,8 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         }}
         onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
       />
-      <View style={{position:'absolute'}}>
+      <View style={{position:'absolute', flexDirection:'row'}}>
+        <UploadTags channel_id={channel_id}/>
         <TimerTags channel_id={channel_id}/>
       </View>
       <ThemedView style={{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>

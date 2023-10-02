@@ -18,6 +18,7 @@ import { ModalsProvider } from '../hooks/useModalsContext';
 import modals from '../modals';
 import useLangContext from '../hooks/useLangContext';
 import CommonButton from '../components/CommonButton';
+import { UploadContextProvider } from '../hooks/useUploadContext';
 
 const Main = createStackNavigator();
 
@@ -62,21 +63,23 @@ export default ()=>{
             <View style={[{flex:1}, backgroundStyle]}>
                 <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
                     <FirebaseProvider user={auth.user}>
-                        <Main.Navigator
-                            screenOptions={({navigation, route})=>({
-                                headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
-                                headerTitleStyle:{color:Colors[theme].text},
-                                headerLeft:()=>headerLeft(navigation, route, windowType, theme, isMobile),
-                                headerRight:()=><HeaderRight/>,
-                                headerLeftContainerStyle:{backgroundColor:Colors[theme].header, borderBottomWidth:1, borderColor:Colors[theme].headerBottomColor},
-                                cardStyle:[{flexShrink:1}, backgroundStyle],
-                                animationEnabled:windowType=='portrait',
-                                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-                            })}
-                        >
-                            {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: lang(screen.title) }} />)}
-                            <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-                        </Main.Navigator>
+                        <UploadContextProvider>
+                            <Main.Navigator
+                                screenOptions={({navigation, route})=>({
+                                    headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
+                                    headerTitleStyle:{color:Colors[theme].text},
+                                    headerLeft:()=>headerLeft(navigation, route, windowType, theme, isMobile),
+                                    headerRight:()=><HeaderRight/>,
+                                    headerLeftContainerStyle:{backgroundColor:Colors[theme].header, borderBottomWidth:1, borderColor:Colors[theme].headerBottomColor},
+                                    cardStyle:[{flexShrink:1}, backgroundStyle],
+                                    animationEnabled:windowType=='portrait',
+                                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+                                })}
+                            >
+                                {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: lang(screen.title) }} />)}
+                                <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+                            </Main.Navigator>
+                            </UploadContextProvider>
                     </FirebaseProvider>
                 </WebSocketProvider>
             </View>
