@@ -9,6 +9,7 @@ import { View, Text } from "../components/Themed";
 import RowField from "../components/RowField";
 import CommonButton from "../components/CommonButton";
 import CommonTextInput from "../components/CommonTextInput";
+import useExternalMembershipList from "../hooks/lists/useExternalMembershipList";
 // import TextButton from "../components/TextButton";
 // import Colors from "../constants/Colors";
 // import useColorScheme from "../hooks/useColorScheme";
@@ -40,6 +41,7 @@ export default function RegistrationModal({id}:{id?:number}) {
   const [isStaff, setIsStaff] = useState(false)
   const [error, setError] = useState<ErrorMessages>({})
   const userList = useUserMembershipList(auth)
+  const externalMemberList = useExternalMembershipList(username)
   const userMembershipMutation = useUserMembershipMutation()
   const user = userList?.find(v=>v.id==id)
   const usernameDisable = user && user.is_guest===false
@@ -48,10 +50,10 @@ export default function RegistrationModal({id}:{id?:number}) {
       setUsername(user.username)
       setName(user.name)
     }
-  }, [user])
+  }, [user?.id])
   const _register = ()=>{
     let newError:ErrorMessages = {};
-    if (userList?.find(v=>v.username == username) && !id) newError.username = "The username is already in use."
+    if ((externalMemberList?.length || 0) >0 && !usernameDisable) newError.username = "The username is already in use."
     if (username.length < 10 || username.length > 64) newError.username = "Set 10-64 characters."
     if (name.length < 1 || name.length > 64) newError.name = "Set 1-64 characters."
     if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,64}$/.test(password) && !(usernameDisable && password.length==0)) newError.password = "Set 10-64 characters with a combination of letters/numbers/valid special characters."

@@ -58,12 +58,12 @@ export default ()=>{
     }, [auth])
     const backgroundStyle = theme=='light'?{}:{backgroundColor:'#010409'}
     return (auth.user!==undefined?<View style={{flexDirection:'row', flex:1}}>
-        <ModalsProvider modals={modalValues}>
-            {auth.user?<Drawer auth={auth}/>:undefined}
-            <View style={[{flex:1}, backgroundStyle]}>
-                <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
-                    <FirebaseProvider user={auth.user}>
-                        <UploadContextProvider>
+        <UploadContextProvider>
+            <ModalsProvider modals={modalValues}>
+                {auth.user?<Drawer auth={auth}/>:undefined}
+                <View style={[{flex:1}, backgroundStyle]}>
+                    <WebSocketProvider disable={auth.user === null || auth.user === undefined}>
+                        <FirebaseProvider user={auth.user}>
                             <Main.Navigator
                                 screenOptions={({navigation, route})=>({
                                     headerStyle:{backgroundColor:Colors[theme].header, height:isMobile?50:undefined},
@@ -79,10 +79,10 @@ export default ()=>{
                                 {entries.map(([key, screen])=><Main.Screen key={key} name={key} component={screen.component} options={{ title: lang(screen.title) }} />)}
                                 <Main.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
                             </Main.Navigator>
-                            </UploadContextProvider>
-                    </FirebaseProvider>
-                </WebSocketProvider>
-            </View>
-        </ModalsProvider>
+                        </FirebaseProvider>
+                    </WebSocketProvider>
+                </View>
+            </ModalsProvider>
+        </UploadContextProvider>
     </View>:<></>);
 }

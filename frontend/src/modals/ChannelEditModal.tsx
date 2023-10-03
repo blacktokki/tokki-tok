@@ -35,7 +35,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
       setName(_name)
       setDescription(channel?.description || '')
     }
-  }, [channel])
+  }, [channel?.id])
   useModalEffect(back, [])
   return <ModalSection>
     <View style={{justifyContent:'space-between', flex:1, width:'100%'}}>

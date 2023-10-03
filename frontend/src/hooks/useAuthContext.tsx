@@ -12,7 +12,6 @@ type AuthState ={user?:UserMembership|null, request?:{username:string, password:
 const AuthContext = createContext<{auth:Auth, error?:string, dispatch:Dispatch<AuthAction>}>({auth:{}, dispatch:()=>{}});
 
 const authReducer =(initialState:AuthState, action:AuthAction)=>{
-  console.log('@@@', action)
   switch (action.type){
       case 'LOGIN_REQUEST':
         return {
