@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   TextInput,
@@ -19,11 +19,11 @@ export default function LoginScreen({
   const [password, setPassword] = useState('');
   const {error, dispatch} = useAuthContext()
   const _login = ()=>dispatch({type:'LOGIN_REQUEST', username, password})
-  useLayoutEffect(() => {
+  useEffect(() => {
     navigation.setOptions({
       headerRight: undefined
     });
-  }, [navigation, route]);
+  }, [navigation]);
 
   return (<View style={Styles.login_container}>
     <View style={Styles.login_wrapper}>
