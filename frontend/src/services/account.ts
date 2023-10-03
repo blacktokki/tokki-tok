@@ -68,8 +68,14 @@ export const postUser = async (user:CreateUser)=>{
     }, {baseURL})
 }
 
-export const patchUser = async (user:{id:number, name:string, password?:string})=>{
-    await axios.patch(`/api/v1/user/`, {ids:[user.id], updated: {name:user.name, password:user.password}}, {baseURL})
+export const patchUser = async (user:{id:number, name:string, is_guest?:boolean, username?:string, password?:string})=>{
+    console.log(user)
+    await axios.patch(`/api/v1/user/`, {ids:[user.id], updated: {
+        name:user.name, 
+        isGuest:user.is_guest,
+        username:user.username,
+        password:user.password,
+    }}, {baseURL})
 }
 
 export const deleteUser = async (userId:number)=>{

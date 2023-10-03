@@ -114,10 +114,11 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const windowType = useResizeContext();
   const theme = useColorScheme()
   const { setModal } = useModalsContext()
+  const {auth} = useAuthContext()
   const [ home, setHome ] = useState(windowType == 'landscape')
   const color = Colors[theme].text
   const options = [
-    {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(RegistrationModal, {})}]}/>},
+    {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{})}]}/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
     // {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>setModal(ChannelEditModal, props:{type:'board'}}) }]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}

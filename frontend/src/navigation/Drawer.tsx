@@ -72,7 +72,7 @@ export default ({auth}:{auth:Auth})=> {
   const { setModal } = useModalsContext()
   
   const onAddList = [
-    ()=>setModal(RegistrationModal, {}),
+    ()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{}),
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
   ]
   const drawerTabs = getDrawerTabs(theme)

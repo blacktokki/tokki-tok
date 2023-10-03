@@ -17,10 +17,16 @@ export function useUserMembershipMutation(){
   })
   const _update = useMutation(patchUser, {
     onSuccess: (data, user)=>{
-      queryClient.invalidateQueries("UserMembershipList")
       if (user.id == auth.user?.id)
-        dispatch({type:"REFRESH"})
-      
+        if(user.username && user.password){
+          dispatch({type:'LOGIN_REQUEST', username:user.username, password:user.password})
+        }
+        else{
+          dispatch({type:"REFRESH"})
+        }
+      else{
+        queryClient.invalidateQueries("UserMembershipList")
+      }
     }
   })
   const _delete = useMutation(deleteUser, {

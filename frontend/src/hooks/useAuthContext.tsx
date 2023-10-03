@@ -12,6 +12,7 @@ type AuthState ={user?:UserMembership|null, request?:{username:string, password:
 const AuthContext = createContext<{auth:Auth, error?:string, dispatch:Dispatch<AuthAction>}>({auth:{}, dispatch:()=>{}});
 
 const authReducer =(initialState:AuthState, action:AuthAction)=>{
+  console.log('@@@', action)
   switch (action.type){
       case 'LOGIN_REQUEST':
         return {
@@ -72,7 +73,7 @@ export const AuthProvider = ({children}:{children:React.ReactNode})=>{
         dispatch({type:"LOGOUT_SUCCESS"})
       })
     }
-    else if(authState.user===null && authState.request){
+    else if(authState.user!==undefined && authState.request){
       login(authState.request.username, authState.request.password).then(user=>{
         dispatch({type:"LOGIN_SUCCESS", user})
       }).catch((data)=>{

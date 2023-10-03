@@ -42,6 +42,7 @@ export default function RegistrationModal({id}:{id?:number}) {
   const userList = useUserMembershipList(auth)
   const userMembershipMutation = useUserMembershipMutation()
   const user = userList?.find(v=>v.id==id)
+  const usernameDisable = user && user.is_guest===false
   useEffect(()=>{
     if (user){
       setUsername(user.username)
@@ -53,7 +54,7 @@ export default function RegistrationModal({id}:{id?:number}) {
     if (userList?.find(v=>v.username == username) && !id) newError.username = "The username is already in use."
     if (username.length < 10 || username.length > 64) newError.username = "Set 10-64 characters."
     if (name.length < 1 || name.length > 64) newError.name = "Set 1-64 characters."
-    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,64}$/.test(password) && !(id && password.length==0)) newError.password = "Set 10-64 characters with a combination of letters/numbers/valid special characters."
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,64}$/.test(password) && !(usernameDisable && password.length==0)) newError.password = "Set 10-64 characters with a combination of letters/numbers/valid special characters."
     if (password != checkPassword) newError.checkPassword = "Incorrect between password and check password."
     if (Object.keys(newError).length > 0){
         setError(newError)
@@ -63,8 +64,10 @@ export default function RegistrationModal({id}:{id?:number}) {
       userMembershipMutation.update({
         id,
         name,
+        username:usernameDisable?undefined:username,
+        is_guest:false,
         password:password.length>0?password:undefined,
-      }).then(()=>{id!=auth.user?.id && back()})
+      }).then(()=>{(id!=auth.user?.id || user?.is_guest) && back()})
     }
     else{
       auth?.groupId && userMembershipMutation.create({
@@ -81,14 +84,13 @@ export default function RegistrationModal({id}:{id?:number}) {
   const back = ()=>{
     setModal(RegistrationModal, null)
   }
-
   return <ModalSection>
     <View style={{justifyContent:'space-between', flex:1, width:'100%'}}>
       <View style={{flex:1, width:'100%'}}>
-        <Text style={{fontSize:20}}>{lang('Create User')}</Text>
+        <Text style={{fontSize:20}}>{usernameDisable?lang('Edit User'):lang('Create User')}</Text>
         <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
         <RowField name={lang('Username')} width={'60%'}>
-          {id?<Text style={{fontSize:16}}>{username}</Text>:<CommonTextInput
+          {usernameDisable?<Text style={{fontSize:16}}>{username}</Text>:<CommonTextInput
               value={username}
               setValue={(text) => setUsername(text)}
               keyboardType={'email-address'}
