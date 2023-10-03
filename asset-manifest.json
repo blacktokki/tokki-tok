@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/tokki-tok/static/js/main.db40703d.js",
-    "static/js/787.3d4c628c.chunk.js": "/tokki-tok/static/js/787.3d4c628c.chunk.js",
+    "main.js": "/tokki-tok/static/js/main.35331235.js",
+    "static/js/787.1d023d97.chunk.js": "/tokki-tok/static/js/787.1d023d97.chunk.js",
     "static/js/869.f93a2a17.chunk.js": "/tokki-tok/static/js/869.f93a2a17.chunk.js",
     "static/js/164.dd94b110.chunk.js": "/tokki-tok/static/js/164.dd94b110.chunk.js",
     "static/js/88.c6ffbc1e.chunk.js": "/tokki-tok/static/js/88.c6ffbc1e.chunk.js",
@@ -40,8 +40,8 @@
     "favicon-16.png": "/tokki-tok/favicon-16.png",
     "firebase-config.js": "/tokki-tok/firebase-config.js",
     "serve.json": "/tokki-tok/serve.json",
-    "main.db40703d.js.map": "/tokki-tok/static/js/main.db40703d.js.map",
-    "787.3d4c628c.chunk.js.map": "/tokki-tok/static/js/787.3d4c628c.chunk.js.map",
+    "main.35331235.js.map": "/tokki-tok/static/js/main.35331235.js.map",
+    "787.1d023d97.chunk.js.map": "/tokki-tok/static/js/787.1d023d97.chunk.js.map",
     "869.f93a2a17.chunk.js.map": "/tokki-tok/static/js/869.f93a2a17.chunk.js.map",
     "164.dd94b110.chunk.js.map": "/tokki-tok/static/js/164.dd94b110.chunk.js.map",
     "88.c6ffbc1e.chunk.js.map": "/tokki-tok/static/js/88.c6ffbc1e.chunk.js.map",
@@ -51,6 +51,6 @@
   },
   "entrypoints": [
     "static/js/338.60f8846f.js",
-    "static/js/main.db40703d.js"
+    "static/js/main.35331235.js"
   ]
 }
