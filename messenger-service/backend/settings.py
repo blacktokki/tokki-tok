@@ -129,11 +129,12 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     Path.joinpath(BASE_DIR, 'virtual-metrics-355712-e207b739a975.json'))
 GS_BUCKET_NAME = 'blacktokki-storage'
 GS_LOCATION = 'messenger'
+GS_OBJECT_PARAMETERS = {'cache_control': 'public, max-age=604800'}
 
 # Thumbnail
 THUMBNAIL_ALIASES = {
     '': {
-        'preview': {'size': (150, 150), 'crop': False},
+        'preview': {'size': (256, 256), 'crop': False, 'quality': 100},
     },
 }
 THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
