@@ -12,6 +12,7 @@ from .serializers import (
     MessageSerializer,
 )
 from .filtersets import ChannelFilterSet, ChannelContentFilterSet, MessengerMemberFilterSet
+from .permissions import MessageViewerPermission
 from .models import Message, Channel, MessengerMember, ChannelContent
 
 
@@ -42,6 +43,13 @@ class MessengerContentViewset(viewsets.ModelViewSet):
     serializer_class = MessengerContentSerializer
     filterset_class = ChannelContentFilterSet
     queryset = ChannelContent.objects.annotate_messenger_viewset()
+
+    @action(detail=False, methods=['get'], permission_classes=[MessageViewerPermission], authentication_classes=[])
+    def viewer(self, request, *args, **kwargs):
+        """
+        뷰어용 메시지 컨텐츠 조회
+        """
+        return super().list(request, *args, **kwargs)
 
     @action(detail=False, methods=['post'], queryset=Message.objects.all(), serializer_class=MessageSerializer)
     def messages(self, request, *args, **kwargs):

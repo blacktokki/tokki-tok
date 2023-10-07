@@ -20,6 +20,7 @@ class Channel(models.Model):
     name = models.CharField(db_column='ch_name', max_length=255, blank=True, default='', help_text='채널명')
     type = models.CharField(db_column='ch_type', choices=TYPES, default='messenger', max_length=100, help_text='채널유형')
     is_archive = models.BooleanField(db_column="ch_is_archive", default=False, help_text='채널 비활성 여부')
+    use_viewer = models.BooleanField(db_column='ch_use_viewer', default=False, help_text='뷰어기능 사용여부')
     description = models.TextField(db_column="ch_description", blank=True, null=True, help_text='설명')
 
     class Meta:

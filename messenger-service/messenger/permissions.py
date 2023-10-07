@@ -3,6 +3,13 @@ from rest_framework.permissions import BasePermission
 from .models import Channel, ChannelContent, Message, MessengerMember
 
 
+class MessageViewerPermission(BasePermission):
+    def has_permission(self, request, view):
+        if 'channel' in request.query_params:
+            return Channel.objects.filter(id=request.query_params['channel'], use_viewer=True).exists()
+        return False
+
+
 class MessengerPermission(BasePermission):
     def has_permission(self, request, view):
         if hasattr(view, 'detail') and view.detail is False:
