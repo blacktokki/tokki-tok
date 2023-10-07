@@ -13,14 +13,16 @@ const queryClient = new QueryClient();
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const isAppearenceComplete = useInitColorScheme()
+  const isViewer = window.location !==undefined && window.location.pathname.endsWith('/viewer')
   const Navigation = React.lazy(()=> import('./src/navigation'))
+  const ChatViewer = React.lazy(()=> import('./src/navigation/ChatViewer'))
   if (!isLoadingComplete || !isAppearenceComplete) {
     return null;
   } else {
     return (
       <SafeAreaProvider>
         <MobileSafeAreaView>
-          <AuthProvider>
+          {!isViewer?<AuthProvider>
             <QueryClientProvider client={queryClient}>
               <IntlProvider>
                 {/* devtools */}
@@ -31,9 +33,27 @@ export default function App() {
                 <StatusBar />
               </IntlProvider>
             </QueryClientProvider>
-          </AuthProvider>
+          </AuthProvider>:
+          <QueryClientProvider client={queryClient}>
+            <IntlProvider>
+              <Suspense fallback={<></>}>
+                <ChatViewer/>
+              </Suspense>
+            </IntlProvider>
+          </QueryClientProvider>}
         </MobileSafeAreaView>
       </SafeAreaProvider>
     );
   }
 }
+
+(function(l) {  // for github-page
+    if (l !== undefined && l.search[1] === '/' ) {
+        var decoded = l.search.slice(1).split('&').map(function(s) { 
+        return s.replace(/~and~/g, '&')
+        }).join('?');
+        window.history.replaceState(null, '',
+            l.pathname.slice(0, -1) + decoded + l.hash
+        );
+    }
+}(window.location))

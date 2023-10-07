@@ -1,33 +1,29 @@
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
-import { Platform, StyleSheet, View, TouchableOpacity } from 'react-native';
-import CommonSection from '../../../components/CommonSection';
-import { FlatList, TextInput } from 'react-native-gesture-handler';
+import { Platform, View } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 import CommonButton from '../../../components/CommonButton';
-import useMessengerContentList, { MessengerContentPage, useMessengerContentMutation } from '../../../hooks/lists/useMessengerContentList';
+import { useMessengerContentMutation } from '../../../hooks/lists/useMessengerContentList';
 import useAuthContext from '../../../hooks/useAuthContext';
 import HeaderRight from '../../../components/HeaderRight';
 import useMessengerMemberList from '../../../hooks/lists/useMessengerMemberList';
 import Colors from '../../../constants/Colors';
 import useColorScheme from '../../../hooks/useColorScheme';
-import { Text, View as ThemedView } from '../../../components/Themed' 
-import Hyperlink from 'react-native-hyperlink'
+import { View as ThemedView } from '../../../components/Themed' 
 import useMessengerChannelList from '../../../hooks/lists/useMessengerChannelList';
 import useIsMobile from '../../../hooks/useIsMobile';
-import LinkPreview from '../../../components/LinkPreview';
-import Avatar, { avatarFromChannel } from '../../../components/Avatar';
+import { avatarFromChannel } from '../../../components/Avatar';
 import VideoCallSection from './VideoCallSection';
 import useResizeContext from '../../../hooks/useResizeContext';
-import FilePreview from '../../../components/FilePreview';
 import useModalsContext from '../../../hooks/useModalsContext';
 import InviteModal from '../../../modals/InviteModal';
 import DateTimePickerModal from '../../../modals/DateTimePickerModal'
 import useLangContext from '../../../hooks/useLangContext';
 import { Entypo } from '../../../lib/@expo/vector-icons';
-import TimerTags, { timerFormat, timerToString } from './TimerTags';
-import MessageModal from '../../../modals/MessageModal';
+import TimerTags, { timerFormat } from './TimerTags';
 import ChannelEditModal from '../../../modals/ChannelEditModal';
 import UploadTags from './UploadTags';
+import Messages from './Messages';
 
 
 function uploadFile(){
@@ -47,74 +43,15 @@ function uploadFile(){
   })
 }
 
-const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number})=>{
-  const isMobile = useIsMobile()
-  const { setModal } = useModalsContext()
-  let nextPage = props.next;
-    while(nextPage?.next && nextPage.current.length==0){
-      nextPage = nextPage.next
-    }
-    const nextContent = nextPage?.current[0]
-    return <View style={{flexDirection: 'column-reverse'}}>
-      
-      {props.current.map((content, index2)=>{
-        const next = index2 + 1 < props.current.length?props.current[index2+1]:nextContent
-        const created:string = content.created.slice(0, 16)
-        const date = created.slice(0, 10)
-        const isSystem = content.user == null
-        const isFirst = next==undefined || (content.user != next.user || created != next.created.slice(0, 16))
-        const isSelf = props.ownerId == content.user
-        const dayChanged = next==undefined || date != next.created.slice(0, 10)
-        const message = content.message_set[0]
-        const openModal = ()=>setModal(MessageModal, {id:content.id, content:message.content, isOwner:isSelf, isTimer:content.timer?true:false})
-        if (isSystem)
-          return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
-            <Text>{message.content}</Text>
-          </View>
-        return <View key={content.id}>
-          {dayChanged?<View style={{flexDirection:'row', justifyContent:'center', width:'100%'}}><Text>{date}</Text></View>:undefined}
-          <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
-            {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
-            <CommonSection autoScale outerContainerStyle={{maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
-              <TouchableOpacity onLongPress={openModal}>
-                {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
-                  <Text style={{fontSize:12}}>⌚</Text>
-                  <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
-                </View>}
-                <View style={{width:"100%"}}>
-                  {/* @ts-ignore */}
-                  <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                    <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
-                  </Hyperlink>
-                </View>
-              {
-                content.attatchment_set.map((attatchment, aIndex)=>{
-                  if (attatchment.type=='file')
-                    return <FilePreview key={aIndex} file={attatchment} isMobile={isMobile} showBorder={false}/>
-                  if (attatchment.type=='link')
-                    return <LinkPreview key={aIndex} link={attatchment} isMobile={isMobile}/>
-                })
-              }
-              </TouchableOpacity>        
-            </CommonSection>
-          </View>
-        </View>
-      })}
-    </View>
-
-})
-
 export default function ChatScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
   const { lang, locale } = useLangContext()
   const isMobile = useIsMobile()
   const channel_id = route?.params?.id
-  const height = useRef(0)
   const inputRef = useRef<TextInput>(null)
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const channel = useMessengerChannelList(auth)?.find(v=>v.id==parseInt(channel_id))
   const channelAvatar = channel?avatarFromChannel(channel, auth.user):undefined
-  const {data, fetchNextPage } = useMessengerContentList(channel_id)
   const memberList = useMessengerMemberList(channel_id)
   const member_id = useMemo(()=>memberList?.find(v=>v.user == auth.user?.id)?.id, [auth, memberList])
   const windowType = useResizeContext()
@@ -147,8 +84,6 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     });
   }, [navigation, route, member_id, locale]);
 
-  const renderItem = useCallback(({item, index}:{item:MessengerContentPage, index:number})=><MessengerContentPageItem {...item} ownerId={auth.user?.id}/>, [auth])
-  
   const back = ()=>{
     if(navigation.canGoBack())
         navigation.goBack()
@@ -192,17 +127,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   ]}>
     <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
     <View style={[videoMode?{flexShrink:1}:{flex:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
-      <FlatList
-        style={{flexDirection: 'column-reverse'}}
-        contentContainerStyle={{padding:10, flexGrow:1, flexDirection: 'column-reverse'}}
-        data={data?.pages}
-        renderItem={renderItem}
-        onScroll={(e)=>{
-          if (e.nativeEvent.contentOffset.y + e.nativeEvent.contentSize.height - height.current < 1)
-            fetchNextPage()
-        }}
-        onLayout={(p)=>{height.current = p.nativeEvent.layout.height}}
-      />
+      <Messages channel_id={channel_id} auth={auth} reverse/>
       <View style={{position:'absolute', flexDirection:'row'}}>
         <UploadTags channel_id={channel_id}/>
         <TimerTags channel_id={channel_id}/>

@@ -42,9 +42,10 @@ export const deleteMessengerMember = async(member_id:number)=>{
     await axios.delete(`/api/v1/messengermembers/${member_id}/`)
 }
 
-export const getMessengerContentList = async (channel_id:number, id_lt?:number)=>{
+export const getMessengerContentList = async (channel_id:number, id_lt?:number, isViewer?:boolean)=>{
     const id_lt_param = id_lt?`&id_lt=${id_lt}`:''
-    return (await axios.get(`/api/v1/messengercontents/?limit=30&channel=${channel_id}${id_lt_param}`)).data.results as MessengerContent[]
+    const viewerPath = isViewer?'viewer/':''
+    return (await axios.get(`/api/v1/messengercontents/${viewerPath}?limit=30&channel=${channel_id}${id_lt_param}`)).data.results as MessengerContent[]
 }
 
 export const getNewMessengerContentList = async (channel_id:number, updated_gte:string)=>{
