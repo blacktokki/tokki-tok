@@ -36,7 +36,7 @@ def attach_link(channel_content, validated_data):
                 type='link',
                 url=parsed_og_tags.get("og:url", url),
                 title=parsed_og_tags.get("og:title"),
-                image=parsed_og_tags.get("og:image"),
+                image_url=parsed_og_tags.get("og:image"),
                 description=parsed_og_tags.get("og:description")
             ))
     Attatchment.objects.filter(id__in=delete_link_ids).delete()
