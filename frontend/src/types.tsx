@@ -41,6 +41,12 @@ export type AvatarProps = {
   size:number
 }
 
+export type EditorProps = {
+  value:string, 
+  setValue:(v:string)=>void, 
+  onReady?:()=>void
+}
+
 export type TabViewRecord = Record<string, {title:string, component:React.ComponentType<any>, icon:JSX.Element}>
 
 type BaseUser = {
@@ -101,6 +107,7 @@ export type MessengerChannel = BaseChannel & {
 export type Message = {
   id?: number,
   content: string,
+  use_editor?:boolean
 }
 
 export type EditMessage = Message & {

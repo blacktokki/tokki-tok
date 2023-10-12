@@ -24,6 +24,7 @@ import TimerTags, { timerFormat } from './TimerTags';
 import ChannelEditModal from '../../../modals/ChannelEditModal';
 import UploadTags from './UploadTags';
 import Messages from './Messages';
+import Editor from '../../../components/Editor';
 
 
 function uploadFile(){
@@ -60,16 +61,22 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const [autoFocus, setAutoFocus] = useState<boolean|null>(null)
   const [videoMode, setVideoMode] = useState<boolean>(false)
   const [bottomTab, setBottomTab] = useState<boolean>(false)
+  const [isEditor, setIsEditor] = useState<boolean>(false)
   const valueLines = useMemo(()=>bottomTab?1:value.split("\n").length, [value, bottomTab])
 
   const theme = useColorScheme()
   const postValue = ()=>{
     if (value.length>0){
-      contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer})
+      contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer, use_editor:isEditor})
       setValue('')
       setTimer(undefined)
       setBottomTab(false)
-      setAutoFocus(true)
+      if(isEditor){
+        setIsEditor(false)
+      }
+      else{
+        setAutoFocus(true)
+      }
     }
   }
   const contentMutation = useMessengerContentMutation()
@@ -111,7 +118,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   }, [memberList])
   useEffect(()=>{
     if(autoFocus){
-      (inputRef.current as any).focus()
+      (inputRef.current as any).focus?.()
       setAutoFocus(false)
     }
   }, [autoFocus])
@@ -134,26 +141,29 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       </View>
       <ThemedView style={{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
         <View style={{alignItems:'center', width:'100%',flexDirection:'row'}}>
-          <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>setBottomTab(!bottomTab)}>
+          <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>{setBottomTab(!bottomTab)}}>
             <View style={{top:-2}}>
               <Entypo name={bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
             </View>
           </CommonButton>
           {timer && <CommonButton style={{height:'100%', paddingTop:8, borderRadius:0}} title={`⌚${timerFormat(timer)}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>}
-          <TextInput 
-            ref={inputRef} 
-            value={value} 
-            onChangeText={setValue}
-            onKeyPress={onKeyPress}
-            style={{flex:1, borderWidth:1, minHeight:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text}}
-            onFocus={()=>setBottomTab(false)}
-            multiline 
-            numberOfLines={valueLines}/>
+          <Editor active={isEditor} value={value} setValue={setValue} onReady={()=>setBottomTab(false)}>
+            <TextInput 
+              ref={inputRef} 
+              value={value} 
+              onChangeText={setValue}
+              onKeyPress={onKeyPress}
+              style={{flex:1, borderWidth:1, minHeight:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text}}
+              onFocus={()=>setBottomTab(false)}
+              multiline 
+              numberOfLines={valueLines}/>
+          </Editor>
           <CommonButton style={{height:'100%', paddingTop:8, borderTopLeftRadius:0, borderBottomLeftRadius:0, justifyContent:'center'}} title={'💬'} onPress={postValue}/>
         </View>
 
         {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`✏️\n ${lang('Editor')}`} onPress={()=>{setIsEditor(!isEditor); isEditor && setBottomTab(false)}}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer')}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center'}} title={`📹\n ${lang('Video Call')}`} onPress={()=>{setVideoMode(!videoMode);setBottomTab(false)}} disabled={videoMode}/>
         </View>}

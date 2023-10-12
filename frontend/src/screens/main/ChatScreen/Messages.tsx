@@ -14,6 +14,7 @@ import CommonSection from "../../../components/CommonSection";
 import Hyperlink from "react-native-hyperlink";
 import { timerToString } from "./TimerTags";
 import useViewerContentList from "../../../hooks/lists/useMessengerViewerList";
+import RenderHTML from "react-native-render-html";
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean})=>{
     const isMobile = useIsMobile()
@@ -50,10 +51,12 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                     <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
                   </View>}
                   <View style={{width:"100%"}}>
-                    {/* @ts-ignore */}
+                    {message.use_editor?
+                    <RenderHTML contentWidth={320} source={{'html':message.content}}/>:(
+                    /* @ts-ignore */
                     <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
                       <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
-                    </Hyperlink>
+                    </Hyperlink>)}
                   </View>
                 {
                   content.attatchment_set.map((attatchment, aIndex)=>{
@@ -86,7 +89,6 @@ export default (props:{channel_id:number, auth?:Auth, reverse?:boolean})=>{
         data={data?.pages}
         renderItem={renderItem}
         onScroll={(e)=>{
-          console.log(e.nativeEvent.contentSize.height - height.current + (props.reverse?1:-1)*e.nativeEvent.contentOffset.y)
           if (e.nativeEvent.contentSize.height - height.current + (props.reverse?1:-1)*e.nativeEvent.contentOffset.y < 1)
             fetchNextPage()
         }}

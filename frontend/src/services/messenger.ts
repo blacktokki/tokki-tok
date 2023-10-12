@@ -61,6 +61,8 @@ export const postMessage = async (message:EditMessage, callback?:(args:{channel:
         const formData = new FormData(); // formData 객체를 생성한다.
         formData.append("file", message.file)
         Object.entries(message).forEach(value=>{
+            if(value[0]=='use_editor')
+                return
             formData.append(value[0], `${value[1]}`)
         })
         const filename = message.file.name

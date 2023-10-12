@@ -13,6 +13,7 @@ web-build/
 web/firebase-config.js
 web/virtual.*
 web/main.*
+web/tinymce*
 
 # macOS
 .DS_Store
