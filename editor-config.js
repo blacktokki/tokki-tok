@@ -1,0 +1,1 @@
+editorConfig={plugins:"image link charmap advlist lists",toolbar:"fontsize bold italic underline strikethrough alignleft aligncenter alignright bullist numlist link"},"undefined"!==typeof module&&(module.exports=editorConfig);
