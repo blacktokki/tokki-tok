@@ -1,67 +1,24 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
+import { Editor } from '@tinymce/tinymce-react';
 import { EditorProps } from '../../types';
-import { Platform } from 'react-native';
-import WebView from 'react-native-webview';
-
-const PATH = `${process.env.PUBLIC_URL}/editor.html`
-
+const INIT = require('../../../web/editor-config')
+const PATH = process.env.PUBLIC_URL + '/tinymce/tinymce.min.js'
 
 export default (props:EditorProps) => {
-  const initRef = useRef(false) 
-  const webViewRef = useRef<any>(null)
-  const setRef = (ref:any)=>{
-    if (ref!=null && webViewRef.current == null){
-      props.onReady?.()
-    }
-    webViewRef.current=ref;
-  }
-
-  const send = (data:any)=>{
-    if(webViewRef.current){
-      if (Platform.OS == 'web')
-        webViewRef.current.contentWindow.postMessage(data, undefined)
-      else
-        webViewRef.current.postMessage(data)
-    }
-  }
-  
-  const listener = (event:any)=>{
-    if(!initRef.current){
-      initRef.current = true
-      return send(props.value)
-    }
-    if(Platform.OS == 'web'){
-      try{
-        props.setValue(event.data)
-      }
-      catch(e){
-      }
-    }
-    else{
-      props.setValue(event.nativeEvent.data)
-    }
-  }
-
-  
-  useEffect(()=>{
-      if(Platform.OS == 'web'){
-        window.addEventListener('message', listener)
-        return ()=>window.removeEventListener('message', listener)
-      }
-    }, [])
-
-	return Platform.OS == 'web'?
-  <iframe ref={setRef} src={PATH} height="100%" width="100%" style={{borderLeft:0, minHeight:320}}/>:
-  <WebView
-          ref={setRef}
-          source={{ uri: PATH}}
-          originWhitelist={['*']}
-          javaScriptEnabled
-          mediaPlaybackRequiresUserAction={false}
-          javaScriptEnabledAndroid
-          useWebkit
-          startInLoadingState={true}
-          style={{flex:1}}
-          onMessage={listener}
-      />
+	return <Editor
+        tinymceScriptSrc={PATH}
+        onInit={(e, editor) => {props.onReady?.()}}
+        onEditorChange={props.setValue}
+        init={{
+          plugins: INIT.plugins,
+          toolbar: INIT.toolbar,
+          min_height: 320,
+          menubar: false,
+          branding: false,
+          statusbar: false,
+          block_formats: '제목1=h2;제목2=h3;제목3=h4;본문=p;',
+          fontsize_formats: '11pt 14pt 18pt 24pt',
+        }}
+        value={props.value}
+    />
 };

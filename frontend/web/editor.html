@@ -3,10 +3,11 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
         <style>
-            /* html {
-                height: 300px
-            } */
+            body {
+                margin: 0px
+            }
         </style>
+        <script src="./editor-config.js"></script>
         <script src="./tinymce/tinymce.min.js"></script>
         <script>
             send = async(data)=>{
@@ -33,12 +34,12 @@
                         }
                     })
                 },
-                height: '300px',
+                height: '320px',
                 promotion: false,
                 statusbar: false,
                 menubar: '',
-                toolbar: 'fontsize bold italic underline strikethrough alignleft aligncenter alignright bullist numlist link',
-                plugins: 'image link advlist lists'
+                toolbar: editorConfig.toolbar,
+                plugins: editorConfig.plugins
             });
             if (window.ReactNativeWebView) {
                 /** android */
@@ -54,6 +55,6 @@
         </script>
     </head>
     <body>
-        <textarea id="mytextarea"></textarea>
+        <textarea id="mytextarea" hidden></textarea>
     </body>
 </html>

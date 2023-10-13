@@ -50,13 +50,13 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                     <Text style={{fontSize:12}}>⌚</Text>
                     <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
                   </View>}
-                  <View style={{width:"100%"}}>
+                  {/* @ts-ignore */}
+                  <View style={{width:"100%", wordBreak:"break-word"}}>
                     {message.use_editor?
-                    <RenderHTML contentWidth={320} source={{'html':message.content}}/>:(
-                    /* @ts-ignore */
-                    <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                      <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
-                    </Hyperlink>)}
+                      <RenderHTML contentWidth={320} source={{'html':message.content}}  tagsStyles = {{p:{}}}/>:(
+                      <Hyperlink linkDefault={ true } linkStyle={{color: '#12b886'}}>
+                        <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
+                      </Hyperlink>)}
                   </View>
                 {
                   content.attatchment_set.map((attatchment, aIndex)=>{

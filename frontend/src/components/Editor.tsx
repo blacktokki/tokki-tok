@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import Editor from '../lib/tinymce/Editor';
+// import Editor from '../lib/tinymce/EditorView';
 import { EditorProps } from '../types';
 
 export default (props:EditorProps & {active:boolean, children?:React.ReactNode}) => {
