@@ -5,6 +5,7 @@ from collections import defaultdict
 from opengraph_parse import parse_page
 from django.db import transaction
 from django.db.models.signals import post_delete
+from django.utils.html import strip_tags
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
@@ -174,6 +175,8 @@ class MessageSerializer(serializers.ModelSerializer):
             attatchment = Attatchment.objects.create(
                 type='file', channel_content=validated_data['channel_content'], file=file)
             validated_data['preview_content'] = attatchment.filename
+        if validated_data.get('use_editor'):
+            validated_data['preview_content'] = strip_tags(validated_data.get('content', ''))[:128]
         instance = super().create(validated_data)
         post_create_messages([instance.id])
         return instance
