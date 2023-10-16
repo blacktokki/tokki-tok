@@ -82,7 +82,7 @@
     "@types/react-native": "~0.63.2",
     "@types/xdate": "^0.8.32",
     "copyfiles": "^2.4.1",
-    "electron": "^9.4.0",
+    "electron": "^22.3.25",
     "electron-builder": "^22.11.7",
     "gh-pages": "^3.2.2",
     "jest-expo": "~41.0.0",
