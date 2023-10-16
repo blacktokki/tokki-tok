@@ -17,7 +17,8 @@ const UploadTag = (props:{data:{filename:string, progress?:number}, index:number
 export default (props:{channel_id:number})=>{
     const { upload } = useUploadContext()
     const [expand, setExpand] = useState<number>()
-    return <View style={{flexDirection:'row', paddingTop:5, paddingHorizontal:20}}>
-        {upload[props.channel_id]?.map((f,i)=><UploadTag key={i} data={f} index={i} isExpand={i==expand} setExpand={setExpand}/>)}
+    const uploadData = upload[props.channel_id]
+    return <View style={{flexDirection:'row', paddingTop:5, paddingHorizontal:(uploadData?.length || 0)>0?20:0}}>
+        {uploadData?.map((f,i)=><UploadTag key={i} data={f} index={i} isExpand={i==expand} setExpand={setExpand}/>)}
     </View>
 }

@@ -11,9 +11,10 @@ export default (props:EditorProps & {active:boolean, children?:React.ReactNode})
       setReady(false)
   }, [props.active])
   return props.active?(
-        <View style={{flex:1}}>
+        <View style={{flex:1, height:'100%'}}>
         {!ready && props.children}
     	  <Editor
+          theme={props.theme}
           value={props.value}
           setValue={props.setValue}
           onReady={()=>{

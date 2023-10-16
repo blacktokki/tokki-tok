@@ -42,6 +42,7 @@ export type AvatarProps = {
 }
 
 export type EditorProps = {
+  theme: 'light'| 'dark',
   value:string, 
   setValue:(v:string)=>void, 
   onReady?:()=>void
@@ -106,8 +107,8 @@ export type MessengerChannel = BaseChannel & {
 
 export type Message = {
   id?: number,
-  content: string,
-  use_editor?:boolean
+  content: string
+  preview_content?: string
 }
 
 export type EditMessage = Message & {
@@ -115,6 +116,7 @@ export type EditMessage = Message & {
   user?:number
   timer?:string
   file?:Blob
+  editor?:string
 }
 
 export type File = {
@@ -133,10 +135,15 @@ export type Link = {
   image_url:string|null,
 }
 
+export type EditorContent = {
+  type: 'editor',
+  description:string,
+}
+
 export type MessengerContent = {
   id: number,
   message_set:Message[]
-  attatchment_set:(File | Link)[],
+  attatchment_set:(File | Link | EditorContent)[],
   user: number,
   channel: number
   timer?: string|null,

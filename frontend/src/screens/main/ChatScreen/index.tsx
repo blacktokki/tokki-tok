@@ -57,6 +57,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const member_id = useMemo(()=>memberList?.find(v=>v.user == auth.user?.id)?.id, [auth, memberList])
   const windowType = useResizeContext()
   const [value, setValue] = useState('')
+  const [editorValue, setEditorValue] = useState('')
   const [timer, setTimer] = useState<string>()
   const [autoFocus, setAutoFocus] = useState<boolean|null>(null)
   const [videoMode, setVideoMode] = useState<boolean>(false)
@@ -67,15 +68,14 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const theme = useColorScheme()
   const postValue = ()=>{
     if (value.length>0){
-      contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer, use_editor:isEditor})
-      setValue('')
+      contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer, editor: isEditor?editorValue:undefined})
       setTimer(undefined)
       setBottomTab(false)
+      setValue('')
+      setAutoFocus(true)
       if(isEditor){
+        setEditorValue('')
         setIsEditor(false)
-      }
-      else{
-        setAutoFocus(true)
       }
     }
   }
@@ -139,7 +139,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         <UploadTags channel_id={channel_id}/>
         <TimerTags channel_id={channel_id}/>
       </View>
-      <ThemedView style={{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
+      <ThemedView style={[{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}, isEditor?{height:windowType=='landscape'?'50%':'100%'}:{}]}>
         <View style={{alignItems:'center', width:'100%',flexDirection:'row'}}>
           <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>{setBottomTab(!bottomTab)}}>
             <View style={{top:-2}}>
@@ -147,9 +147,8 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
             </View>
           </CommonButton>
           {timer && <CommonButton style={{height:'100%', paddingTop:8, borderRadius:0}} title={`⌚${timerFormat(timer)}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>}
-          <Editor active={isEditor} value={value} setValue={setValue} onReady={()=>setBottomTab(false)}>
-            <TextInput 
-              ref={inputRef} 
+          <TextInput
+              ref={inputRef}
               value={value} 
               onChangeText={setValue}
               onKeyPress={onKeyPress}
@@ -157,10 +156,9 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
               onFocus={()=>setBottomTab(false)}
               multiline 
               numberOfLines={valueLines}/>
-          </Editor>
           <CommonButton style={{height:'100%', paddingTop:8, borderTopLeftRadius:0, borderBottomLeftRadius:0, justifyContent:'center'}} title={'💬'} onPress={postValue}/>
         </View>
-
+        <Editor theme={theme} active={isEditor} value={editorValue} setValue={setEditorValue} onReady={()=>setBottomTab(false)}/>
         {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`✏️\n ${lang('Editor')}`} onPress={()=>{setIsEditor(!isEditor); isEditor && setBottomTab(false)}}/>

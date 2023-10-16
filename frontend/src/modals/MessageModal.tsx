@@ -11,8 +11,15 @@ import { Ionicons } from '../lib/@expo/vector-icons';
 import useColorScheme from '../hooks/useColorScheme';
 import { useMessengerContentMutation } from '../hooks/lists/useMessengerContentList';
 import useModalEffect from '../hooks/useModalEffect';
+import { EditorContent, MessengerContent } from '../types';
 
-export default function MessageModal({id,  content, isOwner, isTimer}:{id:number, content:string, isOwner:boolean, isTimer:boolean}) {
+const regexForStripHTML = /<\/?[^>]*>/gi;
+
+export default function MessageModal({content, isOwner}:{content:MessengerContent, isOwner:boolean}) {
+  const message = content.message_set[0]
+  const editorContents = (content.attatchment_set.filter(v=>v.type=='editor') as EditorContent[])
+  const editor  = editorContents.length>0?editorContents[0]:undefined
+  const fullContent = editor?[message.content, editor.description.replaceAll(regexForStripHTML, '')].join('\n'):message.content
   const { lang } = useLangContext()
   const { setModal } = useModalsContext()
   const theme = useColorScheme()
@@ -34,8 +41,9 @@ export default function MessageModal({id,  content, isOwner, isTimer}:{id:number
       <View style={{flex:1}}/>
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
-      <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('copy')} onPress={()=>{Clipboard.setString(content);back()}}/>
-      {isOwner && isTimer && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete timer')} onPress={()=>{contentMutation.patch({id, timer:null});back()}}/>}
-      {isOwner && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete')} onPress={()=>{contentMutation.patch({id, is_archive:true});back()}}/>}
+      <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('copy')} onPress={()=>{Clipboard.setString(fullContent);back()}}/>
+      {editor && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('copy content with format')} onPress={()=>{Clipboard.setString(editor.description);back()}}/>}
+      {isOwner && content.timer && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete timer')} onPress={()=>{contentMutation.patch({id:content.id, timer:null});back()}}/>}
+      {isOwner && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete')} onPress={()=>{contentMutation.patch({id:content.id, is_archive:true});back()}}/>}
   </BottomSheet>
 }

@@ -12,7 +12,9 @@ export default (props:EditorProps) => {
         init={{
           plugins: INIT.plugins,
           toolbar: INIT.toolbar,
-          min_height: 320,
+          height: '100%',
+          skin: props.theme=='light'?'oxide':'oxide-dark',
+          content_css: props.theme=='light'?'default':'dark',
           menubar: false,
           branding: false,
           statusbar: false,

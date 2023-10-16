@@ -29,6 +29,7 @@ const TimerTag = (props:{data:MessengerContent, now:dayjs.Dayjs, isExpand:boolea
     const start = dayjs(props.data.created)
     const end = dayjs(props.data.timer)
     const ratio = (start.diff(props.now)/start.diff(end))
+    const message = props.data.message_set[0]
     return <TouchableOpacity onPress={()=>props.setExpand(props.isExpand?undefined:props.data.id)}>
         <View style={{backgroundColor:'lightgray', borderRadius:20, overflow:'hidden', margin:5}}>
             <View style={{backgroundColor:'darkgray', position:'absolute', width:`${ratio*100}%`, height:'100%'}}/>
@@ -45,7 +46,7 @@ const TimerTag = (props:{data:MessengerContent, now:dayjs.Dayjs, isExpand:boolea
                 </View>}
                 {/* @ts-ignore */}
                 <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                    <Text selectable>{props.data.message_set[0].content}</Text>
+                    <Text selectable>{message.preview_content || message.content}</Text>
                 </Hyperlink>
             </View>:    
             <View style={{paddingVertical:5, paddingHorizontal:5, flexDirection:'row'}}>

@@ -14,7 +14,7 @@ import CommonSection from "../../../components/CommonSection";
 import Hyperlink from "react-native-hyperlink";
 import { timerToString } from "./TimerTags";
 import useViewerContentList from "../../../hooks/lists/useMessengerViewerList";
-import RenderHTML from "react-native-render-html";
+import EditorPreview from "../../../components/EditorPreview";
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean})=>{
     const isMobile = useIsMobile()
@@ -35,7 +35,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           const isSelf = props.ownerId == content.user
           const dayChanged = next==undefined || date != next.created.slice(0, 10)
           const message = content.message_set[0]
-          const openModal = ()=>setModal(MessageModal, {id:content.id, content:message.content, isOwner:isSelf, isTimer:content.timer?true:false})
+          const openModal = ()=>setModal(MessageModal, {content, isOwner:isSelf})
           if (isSystem)
             return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
               <Text>{message.content}</Text>
@@ -51,22 +51,20 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                     <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
                   </View>}
                   {/* @ts-ignore */}
-                  <View style={{width:"100%", wordBreak:"break-word"}}>
-                    {message.use_editor?
-                      <RenderHTML contentWidth={320} source={{'html':message.content}}  tagsStyles = {{p:{}}}/>:(
-                      <Hyperlink linkDefault={ true } linkStyle={{color: '#12b886'}}>
-                        <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
-                      </Hyperlink>)}
-                  </View>
-                {
-                  content.attatchment_set.map((attatchment, aIndex)=>{
-                    if (attatchment.type=='file')
-                      return <FilePreview key={aIndex} file={attatchment} isMobile={isMobile} showBorder={false}/>
-                    if (attatchment.type=='link')
-                      return <LinkPreview key={aIndex} link={attatchment} isMobile={isMobile}/>
-                  })
-                }
-                </TouchableOpacity>        
+                  <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
+                    <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
+                  </Hyperlink> 
+                  {
+                    content.attatchment_set.map((attatchment, aIndex)=>{
+                      if (attatchment.type=='editor')
+                        return <EditorPreview key={aIndex} content={attatchment}/>
+                      if (attatchment.type=='file')
+                        return <FilePreview key={aIndex} file={attatchment} isMobile={isMobile} showBorder={false}/>
+                      if (attatchment.type=='link')
+                        return <LinkPreview key={aIndex} link={attatchment} isMobile={isMobile}/>
+                    })
+                  }
+                </TouchableOpacity>
               </CommonSection>
             </View>
           </View>
