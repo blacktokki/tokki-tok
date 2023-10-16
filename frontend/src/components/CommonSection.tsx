@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
       marginTop:4
     },
     separator: {
-      marginBottom: 20,
+      marginBottom: 0,
       height: 1,
       width: '100%',
     },

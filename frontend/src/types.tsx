@@ -116,7 +116,10 @@ export type EditMessage = Message & {
   user?:number
   timer?:string
   file?:Blob
-  editor?:string
+  editor?:{
+    title:string,
+    content:string
+  }
 }
 
 export type File = {
@@ -137,6 +140,7 @@ export type Link = {
 
 export type EditorContent = {
   type: 'editor',
+  title: string,
   description:string,
 }
 

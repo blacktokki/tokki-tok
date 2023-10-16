@@ -14,7 +14,7 @@
     "mobile:android": "expo build:android",
     "github": "npx expo export:web && replace-in-file --configFile=scripts/seo.js && gh-pages -d web-build",
     "pwa": "npx expo-pwa icon --platform chrome -i src/assets/images/icon.png",
-    "tinymce": "copyfiles -u 1 'node_modules/tinymce/**/*.min.*' web",
+    "tinymce": "copyfiles -u 1 \"node_modules/tinymce/**/*.min.*\" web",
     "desktop:mac": "electron-webpack && electron-builder --dir -c.compression=store -c.mac.identity=null",
     "desktop:windows": ".\\node_modules\\.bin\\electron-webpack.cmd && electron-builder --dir -c.compression=store",
     "mac": "electron-webpack && electron-builder --mac -c.compression=store",

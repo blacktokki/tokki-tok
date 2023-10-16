@@ -68,7 +68,12 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const theme = useColorScheme()
   const postValue = ()=>{
     if (value.length>0){
-      contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer, editor: isEditor?editorValue:undefined})
+      if(isEditor){
+        contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', timer, editor: {title:value, content:editorValue}})
+      }
+      else{
+        contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer})
+      }
       setTimer(undefined)
       setBottomTab(false)
       setValue('')
