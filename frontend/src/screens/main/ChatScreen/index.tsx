@@ -84,6 +84,12 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       }
     }
   }
+  const moveToEditor = (title:string, content:string)=>{
+    setIsEditor(false)
+    setValue(value.concat(value.length>0?"\n":"", title))
+    setEditorValue(editorValue.concat("\r\n", content))
+    setIsEditor(true)
+  }
   const contentMutation = useMessengerContentMutation()
 
   useLayoutEffect(() => {
@@ -139,7 +145,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   ]}>
     <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
     <View style={[videoMode?{flexShrink:1}:{flex:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
-      <Messages channel_id={channel_id} auth={auth} reverse/>
+      <Messages channel_id={channel_id} auth={auth} reverse moveToEditor={moveToEditor}/>
       <View style={{position:'absolute', flexDirection:'row'}}>
         <UploadTags channel_id={channel_id}/>
         <TimerTags channel_id={channel_id}/>
