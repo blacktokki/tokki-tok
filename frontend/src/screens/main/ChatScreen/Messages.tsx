@@ -15,10 +15,10 @@ import Hyperlink from "react-native-hyperlink";
 import { timerToString } from "./TimerTags";
 import useViewerContentList from "../../../hooks/lists/useMessengerViewerList";
 import EditorPreview from "../../../components/EditorPreview";
+import { MessengerContent } from "../../../types";
 
-const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean, moveToEditor?:(t:string, c:string)=>void})=>{
+const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean, getOnPress?:(content:MessengerContent)=>()=>void})=>{
     const isMobile = useIsMobile()
-    const { setModal } = useModalsContext()
     let nextPage = props.next;
       while(nextPage?.next && nextPage.current.length==0){
         nextPage = nextPage.next
@@ -35,7 +35,6 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           const isSelf = props.ownerId == content.user
           const dayChanged = next==undefined || date != next.created.slice(0, 10)
           const message = content.message_set[0]
-          const openModal = ()=>setModal(MessageModal, {content, isOwner:isSelf, moveToEditor:props.moveToEditor})
           if (isSystem)
             return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
               <Text>{message.content}</Text>
@@ -45,7 +44,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
             <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
               {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
               <CommonSection autoScale outerContainerStyle={{maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
-                <TouchableOpacity onLongPress={openModal}>
+                <TouchableOpacity onLongPress={props.getOnPress?.(content)}>
                   {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
                     <Text style={{fontSize:12}}>⌚</Text>
                     <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
@@ -73,17 +72,18 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
   
   })
 
-export default (props:{channel_id:number, auth?:Auth, reverse?:boolean, moveToEditor?:(t:string, c:string)=>void})=>{
-    console.log('TODO 리렌더링 최적화 필요')
+export default (props:{channel_id:number, auth?:Auth, reverse?:boolean, sendToScreen?:(e:any)=>void})=>{
     const height = useRef(0)
     const {data, fetchNextPage } = props.auth?useMessengerContentList(props.channel_id):useViewerContentList(props.channel_id)
     const ownerId = useMemo(()=>props.auth?.user?.id, [props.auth])
+    const { setModal } = useModalsContext()
+    const getOnPress = (content: MessengerContent)=>()=>setModal(MessageModal, {content, isOwner:ownerId == content.user, sendToScreen:props.sendToScreen})
     const renderItem = useCallback(({item, index}:{item:MessengerContentPage, index:number})=><MessengerContentPageItem 
       {...item} 
       ownerId={ownerId} 
       reverse={props.reverse}
-      moveToEditor={props.moveToEditor}  
-    />, [ownerId,  props.moveToEditor])
+      getOnPress={getOnPress}  
+    />, [ownerId,  props.sendToScreen])
     return <FlatList
         style={{flexDirection: props.reverse?'column-reverse':'column'}}
         contentContainerStyle={{padding:10, flexGrow:1, flexDirection: props.reverse?'column-reverse':'column'}}

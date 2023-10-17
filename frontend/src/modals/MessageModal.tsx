@@ -15,7 +15,7 @@ import { EditorContent, MessengerContent } from '../types';
 
 const regexForStripHTML = /<\/?[^>]*>/gi;
 
-export default function MessageModal({content, isOwner, moveToEditor}:{content:MessengerContent, isOwner:boolean, moveToEditor?:(t:string, c:string)=>void}) {
+export default function MessageModal({content, isOwner, sendToScreen}:{content:MessengerContent, isOwner:boolean, sendToScreen?:(e:{value:string, editorValue:string})=>void}) {
   const message = content.message_set[0]
   const editorContents = (content.attatchment_set.filter(v=>v.type=='editor') as EditorContent[])
   const editor  = editorContents.length>0?editorContents[0]:undefined
@@ -42,7 +42,7 @@ export default function MessageModal({content, isOwner, moveToEditor}:{content:M
     </View>
     <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
       <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('copy')} onPress={()=>{Clipboard.setString(fullContent);back()}}/>
-      {editor && moveToEditor && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('move to editor')} onPress={()=>{moveToEditor(editor.title, editor.description);back()}}/>}
+      {editor && sendToScreen && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} title={lang('move to editor')} onPress={()=>{sendToScreen({value:editor.title, editorValue:editor.description});back()}}/>}
       {isOwner && content.timer && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete timer')} onPress={()=>{contentMutation.patch({id:content.id, timer:null});back()}}/>}
       {isOwner && <CommonButton style={{height:40, width:'100%', maxWidth:320, justifyContent:'center'}} textStyle={{color:'red'}} title={lang('delete')} onPress={()=>{contentMutation.patch({id:content.id, is_archive:true});back()}}/>}
   </BottomSheet>

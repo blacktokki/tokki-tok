@@ -63,6 +63,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const [videoMode, setVideoMode] = useState<boolean>(false)
   const [bottomTab, setBottomTab] = useState<boolean>(false)
   const [isEditor, setIsEditor] = useState<boolean>(false)
+  const [messageEvent, sendToScreen] = useState<{value:string, editorValue:string}>()
   const valueLines = useMemo(()=>bottomTab?1:value.split("\n").length, [value, bottomTab])
 
   const theme = useColorScheme()
@@ -84,12 +85,15 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
       }
     }
   }
-  const moveToEditor = (title:string, content:string)=>{
-    setIsEditor(false)
-    setValue(value.concat(value.length>0?"\n":"", title))
-    setEditorValue(editorValue.concat("\r\n", content))
-    setIsEditor(true)
-  }
+  useEffect(()=>{
+    if(messageEvent){
+      setIsEditor(false)
+      setValue(value.concat(value.length>0?"\n":"", messageEvent.value))
+      setEditorValue(editorValue.concat("\r\n", messageEvent.editorValue))
+      sendToScreen(undefined)
+      setIsEditor(true)
+    }
+  }, [messageEvent, value, editorValue])
   const contentMutation = useMessengerContentMutation()
 
   useLayoutEffect(() => {
@@ -98,9 +102,10 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
         {title:lang('invite'), onPress:()=>setModal(InviteModal, {id:channel_id})},
         {title:lang('setting'), onPress:()=>setModal(ChannelEditModal, {id:channel_id, type:'messenger', member_id})}
       ]}/>,
-      title: channelAvatar?.name
+      title: channelAvatar?.name,
+      headerShown:!(windowType=='portrait' && isEditor)
     });
-  }, [navigation, route, member_id, locale]);
+  }, [navigation, route, member_id, locale, windowType, isEditor]);
 
   const back = ()=>{
     if(navigation.canGoBack())
@@ -145,16 +150,16 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   ]}>
     <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
     <View style={[videoMode?{flexShrink:1}:{flex:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}>
-      <Messages channel_id={channel_id} auth={auth} reverse moveToEditor={moveToEditor}/>
+      <Messages channel_id={channel_id} auth={auth} reverse sendToScreen={sendToScreen}/>
       <View style={{position:'absolute', flexDirection:'row'}}>
         <UploadTags channel_id={channel_id}/>
         <TimerTags channel_id={channel_id}/>
       </View>
       <ThemedView style={[{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}, isEditor?{height:windowType=='landscape'?'50%':'100%'}:{}]}>
         <View style={{alignItems:'center', width:'100%',flexDirection:'row'}}>
-          <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>{setBottomTab(!bottomTab)}}>
+          <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>{isEditor?setIsEditor(false):setBottomTab(!bottomTab)}}>
             <View style={{top:-2}}>
-              <Entypo name={bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
+              <Entypo name={isEditor || bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
             </View>
           </CommonButton>
           {timer && <CommonButton style={{height:'100%', paddingTop:8, borderRadius:0}} title={`⌚${timerFormat(timer)}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>}
@@ -163,7 +168,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
               value={value} 
               onChangeText={setValue}
               onKeyPress={onKeyPress}
-              style={{flex:1, borderWidth:1, minHeight:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text}}
+              style={{flex:1, borderWidth:1, minHeight:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text, paddingVertical:2, paddingHorizontal:4}}
               onFocus={()=>setBottomTab(false)}
               multiline 
               numberOfLines={valueLines}/>

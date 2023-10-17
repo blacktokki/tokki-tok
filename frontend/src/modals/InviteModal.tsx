@@ -1,5 +1,4 @@
 import React, {useRef,MutableRefObject, useMemo, useState, useEffect } from 'react';
-import Clipboard from '@react-native-clipboard/clipboard/dist';
 import { View, Text } from '../components/Themed';
 import useAuthContext from '../hooks/useAuthContext';
 import useUserMembershipList from '../hooks/lists/useUserMembershipList';
@@ -11,7 +10,7 @@ import useExternalMembershipList from '../hooks/lists/useExternalMembershipList'
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
 import TabView from '../components/TabView';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import useLangContext from '../hooks/useLangContext';
 import MemberItem from '../components/MemberItem';
 import ModalSection from '../components/ModalSection';
@@ -87,7 +86,6 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const { lang } = useLangContext()
   const [value, setValue] = useState('')
   const [keyword, setKeyword] = useState('')
-  const [copied, setCopied] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
