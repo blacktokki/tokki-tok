@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MutableRefObject } from 'react'
 import { Image, Linking } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import CommonSection from "./CommonSection"
@@ -7,10 +7,10 @@ import { Link } from "../types"
 
 
 
-export default ({link, isMobile}:{link:Link, isMobile:boolean})=>{
+export default ({link, isMobile, touchableRef}:{link:Link, isMobile:boolean, touchableRef:MutableRefObject<()=>boolean>})=>{
     return <CommonSection containerStyle={{marginHorizontal:0}} bodyStyle={{padding:0}}>
     <TouchableOpacity 
-        onPress={()=>Linking.openURL(link.url)}
+        onPress={()=>touchableRef.current() && Linking.openURL(link.url)}
         onLongPress={()=>{}}
         style={{width:'100%', flexDirection:'row'}}
     >

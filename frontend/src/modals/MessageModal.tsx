@@ -12,8 +12,9 @@ import useColorScheme from '../hooks/useColorScheme';
 import { useMessengerContentMutation } from '../hooks/lists/useMessengerContentList';
 import useModalEffect from '../hooks/useModalEffect';
 import { EditorContent, MessengerContent } from '../types';
+import { regexForStripHTML } from '../components/EditorPreview';
 
-const regexForStripHTML = /<\/?[^>]*>/gi;
+
 
 export default function MessageModal({content, isOwner, sendToScreen}:{content:MessengerContent, isOwner:boolean, sendToScreen?:(e:{value:string, editorValue:string})=>void}) {
   const message = content.message_set[0]

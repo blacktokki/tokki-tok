@@ -168,7 +168,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
               value={value} 
               onChangeText={setValue}
               onKeyPress={onKeyPress}
-              style={{flex:1, borderWidth:1, minHeight:40, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text, paddingVertical:2, paddingHorizontal:4}}
+              style={{flex:1, borderWidth:1, minHeight:41, borderColor:Colors.borderColor, backgroundColor:Colors[theme].background, color:Colors[theme].text, paddingVertical:1, paddingHorizontal:3}}
               onFocus={()=>setBottomTab(false)}
               multiline 
               numberOfLines={valueLines}/>

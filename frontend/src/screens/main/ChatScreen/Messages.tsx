@@ -18,14 +18,20 @@ import EditorPreview from "../../../components/EditorPreview";
 import { MessengerContent } from "../../../types";
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean, getOnPress?:(content:MessengerContent)=>()=>void})=>{
+    const lastTouchRef = useRef(Date.now()) 
+    const touchableRef = useRef(()=>{
+      return Date.now() - lastTouchRef.current > 350
+    })
     const isMobile = useIsMobile()
     let nextPage = props.next;
       while(nextPage?.next && nextPage.current.length==0){
         nextPage = nextPage.next
       }
       const nextContent = nextPage?.current[0]
-      return <View style={{flexDirection: props.reverse?'column-reverse':'column'}}>
-        
+      return <View 
+        style={{flexDirection: props.reverse?'column-reverse':'column'}}
+        onTouchMove={()=>{lastTouchRef.current=Date.now()}}
+      >  
         {props.current.map((content, index2)=>{
           const next = index2 + 1 < props.current.length?props.current[index2+1]:nextContent
           const created:string = content.created.slice(0, 16)
@@ -50,7 +56,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                     <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
                   </View>}
                   {/* @ts-ignore */}
-                  <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
+                  <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}} onPress={touchableRef.current()?undefined:()=>{}}>
                     <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
                   </Hyperlink> 
                   {
@@ -58,9 +64,9 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                       if (attatchment.type=='editor')
                         return <EditorPreview key={aIndex} content={attatchment}/>
                       if (attatchment.type=='file')
-                        return <FilePreview key={aIndex} file={attatchment} isMobile={isMobile} showBorder={false}/>
+                        return <FilePreview key={aIndex} file={attatchment} isMobile={isMobile} showBorder={false} touchableRef={touchableRef}/>
                       if (attatchment.type=='link')
-                        return <LinkPreview key={aIndex} link={attatchment} isMobile={isMobile}/>
+                        return <LinkPreview key={aIndex} link={attatchment} isMobile={isMobile} touchableRef={touchableRef}/>
                     })
                   }
                 </TouchableOpacity>
@@ -83,7 +89,7 @@ export default (props:{channel_id:number, auth?:Auth, reverse?:boolean, sendToSc
       ownerId={ownerId} 
       reverse={props.reverse}
       getOnPress={getOnPress}  
-    />, [ownerId,  props.sendToScreen])
+    />, [ownerId])
     return <FlatList
         style={{flexDirection: props.reverse?'column-reverse':'column'}}
         contentContainerStyle={{padding:10, flexGrow:1, flexDirection: props.reverse?'column-reverse':'column'}}

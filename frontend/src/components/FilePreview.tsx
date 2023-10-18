@@ -1,5 +1,5 @@
-import React from 'react'
-import { Image, Linking, TextStyle } from "react-native"
+import React, { MutableRefObject } from 'react'
+import { Image, Linking } from "react-native"
 import {TouchableOpacity} from "react-native-gesture-handler"
 import CommonSection from "./CommonSection"
 import { FontAwesome } from '../lib/@expo/vector-icons'; 
@@ -14,11 +14,11 @@ function humanFileSize(size:number) {
   }
   
 
-export default ({file, isMobile, showBorder}:{file:File, isMobile:boolean, showBorder:ConstrainBoolean})=>{
+export default ({file, isMobile, showBorder, touchableRef}:{file:File, isMobile:boolean, showBorder:ConstrainBoolean, touchableRef:MutableRefObject<()=>boolean>})=>{
     const theme = useColorScheme()
     return <CommonSection containerStyle={{marginHorizontal:0}} bodyStyle={showBorder?{padding:10}:{borderWidth:0, padding:0}}>
     <TouchableOpacity 
-        onPress={()=>Linking.openURL(file.file)} 
+        onPress={()=>touchableRef.current() && Linking.openURL(file.file)} 
         onLongPress={()=>{}}
         style={{flexDirection:'row', alignItems:'flex-start', width:'100%'}} 
     >
