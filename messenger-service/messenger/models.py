@@ -70,7 +70,6 @@ class Message(ContentMixin, models.Model):
     content = models.TextField(db_column='ms_content', null=True, blank=True, help_text='내용')
     preview_content = models.CharField(db_column='ms_preview_content', max_length=128, null=True, blank=True,
                                        help_text='미리보기 내용')
-    use_editor = models.BooleanField(db_column='ms_use_editor', default=False, help_text='에디터 사용')
 
     class Meta:
         db_table = "message"
@@ -83,7 +82,8 @@ def upload_to(instance, filename):
 class Attatchment(ContentMixin, models.Model):
     TYPES = (
         ('file', '파일'),
-        ('link', '링크')
+        ('link', '링크'),
+        ('editor', '에디터')
     )
 
     channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
