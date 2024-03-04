@@ -83,7 +83,7 @@
     "@types/xdate": "^0.8.32",
     "copyfiles": "^2.4.1",
     "electron": "^9.4.0",
-    "electron-builder": "^22.11.7",
+    "electron-builder": "^24.13.3",
     "gh-pages": "^3.2.2",
     "jest-expo": "~41.0.0",
     "npm-link-shared": "^0.5.6",
