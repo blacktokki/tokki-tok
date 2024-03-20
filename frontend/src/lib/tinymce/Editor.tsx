@@ -10,6 +10,7 @@ export default (props:EditorProps) => {
         onInit={(e, editor) => {props.onReady?.()}}
         onEditorChange={props.setValue}
         init={{
+          setup:INIT.setup,
           plugins: INIT.plugins,
           toolbar: INIT.toolbar,
           height: '100%',
