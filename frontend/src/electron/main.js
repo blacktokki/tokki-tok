@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 
@@ -60,6 +60,13 @@ app.on('activate', () => {
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
   mainWindow = createMainWindow();
+  const filter = {
+    urls: ['ws://*/messenger/*', 'wss://*/messenger/*']
+  };
+  session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+      details.requestHeaders['Origin'] = null;
+      callback({ requestHeaders: details.requestHeaders })
+  });
 });
 
 app.disableHardwareAcceleration();
