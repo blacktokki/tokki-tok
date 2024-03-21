@@ -1,1 +1,1 @@
-editorConfig={plugins:"image link charmap advlist lists paste",toolbar:"fontsizeselect | bold italic underline strikethrough | undo redo | alignleft aligncenter alignright | bullist numlist | link"},"undefined"!==typeof module&&(module.exports=editorConfig);
+editorConfig={plugins:"image link charmap advlist lists paste",toolbar:"fontsizeselect | bold italic underline strikethrough | undo redo | alignleft aligncenter alignright | bullist numlist | link",setup:i=>{}},"undefined"!==typeof module&&(module.exports=editorConfig);
