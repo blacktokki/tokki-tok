@@ -25,7 +25,6 @@
             tinymce.init({
                 selector: '#mytextarea',
                 setup:function(ed) {
-                    editorConfig.setup(tinymce)
                     ed.on('change input compositionend setcontent CommentChange NewBlock', function(e) {
                         send(ed.getContent({format: 'raw'}))
                     });
