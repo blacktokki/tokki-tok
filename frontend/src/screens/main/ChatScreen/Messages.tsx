@@ -11,11 +11,11 @@ import LinkPreview from '../../../components/LinkPreview';
 import FilePreview from '../../../components/FilePreview';
 import MessageModal from '../../../modals/MessageModal';
 import CommonSection from "../../../components/CommonSection";
-import Hyperlink from "react-native-hyperlink";
 import { timerToString } from "./TimerTags";
 import useViewerContentList from "../../../hooks/lists/useMessengerViewerList";
 import EditorPreview from "../../../components/EditorPreview";
 import { MessengerContent } from "../../../types";
+import MessageContentView from "../../../components/MessageContentView";
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean, getOnPress?:(content:MessengerContent)=>()=>void})=>{
     const lastTouchRef = useRef(Date.now()) 
@@ -55,10 +55,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                     <Text style={{fontSize:12}}>⌚</Text>
                     <Text style={{fontSize:12}} selectable={!isMobile}>{timerToString(content.timer)}</Text>
                   </View>}
-                  {/* @ts-ignore */}
-                  <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}} onPress={touchableRef.current()?undefined:()=>{}}>
-                    <Text selectable={!isMobile} style={{textAlign:isSelf?'right':'left'}}>{message.content}</Text>
-                  </Hyperlink> 
+                  <MessageContentView selectable={!isMobile} textStyle={{textAlign:isSelf?'right':'left'}} onPressLink={touchableRef.current()?undefined:()=>{}} content={message.content}/>
                   {
                     content.attatchment_set.map((attatchment, aIndex)=>{
                       if (attatchment.type=='editor')

@@ -6,6 +6,7 @@ import useTimerMessageContentList from "../../../hooks/lists/useTimerMessageCont
 import { MessengerContent } from "../../../types";
 import Avatar from "../../../components/Avatar";
 import Hyperlink from "react-native-hyperlink";
+import MessageContentView from "../../../components/MessageContentView";
 
 export function timerFormat(datetime:string){
     return _timerFormat(dayjs(datetime), dayjs())
@@ -45,9 +46,7 @@ const TimerTag = (props:{data:MessengerContent, now:dayjs.Dayjs, isExpand:boolea
                     <Text selectable>{timerToString(props.data.timer)}</Text>
                 </View>}
                 {/* @ts-ignore */}
-                <Hyperlink linkDefault={ true } style={{wordBreak:"break-word"}} linkStyle={{color: '#12b886'}}>
-                    <Text selectable>{message.preview_content || message.content}</Text>
-                </Hyperlink>
+                <MessageContentView selectable content={message.preview_content || message.content}/>
             </View>:    
             <View style={{paddingVertical:5, paddingHorizontal:5, flexDirection:'row'}}>
                 <Avatar name={props.data.name} userId={props.data.user} size={20}/>
