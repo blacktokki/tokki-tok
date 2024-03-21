@@ -2,14 +2,14 @@
   "files": {
     "static/js/0.d1de15a2.chunk.js": "/tokki-tok/static/js/0.d1de15a2.chunk.js",
     "static/js/0.d1de15a2.chunk.js.map": "/tokki-tok/static/js/0.d1de15a2.chunk.js.map",
-    "static/js/1.99a20f5c.chunk.js": "/tokki-tok/static/js/1.99a20f5c.chunk.js",
-    "static/js/1.99a20f5c.chunk.js.map": "/tokki-tok/static/js/1.99a20f5c.chunk.js.map",
+    "static/js/1.9f5c5e29.chunk.js": "/tokki-tok/static/js/1.9f5c5e29.chunk.js",
+    "static/js/1.9f5c5e29.chunk.js.map": "/tokki-tok/static/js/1.9f5c5e29.chunk.js.map",
     "static/js/2.682e9a15.chunk.js": "/tokki-tok/static/js/2.682e9a15.chunk.js",
     "static/js/2.682e9a15.chunk.js.map": "/tokki-tok/static/js/2.682e9a15.chunk.js.map",
     "app.js": "/tokki-tok/static/js/app.afb61016.chunk.js",
     "app.js.map": "/tokki-tok/static/js/app.afb61016.chunk.js.map",
-    "runtime~app.js": "/tokki-tok/static/js/runtime~app.e4a8368d.js",
-    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.e4a8368d.js.map",
+    "runtime~app.js": "/tokki-tok/static/js/runtime~app.d4204a1b.js",
+    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.d4204a1b.js.map",
     "static/js/5.5e11c75d.chunk.js": "/tokki-tok/static/js/5.5e11c75d.chunk.js",
     "static/js/5.5e11c75d.chunk.js.map": "/tokki-tok/static/js/5.5e11c75d.chunk.js.map",
     "static/js/6.21741adb.chunk.js": "/tokki-tok/static/js/6.21741adb.chunk.js",
@@ -53,7 +53,7 @@
     "index.html": "/tokki-tok/index.html",
     "manifest.json": "/tokki-tok/manifest.json",
     "serve.json": "/tokki-tok/serve.json",
-    "static/js/1.99a20f5c.chunk.js.LICENSE.txt": "/tokki-tok/static/js/1.99a20f5c.chunk.js.LICENSE.txt",
+    "static/js/1.9f5c5e29.chunk.js.LICENSE.txt": "/tokki-tok/static/js/1.9f5c5e29.chunk.js.LICENSE.txt",
     "static/js/5.5e11c75d.chunk.js.LICENSE.txt": "/tokki-tok/static/js/5.5e11c75d.chunk.js.LICENSE.txt",
     "static/js/6.21741adb.chunk.js.LICENSE.txt": "/tokki-tok/static/js/6.21741adb.chunk.js.LICENSE.txt",
     "static/js/7.40e9abaa.chunk.js.LICENSE.txt": "/tokki-tok/static/js/7.40e9abaa.chunk.js.LICENSE.txt",
@@ -144,7 +144,7 @@
     "viewer.html": "/tokki-tok/viewer.html"
   },
   "entrypoints": [
-    "static/js/runtime~app.e4a8368d.js",
+    "static/js/runtime~app.d4204a1b.js",
     "static/js/6.21741adb.chunk.js",
     "static/js/app.afb61016.chunk.js"
   ]
