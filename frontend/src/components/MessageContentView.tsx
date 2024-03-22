@@ -46,7 +46,7 @@ const MessageContentView = (props:MessageContentProps  & {content?:string})=>{
             const depth = subContentSplit[0].length - subContentSplit[0].trimStart().length
             const subContent = subContentSplit.map(t=>{
                 const d = t.length - t.trimStart().length
-                return ''.repeat(Math.max(0, d - depth)) + t.trimStart()
+                return ' '.repeat(Math.max(0, d - depth)) + t.trimStart()
             }).join('\n')
             children.push(<Accordion  key={children.length} {...props} title={titleMatch?.[0].slice(2) || ''} body={subContent}/>)
             content = content.slice((match.index || 0) + match[0].length)
