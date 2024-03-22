@@ -4,16 +4,16 @@
     "static/js/0.3491de48.chunk.js.map": "/tokki-tok/static/js/0.3491de48.chunk.js.map",
     "static/js/1.52ff215d.chunk.js": "/tokki-tok/static/js/1.52ff215d.chunk.js",
     "static/js/1.52ff215d.chunk.js.map": "/tokki-tok/static/js/1.52ff215d.chunk.js.map",
-    "static/js/2.840719a3.chunk.js": "/tokki-tok/static/js/2.840719a3.chunk.js",
-    "static/js/2.840719a3.chunk.js.map": "/tokki-tok/static/js/2.840719a3.chunk.js.map",
+    "static/js/2.ae2e16f7.chunk.js": "/tokki-tok/static/js/2.ae2e16f7.chunk.js",
+    "static/js/2.ae2e16f7.chunk.js.map": "/tokki-tok/static/js/2.ae2e16f7.chunk.js.map",
     "app.js": "/tokki-tok/static/js/app.41f102cb.chunk.js",
     "app.js.map": "/tokki-tok/static/js/app.41f102cb.chunk.js.map",
-    "runtime~app.js": "/tokki-tok/static/js/runtime~app.33578044.js",
-    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.33578044.js.map",
+    "runtime~app.js": "/tokki-tok/static/js/runtime~app.b57e5571.js",
+    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.b57e5571.js.map",
     "static/js/5.4660eaab.chunk.js": "/tokki-tok/static/js/5.4660eaab.chunk.js",
     "static/js/5.4660eaab.chunk.js.map": "/tokki-tok/static/js/5.4660eaab.chunk.js.map",
-    "static/js/6.28f89483.chunk.js": "/tokki-tok/static/js/6.28f89483.chunk.js",
-    "static/js/6.28f89483.chunk.js.map": "/tokki-tok/static/js/6.28f89483.chunk.js.map",
+    "static/js/6.e6a765ea.chunk.js": "/tokki-tok/static/js/6.e6a765ea.chunk.js",
+    "static/js/6.e6a765ea.chunk.js.map": "/tokki-tok/static/js/6.e6a765ea.chunk.js.map",
     "static/js/7.075d715a.chunk.js": "/tokki-tok/static/js/7.075d715a.chunk.js",
     "static/js/7.075d715a.chunk.js.map": "/tokki-tok/static/js/7.075d715a.chunk.js.map",
     "static/js/8.4556d679.chunk.js": "/tokki-tok/static/js/8.4556d679.chunk.js",
@@ -55,7 +55,7 @@
     "serve.json": "/tokki-tok/serve.json",
     "static/js/1.52ff215d.chunk.js.LICENSE.txt": "/tokki-tok/static/js/1.52ff215d.chunk.js.LICENSE.txt",
     "static/js/5.4660eaab.chunk.js.LICENSE.txt": "/tokki-tok/static/js/5.4660eaab.chunk.js.LICENSE.txt",
-    "static/js/6.28f89483.chunk.js.LICENSE.txt": "/tokki-tok/static/js/6.28f89483.chunk.js.LICENSE.txt",
+    "static/js/6.e6a765ea.chunk.js.LICENSE.txt": "/tokki-tok/static/js/6.e6a765ea.chunk.js.LICENSE.txt",
     "static/js/7.075d715a.chunk.js.LICENSE.txt": "/tokki-tok/static/js/7.075d715a.chunk.js.LICENSE.txt",
     "static/js/8.4556d679.chunk.js.LICENSE.txt": "/tokki-tok/static/js/8.4556d679.chunk.js.LICENSE.txt",
     "tinymce/icons/default/icons.min.js": "/tokki-tok/tinymce/icons/default/icons.min.js",
@@ -144,8 +144,8 @@
     "viewer.html": "/tokki-tok/viewer.html"
   },
   "entrypoints": [
-    "static/js/runtime~app.33578044.js",
-    "static/js/6.28f89483.chunk.js",
+    "static/js/runtime~app.b57e5571.js",
+    "static/js/6.e6a765ea.chunk.js",
     "static/js/app.41f102cb.chunk.js"
   ]
 }
