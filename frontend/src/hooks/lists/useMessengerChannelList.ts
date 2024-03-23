@@ -27,7 +27,7 @@ export default function useMessengerChannelList(type:string, auth?:Auth){
         }))
       }
       // if(lastJsonMessage['type']=='leave'){
-      //   queryClient.setQueryData<Channel[]>("MessengerChannelList", (_data)=>_data?.filter(v=>v.id!=lastJsonMessage['data']['channel_id']) || [])
+      //   queryClient.setQueryData<Channel[]>(["MessengerChannelList", type], (_data)=>_data?.filter(v=>v.id!=lastJsonMessage['data']['channel_id']) || [])
       // }
     }
   }, [lastJsonMessage])

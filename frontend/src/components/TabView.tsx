@@ -8,7 +8,7 @@ import { TabViewRecord } from '../types';
 
 export default (props:{tabs:TabViewRecord, tabBarPosition:"top"|"bottom", index?:number, onTab?:(index:number)=>void})=>{
   const { lang } = useLangContext()
-  const [index, setIndex] = React.useState(props.index || 0);
+  const index = props.index || 0
   const theme = useColorScheme()
   const entries = Object.entries(props.tabs)
   const onTab = props.onTab
@@ -28,8 +28,9 @@ export default (props:{tabs:TabViewRecord, tabBarPosition:"top"|"bottom", index?
       />
     }}
     navigationState={{ index, routes: entries.map(([k, v])=>({key:k, title:lang(v.title)}))}}
-    onIndexChange={setIndex}
+    onIndexChange={(v)=>{onTab?.(v)}}
     renderScene={SceneMap(Object.assign({}, ...entries.map(([k, v])=>({[k]:v.component}))))}
+    swipeEnabled={false}
     tabBarPosition={props.tabBarPosition}
   />
 }

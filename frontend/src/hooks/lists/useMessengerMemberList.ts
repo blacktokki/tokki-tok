@@ -17,7 +17,7 @@ export function useMessengerMemberMutation(){
 
   const leave = useMutation(deleteMessengerMember, {
     onSuccess: () => {
-      queryClient.invalidateQueries("MessengerChannelList")
+      queryClient.invalidateQueries("ChannelList")
       queryClient.invalidateQueries("MessengerMemberList")
     }
   })

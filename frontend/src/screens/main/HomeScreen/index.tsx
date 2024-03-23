@@ -78,10 +78,10 @@ const MessengerTabView = ()=>{
   return renderChannelTabView((id)=>navigate("ChatScreen", {id}), channelList, auth.user)
 }
 
-const MyContentTabView = ()=>{
+const MyMessageTabView = ()=>{
   const {auth} = useAuthContext()
   const channelList = useMessengerChannelSorted('mycontent', auth)
-  return renderChannelTabView((id)=>navigate("MyContentScreen", {id}), channelList, auth.user)
+  return renderChannelTabView((id)=>navigate("MyMessageScreen", {id}), channelList, auth.user)
 }
 
 
@@ -106,8 +106,8 @@ const getBottomTabs = (theme:'light'|'dark')=>{
         icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
     },
     ThreeTab:{
-      title:'my content',
-      component:MyContentTabView,
+      title:'my messages',
+      component:MyMessageTabView,
       icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
   },
     FourTab:{
@@ -130,7 +130,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const options = [
     {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{})}]}/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
-    {title:lang('my content'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
+    {title:lang('my messages'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}
   ]
   

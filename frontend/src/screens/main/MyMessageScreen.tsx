@@ -5,7 +5,7 @@ import ChatSection from './ChatSection';
 import useChatSection from '../../hooks/useChatSection';
 
 
-export default function MyContentScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
+export default function MyMessageScreen({navigation, route}: StackScreenProps<any, 'Chat'>) {
   const channel_id = route?.params?.id
   const windowType = useResizeContext()
   const [isEditor, setIsEditor] = useState<boolean>(false)
