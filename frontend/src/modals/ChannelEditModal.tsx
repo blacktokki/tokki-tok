@@ -2,7 +2,6 @@ import React, {useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { View, Text } from '../components/Themed';
 import CommonButton from '../components/CommonButton';
-// import useBoardChannelList, { useBoardChannelMutation } from '../hooks/lists/useBoardChannelList';
 import useAuthContext from '../hooks/useAuthContext';
 import { navigate } from '../navigation';
 import { Channel } from '../types';
@@ -19,10 +18,13 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
   const { lang } = useLangContext()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
-  const channelList = useMessengerChannelList(auth)
-  const channelMutation = useMessengerChannelMutation()
+  const channelList = useMessengerChannelList(type, auth)
+  const channelMutation = useMessengerChannelMutation(type)
   const messengerMemberMutation = useMessengerMemberMutation()
   const channel = channelList?.find(v=>v.id==id)
+  const title = type=='messenger'?
+    (id?lang('Chat Setting'):lang('New chat')):
+    (id?lang('Channel Setting'):lang('New Channel'))
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const back = ()=>{
@@ -37,10 +39,11 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
     }
   }, [channel?.id])
   useModalEffect(back, [])
+
   return <ModalSection>
     <View style={{justifyContent:'space-between', flex:1, width:'100%'}}>
       <View style={{width:'100%'}}>
-        <Text style={{fontSize:20}}>{id?lang('Chat Setting'):lang('New chat')}</Text>
+        <Text style={{fontSize:20}}>{title}</Text>
         <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
         <TextField name={lang('Channel Name')} value={name} setValue={setName} width={'60%'}/>
         <TextField name={lang('Description')} value={description} setValue={setDescription} multiline width={'60%'}/>
@@ -54,7 +57,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
             if(auth?.user?.id && auth.groupId){
               const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
               (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
-                screen:v.type == 'messenger'?'ChatScreen':'BoardScreen',
+                screen:v.type == 'messenger'?'ChatScreen':'MyContentScreen',
                 params:{id:v.id}
               }))
             }

@@ -37,11 +37,24 @@ const MemberTabView = ()=>{
 
 const MessengerTabView = ()=>{
   const {auth} = useAuthContext()
-  const channelList = useMessengerChannelSorted(auth);
+  const channelList = useMessengerChannelSorted('messenger', auth);
   return <View style={{flex:1}}>
     {channelList?.map((item, index)=>{
       const {name} = avatarFromChannel(item, auth.user)
       return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
+        <Text style={{marginLeft:20}}>{name}</Text>
+      </CommonItem>
+    })}
+  </View>
+}
+
+const MyContentTabView = ()=>{
+  const {auth} = useAuthContext()
+  const channelList = useMessengerChannelSorted('mycontent', auth);
+  return <View style={{flex:1}}>
+    {channelList?.map((item, index)=>{
+      const {name} = avatarFromChannel(item, auth.user)
+      return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>navigate("MyContentScreen", {id:item.id})}>
         <Text style={{marginLeft:20}}>{name}</Text>
       </CommonItem>
     })}
@@ -60,6 +73,11 @@ const getDrawerTabs = (theme:'light'|'dark')=>{
         component:MessengerTabView,
         icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
     },
+    MyContentTab:{
+        title:'my content',
+        component:MyContentTabView,
+        icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
+    }
   } as TabViewRecord
 }
 
@@ -67,21 +85,21 @@ export default ({auth}:{auth:Auth})=> {
   const { colors } = useTheme();
   const theme = useColorScheme();
   const windowType = useResizeContext();
-  const channelList = useMessengerChannelSorted(auth);
   const [index, setIndex] = useState<number>();
   const { setModal } = useModalsContext()
   
   const onAddList = [
     ()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{}),
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
+    ()=>setModal(ChannelEditModal, {type:'mycontent'}),
   ]
   const drawerTabs = getDrawerTabs(theme)
 
   useEffect(()=>{
-    if(index===undefined && channelList){
-      setIndex(channelList.length>0?1:0)
+    if(index===undefined){
+      setIndex(0)
     }
-  }, [channelList])
+  }, [])
   return <View style={windowType=='landscape'?[
       styles.tabBar,
       {

@@ -1,5 +1,5 @@
 import React from 'react';
-import Messages from '../screens/main/ChatScreen/Messages';
+import Messages from '../components/Messages';
 import { View, useWindowDimensions } from 'react-native';
 
 function getChannelId(l:Location){

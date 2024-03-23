@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react'
-import CommonSection from "./CommonSection"
-import { View, Text } from "./Themed"
-import { EditorContent } from "../types"
-import useColorScheme from "../hooks/useColorScheme";
-import Colors from "../constants/Colors";
+import CommonSection from "../CommonSection"
+import { View, Text } from "../Themed"
+import { EditorContent } from "../../types"
+import useColorScheme from "../../hooks/useColorScheme";
+import Colors from "../../constants/Colors";
 
 const RenderHTML = React.lazy(()=> import('react-native-render-html'))
 

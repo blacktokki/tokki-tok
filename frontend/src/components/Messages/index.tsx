@@ -1,21 +1,21 @@
 import React, {useCallback, useMemo, useRef} from "react"
 import { View, TouchableOpacity } from 'react-native';
 import { FlatList } from "react-native-gesture-handler";
-import { Auth } from "../../../hooks/useAuthContext";
-import useMessengerContentList, { MessengerContentPage } from "../../../hooks/lists/useMessengerContentList"
-import useIsMobile from "../../../hooks/useIsMobile"
-import useModalsContext from "../../../hooks/useModalsContext"
-import { Text } from '../../../components/Themed' 
-import Avatar from '../../../components/Avatar';
-import LinkPreview from '../../../components/LinkPreview';
-import FilePreview from '../../../components/FilePreview';
-import MessageModal from '../../../modals/MessageModal';
-import CommonSection from "../../../components/CommonSection";
+import { Auth } from "../../hooks/useAuthContext";
+import useMessengerContentList, { MessengerContentPage } from "../../hooks/lists/useMessengerContentList"
+import useIsMobile from "../../hooks/useIsMobile"
+import useModalsContext from "../../hooks/useModalsContext"
+import { Text } from '../Themed' 
+import Avatar from '../Avatar';
+import LinkPreview from './LinkPreview';
+import FilePreview from './FilePreview';
+import MessageModal from '../../modals/MessageModal';
+import CommonSection from "../CommonSection";
 import { timerToString } from "./TimerTags";
-import useViewerContentList from "../../../hooks/lists/useMessengerViewerList";
-import EditorPreview from "../../../components/EditorPreview";
-import { MessengerContent } from "../../../types";
-import MessageContentView from "../../../components/MessageContentView";
+import useViewerContentList from "../../hooks/lists/useMessengerViewerList";
+import EditorPreview from "./EditorPreview";
+import { MessengerContent } from "../../types";
+import MessageContentView from "./MessageContentView";
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean, getOnPress?:(content:MessengerContent)=>()=>void})=>{
     const lastTouchRef = useRef(Date.now()) 

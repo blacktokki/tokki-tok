@@ -1,12 +1,12 @@
 import React, { MutableRefObject } from 'react'
 import { Image, Linking } from "react-native"
 import {TouchableOpacity} from "react-native-gesture-handler"
-import CommonSection from "./CommonSection"
-import { FontAwesome } from '../lib/@expo/vector-icons'; 
-import { View, Text } from "./Themed"
-import { File } from "../types"
-import useColorScheme from '../hooks/useColorScheme';
-import Colors from '../constants/Colors';
+import CommonSection from "../CommonSection"
+import { FontAwesome } from '../../lib/@expo/vector-icons'; 
+import { View, Text } from "../Themed"
+import { File } from "../../types"
+import useColorScheme from '../../hooks/useColorScheme';
+import Colors from '../../constants/Colors';
 
 function humanFileSize(size:number) {
     var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));

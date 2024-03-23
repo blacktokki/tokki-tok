@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import {View, TouchableOpacity} from 'react-native'
-import { Text } from "../../../components/Themed";
-import useUploadContext from "../../../hooks/useUploadContext";
+import { Text } from "../Themed";
+import useUploadContext from "../../hooks/useUploadContext";
 
 const UploadTag = (props:{data:{filename:string, progress?:number}, index:number, isExpand:boolean, setExpand:(index?:number)=>void})=>{
     return <View style={{backgroundColor:'lightgray', borderRadius:20, overflow:'hidden', margin:5}}>

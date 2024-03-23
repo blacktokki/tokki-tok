@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from "react"
 import dayjs from "dayjs";
 import {View, TouchableOpacity} from 'react-native'
-import { Text } from "../../../components/Themed";
-import useTimerMessageContentList from "../../../hooks/lists/useTimerMessageContent";
-import { MessengerContent } from "../../../types";
-import Avatar from "../../../components/Avatar";
-import Hyperlink from "react-native-hyperlink";
-import MessageContentView from "../../../components/MessageContentView";
+import { Text } from "../Themed";
+import useTimerMessageContentList from "../../hooks/lists/useTimerMessageContent";
+import { MessengerContent } from "../../types";
+import Avatar from "../Avatar";
+import MessageContentView from "./MessageContentView";
 
 export function timerFormat(datetime:string){
     return _timerFormat(dayjs(datetime), dayjs())

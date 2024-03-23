@@ -1,9 +1,9 @@
 import React, { MutableRefObject } from 'react'
 import { Image, Linking } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import CommonSection from "./CommonSection"
-import { View, Text } from "./Themed"
-import { Link } from "../types"
+import CommonSection from "../CommonSection"
+import { View, Text } from "../Themed"
+import { Link } from "../../types"
 
 
 

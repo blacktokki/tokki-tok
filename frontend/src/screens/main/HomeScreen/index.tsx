@@ -13,7 +13,7 @@ import useModalsContext from '../../../hooks/useModalsContext';
 import ChannelEditModal from '../../../modals/ChannelEditModal';
 import useLangContext from '../../../hooks/useLangContext';
 import ContractFooter from '../../../components/ContractFooter';
-import { TabViewRecord } from '../../../types';
+import { MessengerChannel, TabViewRecord, UserMembership } from '../../../types';
 import useAuthContext from '../../../hooks/useAuthContext';
 import useUserMembershipList from '../../../hooks/lists/useUserMembershipList';
 import { FontAwesome, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '../../../lib/@expo/vector-icons';
@@ -38,19 +38,16 @@ const MemberTabView = ()=>{
       {memberItem}
   </ScrollView>
 }
-
-const MessengerTabView = ()=>{
-  const {auth} = useAuthContext()
-  const channelList = useMessengerChannelSorted(auth)
+const renderChannelTabView = (onPress:(id:any)=>void,channelList?:MessengerChannel[], user?:UserMembership|null)=>{
   const theme = useColorScheme()
 
   const today = (new Date()).toISOString().slice(0, 10)
   return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}}>
       {channelList?.map((item, index)=>{
-          const {avatar, name} = avatarFromChannel(item, auth.user)
+          const {avatar, name} = avatarFromChannel(item, user)
           const date = item.last_message?.created.slice(0,10)
           const content = item.last_message?.preview_content || item.last_message?.content || ''
-          return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
+          return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>onPress(item.id)}>
               <View style={{flexDirection:'row', flexShrink:1}}>
                   {avatar?
                     <View style={{ marginRight:20}}>
@@ -60,7 +57,7 @@ const MessengerTabView = ()=>{
                   <View>
                       <View style={{flexDirection:'row'}}>
                           <Text style={{fontSize:18}}>{name}</Text>
-                          <Text style={{fontSize:18, opacity: 0.4, paddingLeft:5}}>{item.member_count}</Text>
+                          {item.type=='messenger' && <Text style={{fontSize:18, opacity: 0.4, paddingLeft:5}}>{item.member_count}</Text>}
                       </View>
                       <Text style={{fontSize:16, opacity: 0.4}}>{content.replaceAll('\n', ' ')}</Text>
                   </View>
@@ -72,6 +69,19 @@ const MessengerTabView = ()=>{
           </CommonItem>
       })}
   </ScrollView>
+}
+
+
+const MessengerTabView = ()=>{
+  const {auth} = useAuthContext()
+  const channelList = useMessengerChannelSorted('messenger', auth)
+  return renderChannelTabView((id)=>navigate("ChatScreen", {id}), channelList, auth.user)
+}
+
+const MyContentTabView = ()=>{
+  const {auth} = useAuthContext()
+  const channelList = useMessengerChannelSorted('mycontent', auth)
+  return renderChannelTabView((id)=>navigate("MyContentScreen", {id}), channelList, auth.user)
 }
 
 
@@ -95,11 +105,11 @@ const getBottomTabs = (theme:'light'|'dark')=>{
         component:MessengerTabView,
         icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
     },
-    // ThreeTab:{
-    //     title:'board',
-    //     component:()=><></>,
-    //     icon:<></>
-    // },
+    ThreeTab:{
+      title:'my content',
+      component:MyContentTabView,
+      icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
+  },
     FourTab:{
         title:'config',
         component:ConfigTabView,
@@ -120,7 +130,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const options = [
     {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{})}]}/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
-    // {title:'board', headerRight:()=><HeaderRight extra={[{title:'create', onPress:()=>setModal(ChannelEditModal, props:{type:'board'}}) }]}/>},
+    {title:lang('my content'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}
   ]
   

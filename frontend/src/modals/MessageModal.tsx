@@ -12,7 +12,7 @@ import useColorScheme from '../hooks/useColorScheme';
 import { useMessengerContentMutation } from '../hooks/lists/useMessengerContentList';
 import useModalEffect from '../hooks/useModalEffect';
 import { EditorContent, MessengerContent } from '../types';
-import { regexForStripHTML } from '../components/EditorPreview';
+import { regexForStripHTML } from '../components/Messages/EditorPreview';
 
 
 

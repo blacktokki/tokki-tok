@@ -1,7 +1,7 @@
 import React from "react"
 import { StyleProp, TextStyle } from "react-native";
 import Hyperlink from "react-native-hyperlink";
-import { View, Text } from "./Themed";
+import { Text } from "../Themed";
 
 type MessageContentProps = {textStyle?:StyleProp<TextStyle>, selectable?:boolean, onPressLink?:any}
 

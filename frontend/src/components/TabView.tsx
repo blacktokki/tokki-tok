@@ -18,7 +18,9 @@ export default (props:{tabs:TabViewRecord, tabBarPosition:"top"|"bottom", index?
       return <TabBar
         {...props}
         indicatorStyle={{ backgroundColor: "#2196F3" }}
-        style={{ backgroundColor:Colors[theme].background }}
+        style={{ backgroundColor:Colors[theme].background}}
+        /* @ts-ignore */
+        labelStyle={{whiteSpace:"nowrap"}}
         activeColor={Colors[theme].text}
         inactiveColor={Colors[theme].text}
         renderIcon={(scene)=>icons[scene.route.key]}
