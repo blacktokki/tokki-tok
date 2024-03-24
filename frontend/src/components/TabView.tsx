@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { TabView, SceneMap,NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -29,8 +30,15 @@ export default (props:{tabs:TabViewRecord, tabBarPosition:"top"|"bottom", index?
     }}
     navigationState={{ index, routes: entries.map(([k, v])=>({key:k, title:lang(v.title)}))}}
     onIndexChange={(v)=>{onTab?.(v)}}
+    onSwipeStart={()=>{
+      if (Platform.OS === 'web') {
+        if (window.getSelection) {
+            var sel = window.getSelection();
+            sel?.removeAllRanges();
+        }
+    }
+    }}
     renderScene={SceneMap(Object.assign({}, ...entries.map(([k, v])=>({[k]:v.component}))))}
-    swipeEnabled={false}
     tabBarPosition={props.tabBarPosition}
   />
 }

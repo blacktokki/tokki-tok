@@ -21,7 +21,7 @@ export const ModalsProvider = ({children, modals:allModals}:{children:React.Reac
     const [animationType, setAnimationType] = useState('none')
     const setModal:SetModal = (Component, props) => {
         const newModals = modals.map(m=>{
-            if(Component==null){
+            if(Component==null || m.Component != Component){
                 return {
                     ...m,
                     visible:false

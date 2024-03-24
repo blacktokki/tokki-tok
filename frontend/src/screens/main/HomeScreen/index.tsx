@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useLayoutEffect, useMemo} from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
-import { StyleSheet, View, ScrollView} from 'react-native';
+import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import { View, ScrollView, useWindowDimensions} from 'react-native';
 import { Text as StyledText } from 'react-native-paper';
 import { Text } from '../../../components/Themed'
 import useResizeContext from '../../../hooks/useResizeContext';
@@ -26,6 +26,38 @@ import CommonSection from '../../../components/CommonSection';
 import ConfigSections from './ConfigSections';
 import Avatar, { avatarFromChannel } from '../../../components/Avatar';
 import RegistrationModal from '../../../modals/RegistrationModal';
+import { useNavigation } from '@react-navigation/native';
+
+
+const useHeaderSetter = (options:any[]) =>{
+  const tempref = useRef<NodeJS.Timer>()
+  const indexRef = useRef<number>()
+  const {width } = useWindowDimensions()
+  const navigation = useNavigation()
+  useEffect(()=>{
+    return ()=>{
+      clearInterval(tempref.current)
+    }
+  }, [])
+  return (ref:any)=>{
+      clearInterval(tempref.current)
+      /*@ts-ignore */
+      tempref.current=setInterval(()=>{ref?.measure((fx, fy, _, height, px, py)=>{
+        const i = Math.round(-px/width)
+        if (indexRef.current != i){
+          indexRef.current = i
+          navigation.setOptions(options[i])
+        }
+      })
+    }, 300)
+  }
+}
+
+const renderIndexDetector= (Component:React.ComponentType<any>, headerIndexRef:(ref:any)=>void)=>{
+  return (props:any)=><View style={{flex:1}} ref={headerIndexRef}>
+    <Component {...props}/>
+  </View>
+}
 
 const MemberTabView = ()=>{
   const {auth} = useAuthContext()
@@ -92,12 +124,12 @@ const ConfigTabView = ()=>{
   </ScrollView>
 }
 
-const getBottomTabs = (theme:'light'|'dark')=>{
+const getBottomTabs = (theme:'light'|'dark', headerSetter:(ref:any)=>void)=>{
   const color = Colors[theme].iconColor
   return {
     OneTab:{
         title:'member',
-        component:MemberTabView,
+        component:renderIndexDetector(MemberTabView, headerSetter),
         icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='account'/>,
     },
     TwoTab:{
@@ -133,6 +165,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
     {title:lang('my messages'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}
   ]
+  const headerSetter = useHeaderSetter(options)
   
   useLayoutEffect(() => {
     const index = route?.params?.tab | 0
@@ -158,6 +191,6 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
       </View>
       <ContractFooter theme={theme}/>
     </ScrollView>:
-    <TabView tabs={getBottomTabs(theme)} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
+    <TabView tabs={getBottomTabs(theme, headerSetter)} tabBarPosition="bottom" index={parseInt(route.params?.['tab'] || 0)} onTab={(index)=>{navigation.setParams({tab:index})}}/>
 }
 
