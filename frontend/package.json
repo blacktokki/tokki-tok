@@ -68,7 +68,7 @@
     "react-native-webview": "^11.26.0",
     "react-query": "^3.39.2",
     "react-use-websocket": "^4.2.0",
-    "tinymce": "^5.10.7",
+    "tinymce": "^7.0.0",
     "use-mobile-detect-hook": "^1.0.5"
   },
   "devDependencies": {
