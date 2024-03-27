@@ -30,11 +30,11 @@ class ChannelManager(models.Manager):
         prefetch = models.Prefetch('messengermember_set__user__notification_set')
         return self.prefetch_related(prefetch).filter(id__in=channel_ids)
 
-    def annotate_viewset(self):
+    def annotate_messenger_viewset(self):
         """
         채널 조회의 Queryset
         """
-        return self.filter(type='messenger').annotate(
+        return self.annotate(
             member_count=models.Subquery(self.filter(id=models.OuterRef('id')).annotate(
                 member_count=models.Count('messengermember')).values('member_count')[:1]),
             unread_count=models.Count('channelcontent', filter=models.Q(channelcontent__message__id__gt=models.F(
@@ -48,7 +48,7 @@ class ChannelContentManager(models.Manager):
         """
         채널 컨텐츠 조회의 Queryset
         """
-        return self.messenger_content_filter(channel__type='messenger').order_by('-id')
+        return self.messenger_content_filter().order_by('-id')
 
     def messenger_content_filter(self, **kwargs):
         """

@@ -23,7 +23,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
     queryset = Channel.objects.all()
 
     @action(detail=False, methods=['get'],
-            queryset=Channel.objects.annotate_viewset(),
+            queryset=Channel.objects.annotate_messenger_viewset(),
             serializer_class=MessengerChannelSerializer)
     def messenger(self, request, *args, **kwargs):
         """

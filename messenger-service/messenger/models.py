@@ -11,6 +11,7 @@ from .manager import ChannelManager, ChannelContentManager, MessageManager, Mess
 class Channel(models.Model):
     TYPES = (
         ('messenger', 'messenger'),
+        ('mycontent', 'mycontent')
     )
     objects = ChannelManager()
     owner = models.ForeignKey(User, db_column='user_id', on_delete=models.SET_NULL, help_text='채널 소유자', null=True)
