@@ -70,16 +70,19 @@ const MemberTabView = ()=>{
       {memberItem}
   </ScrollView>
 }
-const renderChannelTabView = (onPress:(id:any)=>void,channelList?:MessengerChannel[], user?:UserMembership|null)=>{
+
+const MessengerTabView = ()=>{
+  const {auth} = useAuthContext()
+  const channelList = useMessengerChannelSorted('messenger', auth)
   const theme = useColorScheme()
 
   const today = (new Date()).toISOString().slice(0, 10)
   return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}}>
       {channelList?.map((item, index)=>{
-          const {avatar, name} = avatarFromChannel(item, user)
+          const {avatar, name} = avatarFromChannel(item, auth.user)
           const date = item.last_message?.created.slice(0,10)
           const content = item.last_message?.preview_content || item.last_message?.content || ''
-          return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>onPress(item.id)}>
+          return <CommonItem key={index} bodyStyle={{flexDirection:'row', justifyContent:'space-between'}} onPress={()=>navigate("ChatScreen", {id:item.id})}>
               <View style={{flexDirection:'row', flexShrink:1}}>
                   {avatar?
                     <View style={{ marginRight:20}}>
@@ -103,17 +106,30 @@ const renderChannelTabView = (onPress:(id:any)=>void,channelList?:MessengerChann
   </ScrollView>
 }
 
-
-const MessengerTabView = ()=>{
-  const {auth} = useAuthContext()
-  const channelList = useMessengerChannelSorted('messenger', auth)
-  return renderChannelTabView((id)=>navigate("ChatScreen", {id}), channelList, auth.user)
-}
-
 const MyMessageTabView = ()=>{
   const {auth} = useAuthContext()
   const channelList = useMessengerChannelSorted('mycontent', auth)
-  return renderChannelTabView((id)=>navigate("MyMessageScreen", {id}), channelList, auth.user)
+  const theme = useColorScheme()
+
+  const today = (new Date()).toISOString().slice(0, 10)
+  return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}} contentContainerStyle={{flexWrap:'wrap', flexDirection:'row'}}>
+      {channelList?.map((item, index)=>{
+          const date = item.last_message?.created.slice(0,10)
+          const content = item.last_message?.preview_content || item.last_message?.content || ''
+          const onPress = ()=>navigate("MyMessageScreen", {id:item.id})
+          return <CommonItem key={index} outerContainerStyle={{flexBasis:'50%'}} onPress={onPress}>
+              {/* @ts-ignore */}
+              <CommonItem containerStyle={{marginHorizontal:0}} bodyStyle={{borderRadius:6, borderWidth:1, wordBreak:'break-word'}} onPress={onPress}>
+                <Text style={{fontSize:16, opacity: 0.4}}>{content}</Text>
+              </CommonItem>
+              <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignItems:'center', width:'100%'}}>
+                <Text style={{fontSize:18}}>{item.name}</Text>
+                <Text style={{fontSize:14, opacity: 0.4, textAlign:'right'}}>{date==today?item.last_message?.created.slice(11,16):date}</Text>
+                  
+              </View>
+          </CommonItem>
+      })}
+  </ScrollView>
 }
 
 
