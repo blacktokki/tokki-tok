@@ -32,7 +32,7 @@ def attach_link(channel_content, validated_data):
         try:
             parsed_og_tags = parse_page(url, [
                 "og:url", "og:title", "og:image", "og:description"], fallback_tags={'og:title': 'title'})
-        except KeyError:
+        except (KeyError, AttributeError):
             parsed_og_tags = None
         if parsed_og_tags:
             add_links.append(Attatchment(
