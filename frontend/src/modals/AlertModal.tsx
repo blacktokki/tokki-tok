@@ -6,29 +6,40 @@ import { Text, View } from '../components/Themed';
 import useLangContext from '../hooks/useLangContext';
 import { BottomSheet } from '../components/ModalSection';
 import useModalEffect from '../hooks/useModalEffect';
+import RegistrationModal from './RegistrationModal';
 
 
 export default function AlertModal({type}:{type:string}) {
   const { lang } = useLangContext()
   const { setModal } = useModalsContext()
-  const {dispatch} = useAuthContext()
+  const {auth, dispatch} = useAuthContext()
   const back = ()=>{
     setModal(AlertModal, null)
   }
   const messages = {
     "GUEST_LOGOUT":{
       message: 'Guest users cannot reconnect after logging out. Please create an account or log in.',
-      title: 'sign out',
-      onPress: ()=>dispatch({type:"LOGOUT_REQUEST"})
+      buttons:[
+        {
+          title: 'Create User',
+          onPress: ()=>{
+            setModal(RegistrationModal, {id:auth.user?.id})
+          }
+        },
+        {
+          title: 'sign out',
+          onPress: ()=>dispatch({type:"LOGOUT_REQUEST"})
+        }
+      ]
     }
-  } as Record<string, {message:string, title:string, onPress:()=>void}>
+  } as Record<string, {message:string, buttons:{title:string, onPress:()=>void}[]}>
 
   useModalEffect(back, [])
   return <BottomSheet>
     <Text>{lang(messages[type].message)}</Text>
     <View style={{width:'100%', flexDirection:'row', justifyContent:'flex-end'}}>
-      <CommonButton title={lang(messages[type].title)} onPress={messages[type].onPress}/>
-      <CommonButton title={lang('cancel')} onPress={()=>back()}/>
+    {messages[type].buttons.map((button, i)=><CommonButton key={i} style={{marginRight:10}} title={lang(button.title)} onPress={button.onPress}/>)}
+    <CommonButton title={lang('cancel')} onPress={()=>back()}/>
     </View>
   </BottomSheet>
 }

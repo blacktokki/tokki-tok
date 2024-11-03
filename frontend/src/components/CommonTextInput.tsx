@@ -25,7 +25,13 @@ export default (props:CustomTextInputProps)=>{
         secureTextEntry={props.secureTextEntry}
         value={props.value}
         onChangeText={props.setValue}
-        onContentSizeChange={props.multiline?(e) => setContentHeight(Math.max(e.nativeEvent.contentSize.height, minHeight) + 2):undefined}
+        onContentSizeChange={props.multiline?(e) => {
+            const newHeight = Math.max(e.nativeEvent.contentSize.height, minHeight) + 2
+            if(contentHeight==null || contentHeight +1 < newHeight){
+                setContentHeight(newHeight)
+            }
+        }:undefined}
+        
         onBlur={()=>props.onBlur?.(props.value)}
         onEndEditing={()=>props.onEndEditing?.(props.value)}
         multiline={props.multiline}
