@@ -106,7 +106,7 @@ const MessengerTabView = ()=>{
   </ScrollView>
 }
 
-const MyMessageTabView = ()=>{
+const NoteTabView = ()=>{
   const {auth} = useAuthContext()
   const channelList = useMessengerChannelSorted('mycontent', auth)
   const theme = useColorScheme()
@@ -116,7 +116,7 @@ const MyMessageTabView = ()=>{
       {channelList?.map((item, index)=>{
           const date = item.last_message?.created.slice(0,10)
           const content = item.last_message?.preview_content || item.last_message?.content || ''
-          const onPress = ()=>navigate("MyMessageScreen", {id:item.id})
+          const onPress = ()=>navigate("NoteScreen", {id:item.id})
           return <CommonItem key={index} outerContainerStyle={{flexBasis:'50%'}} onPress={onPress}>
               {/* @ts-ignore */}
               <CommonItem containerStyle={{marginHorizontal:0}} bodyStyle={{borderRadius:6, borderWidth:1, wordBreak:'break-word'}} onPress={onPress}>
@@ -154,8 +154,8 @@ const getBottomTabs = (theme:'light'|'dark', headerSetter:(ref:any)=>void)=>{
         icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
     },
     ThreeTab:{
-      title:'my messages',
-      component:MyMessageTabView,
+      title:'note',
+      component:NoteTabView,
       icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
   },
     FourTab:{
@@ -178,7 +178,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const options = [
     {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{})}]}/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
-    {title:lang('my messages'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
+    {title:lang('note'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}
   ]
   const headerSetter = useHeaderSetter(options)

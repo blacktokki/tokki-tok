@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import VideoCallSection from './VideoCallSection';
 import useResizeContext from '../../../hooks/useResizeContext';
 import useLangContext from '../../../hooks/useLangContext';
-import ChatSection from '../ChatSection';
+import CommonChatSection from '../CommonChatSection';
 import useChatSection from '../../../hooks/useChatSection';
 
 
@@ -21,7 +21,7 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     windowType=='landscape'?{flexDirection:'row-reverse', minWidth:480}:{flexDirection:'column'}
   ]}>
     <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
-    <ChatSection 
+    <CommonChatSection 
       channel_id={channel_id} 
       isEditor={isEditor} 
       setIsEditor={setIsEditor} 
