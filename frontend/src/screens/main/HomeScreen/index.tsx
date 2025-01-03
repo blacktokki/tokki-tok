@@ -27,8 +27,7 @@ import ConfigSections from './ConfigSections';
 import Avatar, { avatarFromChannel } from '../../../components/Avatar';
 import RegistrationModal from '../../../modals/RegistrationModal';
 import { useNavigation } from '@react-navigation/native';
-import { regexForStripHTML } from '../../../components/EditorPreview';
-
+import { regexForStripHTML } from "../../../components/EditorHtml"
 
 const useHeaderSetter = (options:any[]) =>{
   const tempref = useRef<NodeJS.Timer>()

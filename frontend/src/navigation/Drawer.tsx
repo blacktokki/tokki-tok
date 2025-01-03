@@ -53,9 +53,8 @@ const NoteTabView = ()=>{
   const channelList = useMessengerChannelSorted('mycontent', auth);
   return <View style={{flex:1}}>
     {channelList?.map((item, index)=>{
-      const {name} = avatarFromChannel(item, auth.user)
       return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>navigate("NoteScreen", {id:item.id})}>
-        <Text style={{marginLeft:20}}>{name}</Text>
+        <Text style={{marginLeft:20}}>{item.name}</Text>
       </CommonItem>
     })}
   </View>

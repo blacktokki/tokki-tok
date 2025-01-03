@@ -13,6 +13,7 @@ import MessageModal from '../../modals/MessageModal';
 import CommonSection from "../CommonSection";
 import { timerToString } from "./TimerTags";
 import useViewerContentList from "../../hooks/lists/useMessengerViewerList";
+import EditorPreview from "./EditorPreview";
 import { MessengerContent } from "../../types";
 import MessageContentView from "./MessageContentView";
 
@@ -57,6 +58,8 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
                   <MessageContentView selectable={!isMobile} textStyle={{textAlign:isSelf?'right':'left'}} onPressLink={touchableRef.current()?undefined:()=>{}} content={message.content}/>
                   {
                     content.attatchment_set.map((attatchment, aIndex)=>{
+                      if (attatchment.type=='editor')
+                        return <EditorPreview key={aIndex} editor={attatchment} touchableRef={touchableRef}/>
                       if (attatchment.type=='file')
                         return <FilePreview key={aIndex} file={attatchment} isMobile={isMobile} showBorder={false} touchableRef={touchableRef}/>
                       if (attatchment.type=='link')

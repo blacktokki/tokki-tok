@@ -5,6 +5,7 @@ import AlertModal from "./AlertModal";
 import DateTimePickerModal from "./DateTimePickerModal"
 import MessageModal from "./MessageModal";
 import RegistrationModal from "./RegistrationModal";
+import NotePickerModal from "./NotePickerModal";
 
 export default [
     InviteModal,
@@ -12,6 +13,7 @@ export default [
     ChannelEditModal,
     AlertModal,
     DateTimePickerModal,
+    NotePickerModal,
     MessageModal,
     RegistrationModal
 ]

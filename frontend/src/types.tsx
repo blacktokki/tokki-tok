@@ -116,10 +116,7 @@ export type EditMessage = Message & {
   user?:number
   timer?:string
   file?:Blob
-  editor?:{
-    title:string,
-    content:string
-  }
+  editor?:number
 }
 
 export type File = {
@@ -138,11 +135,17 @@ export type Link = {
   image_url:string|null,
 }
 
+export type EditorContent = {
+  type: 'editor',
+  title: string,
+  description:string,
+  url:string
+}
 
 export type MessengerContent = {
   id: number,
   message_set:Message[]
-  attatchment_set:(File | Link)[],
+  attatchment_set:(File | Link | EditorContent)[],
   user: number,
   channel: number
   timer?: string|null,

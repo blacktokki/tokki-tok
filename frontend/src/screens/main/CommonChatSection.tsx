@@ -15,6 +15,7 @@ import TimerTags, { timerFormat } from '../../components/Messages/TimerTags';
 import UploadTags from '../../components/Messages/UploadTags';
 import Messages from '../../components/Messages';
 import useModalsContext from '../../hooks/useModalsContext';
+import NotePickerModal from '../../modals/NotePickerModal';
 
 function uploadFile(){
     return new Promise<Blob|undefined>((resolve, reject)=>{
@@ -115,8 +116,9 @@ export default ({channel_id, style, extraButtons}:{channel_id:number, style?:Sty
         </View>
         {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
+          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`✏️\n ${lang('Note')}`} onPress={()=>{setModal(NotePickerModal, {callback:(editor:number)=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', editor});setBottomTab(false)}})}}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer')}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>
-          {extraButtons?.map(v=><CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={v.title} onPress={()=>{v.onPress();setBottomTab(false)}} disabled={v.disabled}/>)}
+          {extraButtons?.map((v, k)=><CommonButton key={k} style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={v.title} onPress={()=>{v.onPress();setBottomTab(false)}} disabled={v.disabled}/>)}
         </View>}
       </ThemedView>
     </View>

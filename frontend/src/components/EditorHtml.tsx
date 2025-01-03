@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react'
-import CommonSection from "./CommonSection"
 import { View, Text } from "./Themed"
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
@@ -11,7 +10,7 @@ export const regexForStripHTML = /<\/?[^>]*>/gi;
 export default React.memo(({content}:{content:string})=>{
     const theme = useColorScheme()
     return <Suspense fallback={<Text>{content.replaceAll(regexForStripHTML, '')}</Text>}>
-        <RenderHTML contentWidth={320} source={{'html':content}} baseStyle={{color:Colors[theme].text}}/>
+        <RenderHTML defaultTextProps={{selectable:true}} contentWidth={320} source={{'html':content}} baseStyle={{color:Colors[theme].text}}/>
     </Suspense>
 
 })
