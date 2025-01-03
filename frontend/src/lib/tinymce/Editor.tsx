@@ -20,7 +20,8 @@ export default (props:EditorProps) => {
           branding: false,
           statusbar: false,
           block_formats: '제목1=h2;제목2=h3;제목3=h4;본문=p;',
-          fontsize_formats: '11pt 14pt 18pt 24pt',
+          fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt',
+          forced_root_block_attrs: {'style': 'font-size: 14pt'}
         }}
         value={props.value}
     />

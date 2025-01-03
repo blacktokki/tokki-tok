@@ -26,7 +26,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
     (id?lang('Chat Setting'):lang('New chat')):
     (id?lang('Channel Setting'):lang('New Channel'))
   const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState<string|undefined>('')
   const back = ()=>{
     setModal(ChannelEditModal, null)
   }
@@ -35,7 +35,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
     if (channel){
       const {name:_name} = avatarFromChannel(channel, auth.user)
       setName(_name)
-      setDescription(channel?.description || '')
+      setDescription(type=='messenger'?(channel?.description || ''):undefined)
     }
   }, [channel?.id])
   useModalEffect(back, [])
@@ -46,7 +46,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
         <Text style={{fontSize:20}}>{title}</Text>
         <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
         <TextField name={lang('Channel Name')} value={name} setValue={setName} width={'60%'}/>
-        <TextField name={lang('Description')} value={description} setValue={setDescription} multiline width={'60%'}/>
+        {type=='messenger' && <TextField name={lang('Description')} value={description} setValue={setDescription} multiline width={'60%'}/>}
       </View>
       <View style={{width:'100%', flexDirection:'row'}}>
         {member_id &&<View style={{flexDirection:'row', justifyContent:'flex-start'}}>

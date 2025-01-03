@@ -27,6 +27,7 @@ import ConfigSections from './ConfigSections';
 import Avatar, { avatarFromChannel } from '../../../components/Avatar';
 import RegistrationModal from '../../../modals/RegistrationModal';
 import { useNavigation } from '@react-navigation/native';
+import { regexForStripHTML } from '../../../components/EditorPreview';
 
 
 const useHeaderSetter = (options:any[]) =>{
@@ -115,11 +116,11 @@ const NoteTabView = ()=>{
   return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}} contentContainerStyle={{flexWrap:'wrap', flexDirection:'row'}}>
       {channelList?.map((item, index)=>{
           const date = item.last_message?.created.slice(0,10)
-          const content = item.last_message?.preview_content || item.last_message?.content || ''
+          const content = (item.description || '').replaceAll(/<hr \/>\n/gi, '').replaceAll(/&nbsp;/gi, ' ').replaceAll(/<br\/>/gi, '\r\n').replaceAll(regexForStripHTML, '')
           const onPress = ()=>navigate("NoteScreen", {id:item.id})
           return <CommonItem key={index} outerContainerStyle={{flexBasis:'50%'}} onPress={onPress}>
               {/* @ts-ignore */}
-              <CommonItem containerStyle={{marginHorizontal:0}} bodyStyle={{borderRadius:6, borderWidth:1, wordBreak:'break-word'}} onPress={onPress}>
+              <CommonItem containerStyle={{marginHorizontal:0}} bodyStyle={{aspectRatio:1/Math.sqrt(2), borderRadius:6, borderWidth:1, wordBreak:'break-word', justifyContent:'flex-start', alignItems:'flex-start', overflow:'hidden'}} onPress={onPress}>
                 <Text style={{fontSize:16, opacity: 0.4}}>{content}</Text>
               </CommonItem>
               <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignItems:'center', width:'100%'}}>

@@ -12,7 +12,7 @@ import { RouteProp } from "@react-navigation/native";
 import HeaderRight from "../components/HeaderRight";
 import ChannelEditModal from "../modals/ChannelEditModal";
 
-export default (navigation:StackNavigationProp<any, any>, route:RouteProp<any, any>,channel_id:any, type:string, isEditor:boolean)=>{
+export default (navigation:StackNavigationProp<any, any>, route:RouteProp<any, any>,channel_id:any, type:string, headerShown:boolean)=>{
     const { lang, locale } = useLangContext()
     const {auth} = useAuthContext()
     const { setModal } = useModalsContext()
@@ -33,9 +33,9 @@ export default (navigation:StackNavigationProp<any, any>, route:RouteProp<any, a
             {title:lang('setting'), onPress:()=>setModal(ChannelEditModal, {id:channel_id, type:channel?.type, member_id})}
           ]}/>,
           title: channelAvatar?.name,
-          headerShown:!(windowType=='portrait' && isEditor)
+          headerShown
         });
-      }, [navigation, route, member_id, locale, windowType, isEditor,channel]);
+      }, [navigation, route, member_id, locale, windowType, headerShown, channel]);
     
       const back = ()=>{
         if(navigation.canGoBack())

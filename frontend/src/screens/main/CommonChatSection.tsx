@@ -14,8 +14,6 @@ import { Entypo } from '../../lib/@expo/vector-icons';
 import TimerTags, { timerFormat } from '../../components/Messages/TimerTags';
 import UploadTags from '../../components/Messages/UploadTags';
 import Messages from '../../components/Messages';
-import Editor from '../../components/Editor';
-import useResizeContext from '../../hooks/useResizeContext';
 import useModalsContext from '../../hooks/useModalsContext';
 
 function uploadFile(){
@@ -35,9 +33,8 @@ function uploadFile(){
     })
   }
 
-export default ({channel_id, isEditor, setIsEditor, style, extraButtons}:{channel_id:number, isEditor:boolean, setIsEditor:(v:boolean)=>void, style?:StyleProp<ViewStyle>, extraButtons?:{title:string, onPress:()=>void, disabled?:boolean}[]})=>{
+export default ({channel_id, style, extraButtons}:{channel_id:number, style?:StyleProp<ViewStyle>, extraButtons?:{title:string, onPress:()=>void, disabled?:boolean}[]})=>{
     const theme = useColorScheme()
-    const windowType = useResizeContext()
     const { lang } = useLangContext()
     const isMobile = useIsMobile()
     const {auth} = useAuthContext()
@@ -53,20 +50,11 @@ export default ({channel_id, isEditor, setIsEditor, style, extraButtons}:{channe
     const contentMutation = useMessengerContentMutation()
     const postValue = ()=>{
         if (value.length>0){
-          if(isEditor){
-            contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', timer, editor: {title:value, content:editorValue}})
-          }
-          else{
-            contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer})
-          }
+          contentMutation.create({channel:channel_id, user:auth.user?.id, content:value, timer})
           setTimer(undefined)
           setBottomTab(false)
           setValue('')
           setAutoFocus(true)
-          if(isEditor){
-            setEditorValue('')
-            setIsEditor(false)
-          }
         }
       }
       const onKeyPress = (e:any) => {
@@ -81,11 +69,9 @@ export default ({channel_id, isEditor, setIsEditor, style, extraButtons}:{channe
       
       useEffect(()=>{
         if(messageEvent){
-          setIsEditor(false)
           setValue(value.concat(value.length>0?"\n":"", messageEvent.value))
           setEditorValue(editorValue.concat("\r\n", messageEvent.editorValue))
           sendToScreen(undefined)
-          setIsEditor(true)
         }
       }, [messageEvent, value, editorValue])
       useEffect(()=>{
@@ -108,11 +94,11 @@ export default ({channel_id, isEditor, setIsEditor, style, extraButtons}:{channe
         <UploadTags channel_id={channel_id}/>
         <TimerTags channel_id={channel_id}/>
       </View>
-      <ThemedView style={[{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}, isEditor?{height:windowType=='landscape'?'50%':'100%'}:{}]}>
+      <ThemedView style={{bottom:0, width:'100%', paddingTop:15, paddingBottom:10, paddingHorizontal:19}}>
         <View style={{alignItems:'center', width:'100%',flexDirection:'row'}}>
-          <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>{isEditor?setIsEditor(false):setBottomTab(!bottomTab)}}>
+          <CommonButton title={''} style={{height:'100%', paddingTop:8, borderTopRightRadius:0, borderBottomRightRadius:0, justifyContent:'center'}} onPress={()=>{setBottomTab(!bottomTab)}}>
             <View style={{top:-2}}>
-              <Entypo name={isEditor || bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
+              <Entypo name={bottomTab?"cross":"plus"} size={24} color={Colors[theme].text}/>
             </View>
           </CommonButton>
           {timer && <CommonButton style={{height:'100%', paddingTop:8, borderRadius:0}} title={`⌚${timerFormat(timer)}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>}
@@ -127,10 +113,8 @@ export default ({channel_id, isEditor, setIsEditor, style, extraButtons}:{channe
               numberOfLines={valueLines}/>
           <CommonButton style={{height:'100%', paddingTop:8, borderTopLeftRadius:0, borderBottomLeftRadius:0, justifyContent:'center'}} title={'💬'} onPress={postValue}/>
         </View>
-        <Editor theme={theme} active={isEditor} value={editorValue} setValue={setEditorValue} onReady={()=>setBottomTab(false)}/>
         {bottomTab && <View style={{alignItems:'center', width:'100%', flexDirection:'row', paddingTop:15, paddingBottom:5}}>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
-          <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`✏️\n ${lang('Editor')}`} onPress={()=>{setIsEditor(!isEditor); isEditor && setBottomTab(false)}}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer')}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>
           {extraButtons?.map(v=><CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={v.title} onPress={()=>{v.onPress();setBottomTab(false)}} disabled={v.disabled}/>)}
         </View>}

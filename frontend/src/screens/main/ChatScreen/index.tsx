@@ -12,9 +12,8 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
   const channel_id = route?.params?.id
   const windowType = useResizeContext()
   const { lang } = useLangContext()
-  const [isEditor, setIsEditor] = useState<boolean>(false)
   const [videoMode, setVideoMode] = useState<boolean>(false)
-  useChatSection(navigation, route, channel_id, 'messenger', isEditor)
+  useChatSection(navigation, route, channel_id, 'messenger', true)
   
   return <View style={[
     {flex:1, alignItems:'center'},
@@ -23,8 +22,6 @@ export default function ChatScreen({navigation, route}: StackScreenProps<any, 'C
     <VideoCallSection channel_id={channel_id} setDisable={(d)=>setVideoMode(!d)} disable={!videoMode}/>
     <CommonChatSection 
       channel_id={channel_id} 
-      isEditor={isEditor} 
-      setIsEditor={setIsEditor} 
       style={[videoMode?{flexShrink:1}:{flex:1}, windowType=='landscape'?{minWidth:320, height:'100%'}:{width:'100%'}]}
       extraButtons={[{title:`📹\n ${lang('Video Call')}`, onPress:()=>setVideoMode(!videoMode), disabled:videoMode}]}
     />

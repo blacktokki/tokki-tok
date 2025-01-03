@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { getChannelList, postChannel, postDirectChannel, putChannel } from "../../services";
+import { getChannelList, postChannel, postDirectChannel, patchChannel } from "../../services";
 import { MessengerChannel, MessengerContent } from "../../types";
 import { Auth } from "../useAuthContext";
 import useWebsocketContext from "../useWebsocketContext";
@@ -45,7 +45,7 @@ export function useMessengerChannelMutation(type:string){
     onSuccess: ()=>queryClient.invalidateQueries(["ChannelList", type])
   });
 
-  const update = useMutation(putChannel, {
+  const update = useMutation(patchChannel, {
     onSuccess: () => queryClient.invalidateQueries(["ChannelList", type])
   })
 

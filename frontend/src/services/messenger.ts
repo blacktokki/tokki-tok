@@ -15,8 +15,8 @@ export const postDirectChannel = async(channel:Channel)=>{
     return (await axios.post(`/api/v1/channels/direct/`, channel)).data as Channel
 }
 
-export const putChannel = async(channel:Channel)=>{
-    return (await axios.put(`/api/v1/channels/${channel.id}/`, channel)).data as Channel
+export const patchChannel = async(channel:Channel | {id:number, description:string})=>{
+    return (await axios.patch(`/api/v1/channels/${channel.id}/`, channel)).data as Channel
 }
 
 export const deleteChannel = async(channel_id:number)=>{
