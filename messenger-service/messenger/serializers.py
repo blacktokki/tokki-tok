@@ -47,6 +47,20 @@ def attach_link(channel_content, validated_data):
     Attatchment.objects.bulk_create(add_links)
 
 
+def attach_editor(validated_data):
+    """
+    editor 컨텐츠 추가
+    """
+    editor = validated_data.pop("editor", None)
+    if editor:
+        editor_channel = Channel.objects.filter(id=editor).first()
+        if editor_channel:
+            Attatchment.objects.create(
+                type='editor', channel_content=validated_data['channel_content'], url=editor,
+                title=editor_channel.name, description=editor_channel.description)
+            validated_data['preview_content'] = strip_tags(editor_channel.description or '')[:128]
+
+
 def post_create_messages(message_ids):
     """
     메시지 생성후 알림
@@ -158,11 +172,6 @@ class MessengerChannelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class EditorSerializer(serializers.Serializer):
-    title = serializers.CharField(help_text='제목')
-    content = serializers.CharField(help_text='내용')
-
-
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
         write_only=True, required=False, queryset=User.objects.all(), help_text='작성자 id')
@@ -170,7 +179,7 @@ class MessageSerializer(serializers.ModelSerializer):
         write_only=True, queryset=Channel.objects.filter(type__in=['messenger', 'mycontent']), help_text='채널')
     timer = serializers.DateTimeField(required=False, write_only=True, help_text='타이머 메시지 종료시점')
     file = serializers.FileField(required=False, write_only=True, help_text='첨부파일')
-    editor = EditorSerializer(required=False, write_only=True, help_text='에디터/포스트')
+    editor = serializers.IntegerField(required=False, write_only=True, help_text='에디터/노트')
 
     @transaction.atomic
     def create(self, validated_data):
@@ -178,17 +187,13 @@ class MessageSerializer(serializers.ModelSerializer):
         channel = validated_data.pop("channel")
         timer = validated_data.pop("timer", None)
         file = validated_data.pop("file", None)
-        editor = validated_data.pop("editor", None)
         validated_data['channel_content'] = ChannelContent.objects.create(user=user, channel=channel, timer=timer)
         attach_link(validated_data['channel_content'], validated_data)
+        attach_editor(validated_data)
         if file:
             attatchment = Attatchment.objects.create(
                 type='file', channel_content=validated_data['channel_content'], file=file)
             validated_data['preview_content'] = attatchment.filename[:128]
-        if editor:
-            Attatchment.objects.create(type='editor', channel_content=validated_data['channel_content'],
-                                       title=editor['title'], description=editor['content'])
-            validated_data['preview_content'] = strip_tags(editor['content'])[:128]
         instance = super().create(validated_data)
         post_create_messages([instance.id])
         return instance

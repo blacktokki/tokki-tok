@@ -22,7 +22,7 @@ class Channel(models.Model):
     type = models.CharField(db_column='ch_type', choices=TYPES, default='messenger', max_length=100, help_text='채널유형')
     is_archive = models.BooleanField(db_column="ch_is_archive", default=False, help_text='채널 비활성 여부')
     use_viewer = models.BooleanField(db_column='ch_use_viewer', default=False, help_text='뷰어기능 사용여부')
-    description = models.TextField(db_column="ch_description", blank=True, null=True, help_text='설명')
+    description = models.TextField(db_column="ch_description", blank=True, null=True, help_text='설명/노트')
 
     class Meta:
         db_table = "channel"
@@ -88,7 +88,7 @@ class Attatchment(ContentMixin, models.Model):
     )
 
     channel_content = models.ForeignKey(ChannelContent, on_delete=models.CASCADE, help_text='채널 컨텐츠')
-    type = models.CharField(db_column='at_type', choices=TYPES, max_length=100, help_text='채널유형')
+    type = models.CharField(db_column='at_type', choices=TYPES, max_length=100, help_text='첨부유형')
     file = ThumbnailerField(db_column='at_file', null=True, blank=True, upload_to=upload_to, help_text='첨부파일')
     title = models.CharField(db_column='at_title', max_length=255, help_text='제목')
     description = models.TextField(db_column='at_description', null=True, blank=True, help_text='설명')
