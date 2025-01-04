@@ -4,7 +4,7 @@
   "lang": "en",
   "name": "tokki-tok",
   "short_name": "tokki-tok",
-  "start_url": "/?utm_source=web_app_manifest",
+  "start_url": "/tokki-tok/?utm_source=web_app_manifest",
   "orientation": "portrait",
   "related_applications": [
     {
