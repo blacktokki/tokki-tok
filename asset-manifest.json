@@ -4,12 +4,12 @@
     "static/js/0.a8346a77.chunk.js.map": "/tokki-tok/static/js/0.a8346a77.chunk.js.map",
     "static/js/1.3dba0bda.chunk.js": "/tokki-tok/static/js/1.3dba0bda.chunk.js",
     "static/js/1.3dba0bda.chunk.js.map": "/tokki-tok/static/js/1.3dba0bda.chunk.js.map",
-    "static/js/2.466311b3.chunk.js": "/tokki-tok/static/js/2.466311b3.chunk.js",
-    "static/js/2.466311b3.chunk.js.map": "/tokki-tok/static/js/2.466311b3.chunk.js.map",
+    "static/js/2.71a6ab25.chunk.js": "/tokki-tok/static/js/2.71a6ab25.chunk.js",
+    "static/js/2.71a6ab25.chunk.js.map": "/tokki-tok/static/js/2.71a6ab25.chunk.js.map",
     "app.js": "/tokki-tok/static/js/app.4528232a.chunk.js",
     "app.js.map": "/tokki-tok/static/js/app.4528232a.chunk.js.map",
-    "runtime~app.js": "/tokki-tok/static/js/runtime~app.1a068e3b.js",
-    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.1a068e3b.js.map",
+    "runtime~app.js": "/tokki-tok/static/js/runtime~app.15ca99b6.js",
+    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.15ca99b6.js.map",
     "static/js/5.a91c8247.chunk.js": "/tokki-tok/static/js/5.a91c8247.chunk.js",
     "static/js/5.a91c8247.chunk.js.map": "/tokki-tok/static/js/5.a91c8247.chunk.js.map",
     "static/js/6.fd48dffc.chunk.js": "/tokki-tok/static/js/6.fd48dffc.chunk.js",
@@ -145,7 +145,7 @@
     "virtual.html": "/tokki-tok/virtual.html"
   },
   "entrypoints": [
-    "static/js/runtime~app.1a068e3b.js",
+    "static/js/runtime~app.15ca99b6.js",
     "static/js/6.fd48dffc.chunk.js",
     "static/js/app.4528232a.chunk.js"
   ]
