@@ -19,7 +19,7 @@ export const replaceInviteeState = (l:Location)=>{
 
 export default ()=>{
     const {auth} = useAuthContext()
-    const channelList = useMessengerChannelList(auth)
+    const channelList = useMessengerChannelList("messenger", auth)
     const messengerMemberMutation = useMessengerMemberMutation()
     useEffect(()=>{
         if (auth.user){

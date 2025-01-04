@@ -32,7 +32,8 @@
       "package": "com.blacktokki.reactnativepractice"
     },
     "web": {
-      "favicon": "src/assets/images/favicon.png"
+      "favicon": "src/assets/images/favicon.png",
+      "startUrl": "/tokki-tok/?utm_source=web_app_manifest"
     }
   }
 }
