@@ -34,7 +34,7 @@ export default React.memo(({channel_id, disable, setDisable}:{channel_id:number,
         { aspectRatio:1/1.414, borderColor:Colors.borderColor, borderRadius:10},
         windowType=='landscape'?{flexShrink:1, flexGrow:0, height:'100%', borderLeftWidth:1, paddingBottom:65}:{maxHeight:'36%', width:'100%', borderBottomWidth:1}
     ]}>
-        <ThemedView style={{margin:20, flex:1}}>
+        <ThemedView style={{flex:1, borderColor:Colors[theme].headerBottomColor, borderBottomWidth:1}}>
             <EditorHtml content={description} />
         </ThemedView>
         <ThemedView style={[
@@ -59,11 +59,11 @@ export default React.memo(({channel_id, disable, setDisable}:{channel_id:number,
                 style={{height:65, paddingVertical:20}}
             /></>:
             <>
-            <TouchableOpacity style={{margin:20, flex:1}} onPress={onEdit} onLongPress={onEdit}>
+            <TouchableOpacity style={{flex:1, borderColor:Colors[theme].headerBottomColor, borderBottomWidth:1}} onPress={onEdit} onLongPress={onEdit}>
                 <EditorHtml content={description}/>
             </TouchableOpacity>
             <ThemedView style={[
-                {position:'absolute', alignItems:'center', justifyContent:'flex-end', width:'100%',flexDirection:'row'},
+                {alignItems:'center', justifyContent:'flex-end', width:'100%',flexDirection:'row'},
                 windowType=='landscape'?{bottom:0, paddingTop:15, paddingBottom:10, paddingHorizontal:19}:{backgroundColor:'transparent'}
             ]}>
             {onEdit && <CommonButton title={''} style={{height:40, paddingTop:8}} onPress={onEdit}>
