@@ -41,8 +41,8 @@ export default React.memo(({channel_id, disable, setDisable}:{channel_id:number,
                 {position:'absolute', alignItems:'center', justifyContent:'flex-end', width:'100%',flexDirection:'row'},
                 windowType=='landscape'?{bottom:0, paddingTop:15, paddingBottom:10, paddingHorizontal:19}:{backgroundColor:'transparent'}
             ]}>
-            <CommonButton title={''} style={{height:40, paddingTop:8}} onPress={()=>setDisable(false)}>
-                <MaterialCommunityIcons size={20} style={{ marginBottom: -3 }} name='card-text'/>
+            <CommonButton title={''} style={{height:40, paddingTop:8, left:-15, top:15}} onPress={()=>setDisable(false)}>
+                <MaterialCommunityIcons size={20} style={{ marginBottom: -3, color:Colors[theme].iconColor }} name='card-text'/>
             </CommonButton>
         </ThemedView>
     </ThemedView>:
@@ -67,10 +67,10 @@ export default React.memo(({channel_id, disable, setDisable}:{channel_id:number,
                 windowType=='landscape'?{bottom:0, paddingTop:15, paddingBottom:10, paddingHorizontal:19}:{backgroundColor:'transparent'}
             ]}>
             {onEdit && <CommonButton title={''} style={{height:40, paddingTop:8}} onPress={onEdit}>
-                <MaterialCommunityIcons size={20} style={{ marginBottom: -3 }} name='pencil-box'/>
+                <MaterialCommunityIcons size={20} style={{ marginBottom: -3, color:Colors[theme].iconColor }} name='pencil-box'/>
             </CommonButton>}
             <CommonButton title={''} style={{height:40, paddingTop:8}} onPress={()=>setDisable(true)}>
-                <Ionicons size={20} style={{ marginBottom: -3 }} name='chatbox'/>
+                <Ionicons size={20} style={{ marginBottom: -3, color:Colors[theme].iconColor }} name='chatbox'/>
             </CommonButton>
         </ThemedView>
             </>}
