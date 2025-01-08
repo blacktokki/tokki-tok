@@ -2,14 +2,14 @@
   "files": {
     "static/js/0.a8346a77.chunk.js": "/tokki-tok/static/js/0.a8346a77.chunk.js",
     "static/js/0.a8346a77.chunk.js.map": "/tokki-tok/static/js/0.a8346a77.chunk.js.map",
-    "static/js/1.1b7e0d3d.chunk.js": "/tokki-tok/static/js/1.1b7e0d3d.chunk.js",
-    "static/js/1.1b7e0d3d.chunk.js.map": "/tokki-tok/static/js/1.1b7e0d3d.chunk.js.map",
-    "static/js/2.6371beef.chunk.js": "/tokki-tok/static/js/2.6371beef.chunk.js",
-    "static/js/2.6371beef.chunk.js.map": "/tokki-tok/static/js/2.6371beef.chunk.js.map",
-    "app.js": "/tokki-tok/static/js/app.4528232a.chunk.js",
-    "app.js.map": "/tokki-tok/static/js/app.4528232a.chunk.js.map",
-    "runtime~app.js": "/tokki-tok/static/js/runtime~app.fad43b0e.js",
-    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.fad43b0e.js.map",
+    "static/js/1.6135d316.chunk.js": "/tokki-tok/static/js/1.6135d316.chunk.js",
+    "static/js/1.6135d316.chunk.js.map": "/tokki-tok/static/js/1.6135d316.chunk.js.map",
+    "static/js/2.862eb1fa.chunk.js": "/tokki-tok/static/js/2.862eb1fa.chunk.js",
+    "static/js/2.862eb1fa.chunk.js.map": "/tokki-tok/static/js/2.862eb1fa.chunk.js.map",
+    "app.js": "/tokki-tok/static/js/app.183c81d3.chunk.js",
+    "app.js.map": "/tokki-tok/static/js/app.183c81d3.chunk.js.map",
+    "runtime~app.js": "/tokki-tok/static/js/runtime~app.4ae4e4b0.js",
+    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.4ae4e4b0.js.map",
     "static/js/5.1ab938d5.chunk.js": "/tokki-tok/static/js/5.1ab938d5.chunk.js",
     "static/js/5.1ab938d5.chunk.js.map": "/tokki-tok/static/js/5.1ab938d5.chunk.js.map",
     "static/js/6.fd48dffc.chunk.js": "/tokki-tok/static/js/6.fd48dffc.chunk.js",
@@ -47,14 +47,9 @@
     "firebase-config.js": "/tokki-tok/firebase-config.js",
     "firebase-messaging-sw.js": "/tokki-tok/firebase-messaging-sw.js",
     "index.html": "/tokki-tok/index.html",
-    "main.8e18c2c5.js": "/tokki-tok/main.8e18c2c5.js",
-    "main.8e18c2c5.js.LICENSE.txt": "/tokki-tok/main.8e18c2c5.js.LICENSE.txt",
-    "main.8e18c2c5.js.map": "/tokki-tok/main.8e18c2c5.js.map",
-    "main.ebf79481.css": "/tokki-tok/main.ebf79481.css",
-    "main.ebf79481.css.map": "/tokki-tok/main.ebf79481.css.map",
     "manifest.json": "/tokki-tok/manifest.json",
     "serve.json": "/tokki-tok/serve.json",
-    "static/js/1.1b7e0d3d.chunk.js.LICENSE.txt": "/tokki-tok/static/js/1.1b7e0d3d.chunk.js.LICENSE.txt",
+    "static/js/1.6135d316.chunk.js.LICENSE.txt": "/tokki-tok/static/js/1.6135d316.chunk.js.LICENSE.txt",
     "static/js/5.1ab938d5.chunk.js.LICENSE.txt": "/tokki-tok/static/js/5.1ab938d5.chunk.js.LICENSE.txt",
     "static/js/6.fd48dffc.chunk.js.LICENSE.txt": "/tokki-tok/static/js/6.fd48dffc.chunk.js.LICENSE.txt",
     "static/js/7.d18aac25.chunk.js.LICENSE.txt": "/tokki-tok/static/js/7.d18aac25.chunk.js.LICENSE.txt",
@@ -141,12 +136,11 @@
     "tinymce/themes/mobile/theme.min.js": "/tokki-tok/tinymce/themes/mobile/theme.min.js",
     "tinymce/themes/silver/theme.min.js": "/tokki-tok/tinymce/themes/silver/theme.min.js",
     "tinymce/tinymce.min.js": "/tokki-tok/tinymce/tinymce.min.js",
-    "viewer.html": "/tokki-tok/viewer.html",
-    "virtual.html": "/tokki-tok/virtual.html"
+    "viewer.html": "/tokki-tok/viewer.html"
   },
   "entrypoints": [
-    "static/js/runtime~app.fad43b0e.js",
+    "static/js/runtime~app.4ae4e4b0.js",
     "static/js/6.fd48dffc.chunk.js",
-    "static/js/app.4528232a.chunk.js"
+    "static/js/app.183c81d3.chunk.js"
   ]
 }
