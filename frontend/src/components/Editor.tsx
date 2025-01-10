@@ -4,15 +4,13 @@ import Editor from '../lib/tinymce/Editor';
 // import Editor from '../lib/tinymce/EditorView';
 import { EditorProps } from '../types';
 
-export default (props:EditorProps & {active:boolean, children?:React.ReactNode}) => {
+export default (props:EditorProps & {active:boolean}) => {
 	const [ready, setReady] = useState<boolean>(false)
   useEffect(()=>{
     if(!props.active)
       setReady(false)
   }, [props.active])
-  return props.active?(
-        <View style={{flex:1, height:'100%'}}>
-        {!ready && props.children}
+  return <View style={props.active?{flex:1, height:'100%'}:{display:'none'}}>
     	  <Editor
           theme={props.theme}
           value={props.value}
@@ -23,5 +21,4 @@ export default (props:EditorProps & {active:boolean, children?:React.ReactNode})
             }
           }}/>
       </View>
-    ):<>{props.children}</>;
 };

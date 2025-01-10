@@ -115,7 +115,7 @@ const NoteTabView = ()=>{
   return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}} contentContainerStyle={{flexWrap:'wrap', flexDirection:'row'}}>
       {channelList?.map((item, index)=>{
           const date = item.last_message?.created.slice(0,10)
-          const content = (item.description || '').replaceAll(/<hr \/>\n/gi, '').replaceAll(/&nbsp;/gi, ' ').replaceAll(/<br\/>/gi, '\r\n').replaceAll(regexForStripHTML, '')
+          const content = (item.description || '').replaceAll(/<hr\s*[\/]?>\n/gi, '').replaceAll(/&nbsp;/gi, ' ').replaceAll(/<br\s*[\/]?>/gi, '\r\n').replaceAll(regexForStripHTML, '')
           const onPress = ()=>navigate("NoteScreen", {id:item.id})
           return <CommonItem key={index} outerContainerStyle={{flexBasis:'50%'}} onPress={onPress}>
               {/* @ts-ignore */}

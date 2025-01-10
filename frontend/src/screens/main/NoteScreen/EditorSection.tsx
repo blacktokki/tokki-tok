@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { TouchableOpacity } from "react-native"
 import { Ionicons, MaterialCommunityIcons } from '../../../lib/@expo/vector-icons';
 import useAuthContext from "../../../hooks/useAuthContext"
@@ -11,9 +11,10 @@ import useColorScheme from "../../../hooks/useColorScheme"
 import CommonButton from "../../../components/CommonButton"
 import useLangContext from "../../../hooks/useLangContext"
 import EditorHtml from "../../../components/EditorHtml"
+import useModalEffect from "../../../hooks/useModalEffect";
 
 
-export default React.memo(({channel_id, disable, setDisable}:{channel_id:number, setDisable:(disable:boolean)=>void, disable?:boolean})=>{
+export default React.memo(({channel_id, disable, setDisable,}:{channel_id:number, setDisable:(disable:boolean)=>void, disable?:boolean})=>{
     const theme = useColorScheme()
     const {auth} = useAuthContext()
     const { lang } = useLangContext()
@@ -23,11 +24,22 @@ export default React.memo(({channel_id, disable, setDisable}:{channel_id:number,
     const channel = channelList?.find(v=>v.id==channel_id)
     const [editable, setEditable] = useState(false)
     const [description, setDescription] = useState('')
+    const onSave = useCallback(()=>{
+        if(auth?.user?.id && auth.groupId && channel?.description != description){
+            channelMutation.update({id:channel_id, description}).then(()=>{
+                setEditable(false)
+            })
+        }
+        else {
+            setEditable(false)
+        }
+    }, [auth, channelMutation, channel_id, description])
     useEffect(()=>{
         if (channel){
           setDescription(channel?.description || '')
         }
     }, [channel?.id])
+    useModalEffect(editable?onSave:undefined, [editable, onSave])
     const onEdit = (auth.user?.id== channel?.owner.id)?()=>setEditable(true):undefined
     return disable?
     <ThemedView style={[
@@ -47,17 +59,12 @@ export default React.memo(({channel_id, disable, setDisable}:{channel_id:number,
         </ThemedView>
     </ThemedView>:
     <ThemedView style={{width:"100%", height:"100%"}}>
+        <Editor theme={theme} active={editable} value={description} setValue={setDescription}/>
         {editable?<>
-            <Editor theme={theme} active={!disable} value={description} setValue={setDescription}/>
-            <CommonButton title={lang('save')} onPress={()=>{
-                if(auth?.user?.id && auth.groupId){
-                    channelMutation.update({id:channel_id, description}).then(()=>{
-                        setEditable(false)
-                    })
-                }
-                }}
-                style={{height:65, paddingVertical:20}}
-            /></>:
+                <CommonButton title={lang('save')} onPress={onSave}
+                    style={{height:65, paddingVertical:20}}
+                />
+            </>:
             <>
             <TouchableOpacity style={{flex:1, borderColor:Colors[theme].headerBottomColor, borderBottomWidth:1}} onPress={onEdit} onLongPress={onEdit}>
                 <EditorHtml content={description}/>
