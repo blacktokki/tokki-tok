@@ -6,8 +6,8 @@
     "static/js/1.79fdd7df.chunk.js.map": "/tokki-tok/static/js/1.79fdd7df.chunk.js.map",
     "static/js/2.ad033e9b.chunk.js": "/tokki-tok/static/js/2.ad033e9b.chunk.js",
     "static/js/2.ad033e9b.chunk.js.map": "/tokki-tok/static/js/2.ad033e9b.chunk.js.map",
-    "app.js": "/tokki-tok/static/js/app.5501b422.chunk.js",
-    "app.js.map": "/tokki-tok/static/js/app.5501b422.chunk.js.map",
+    "app.js": "/tokki-tok/static/js/app.e4c1648a.chunk.js",
+    "app.js.map": "/tokki-tok/static/js/app.e4c1648a.chunk.js.map",
     "runtime~app.js": "/tokki-tok/static/js/runtime~app.5b059e46.js",
     "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.5b059e46.js.map",
     "static/js/5.74f84134.chunk.js": "/tokki-tok/static/js/5.74f84134.chunk.js",
@@ -152,6 +152,6 @@
   "entrypoints": [
     "static/js/runtime~app.5b059e46.js",
     "static/js/6.baad8fc1.chunk.js",
-    "static/js/app.5501b422.chunk.js"
+    "static/js/app.e4c1648a.chunk.js"
   ]
 }
