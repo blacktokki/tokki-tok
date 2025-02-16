@@ -101,7 +101,7 @@ class ChannelSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         instance = super().create(validated_data)
-        if instance.type in ['messenger', 'mycontent']:
+        if instance.type in ['messenger']:
             self._enter_channel(instance, validated_data['owner'])
             if 'subowner' in validated_data and not validated_data['owner'].id != validated_data['subowner'].id:
                 self._enter_channel(instance, validated_data['subowner'])
@@ -167,7 +167,7 @@ class MessageSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
         write_only=True, required=False, queryset=User.objects.all(), help_text='작성자 id')
     channel = serializers.PrimaryKeyRelatedField(
-        write_only=True, queryset=Channel.objects.filter(type__in=['messenger', 'mycontent']), help_text='채널')
+        write_only=True, queryset=Channel.objects.filter(type__in=['messenger']), help_text='채널')
     timer = serializers.DateTimeField(required=False, write_only=True, help_text='타이머 메시지 종료시점')
     file = serializers.FileField(required=False, write_only=True, help_text='첨부파일')
     editor = EditorSerializer(required=False, write_only=True, help_text='에디터/포스트')

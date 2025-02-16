@@ -106,32 +106,6 @@ const MessengerTabView = ()=>{
   </ScrollView>
 }
 
-const MyMessageTabView = ()=>{
-  const {auth} = useAuthContext()
-  const channelList = useMessengerChannelSorted('mycontent', auth)
-  const theme = useColorScheme()
-
-  const today = (new Date()).toISOString().slice(0, 10)
-  return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}} contentContainerStyle={{flexWrap:'wrap', flexDirection:'row'}}>
-      {channelList?.map((item, index)=>{
-          const date = item.last_message?.created.slice(0,10)
-          const content = item.last_message?.preview_content || item.last_message?.content || ''
-          const onPress = ()=>navigate("MyMessageScreen", {id:item.id})
-          return <CommonItem key={index} outerContainerStyle={{flexBasis:'50%'}} onPress={onPress}>
-              {/* @ts-ignore */}
-              <CommonItem containerStyle={{marginHorizontal:0}} bodyStyle={{borderRadius:6, borderWidth:1, wordBreak:'break-word'}} onPress={onPress}>
-                <Text style={{fontSize:16, opacity: 0.4}}>{content}</Text>
-              </CommonItem>
-              <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignItems:'center', width:'100%'}}>
-                <Text style={{fontSize:18}}>{item.name}</Text>
-                <Text style={{fontSize:14, opacity: 0.4, textAlign:'right'}}>{date==today?item.last_message?.created.slice(11,16):date}</Text>
-                  
-              </View>
-          </CommonItem>
-      })}
-  </ScrollView>
-}
-
 
 const ConfigTabView = ()=>{
   const theme = useColorScheme()
@@ -153,11 +127,11 @@ const getBottomTabs = (theme:'light'|'dark', headerSetter:(ref:any)=>void)=>{
         component:MessengerTabView,
         icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
     },
-    ThreeTab:{
-      title:'my messages',
-      component:MyMessageTabView,
-      icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
-  },
+    // ThreeTab:{
+    //   title:'my messages',
+    //   component:MyMessageTabView,
+    //   icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
+    // },
     FourTab:{
         title:'config',
         component:ConfigTabView,
@@ -178,7 +152,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const options = [
     {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{})}]}/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
-    {title:lang('my messages'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
+    // {title:lang('my messages'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}
   ]
   const headerSetter = useHeaderSetter(options)

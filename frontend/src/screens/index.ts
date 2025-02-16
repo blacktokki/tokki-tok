@@ -2,7 +2,6 @@ import LoginScreen from "./login/LoginScreen";
 import DemoScreen from "./login/DemoScreen";
 import ChatScreen from "./main/ChatScreen";
 import HomeScreen from "./main/HomeScreen";
-import MyMessageScreen from "./main/MyMessageScreen";
 // import BoardEditScreen from "../lib/blacktokki-board/BoardEditScreen";
 import { Screens } from "../types";
 
@@ -17,11 +16,11 @@ export const main = {
         component:ChatScreen,
         path:'chat'
     },
-    MyMessageScreen:{
-        title:'my messages',
-        component:MyMessageScreen,
-        path:'mymessage'
-    },
+    // BoardScreen:{
+    //     title:'board',
+    //     component:BoardScreen,
+    //     path:'board'
+    // },
 } as Screens
 
 export const login = {

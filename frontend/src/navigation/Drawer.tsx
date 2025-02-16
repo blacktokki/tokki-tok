@@ -47,19 +47,6 @@ const MessengerTabView = ()=>{
     })}
   </View>
 }
-
-const MyMessageTabView = ()=>{
-  const {auth} = useAuthContext()
-  const channelList = useMessengerChannelSorted('mycontent', auth);
-  return <View style={{flex:1}}>
-    {channelList?.map((item, index)=>{
-      const {name} = avatarFromChannel(item, auth.user)
-      return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>navigate("MyMessageScreen", {id:item.id})}>
-        <Text style={{marginLeft:20}}>{name}</Text>
-      </CommonItem>
-    })}
-  </View>
-}
 const getDrawerTabs = (theme:'light'|'dark')=>{
   const color = Colors[theme].iconColor
   return {
@@ -73,11 +60,11 @@ const getDrawerTabs = (theme:'light'|'dark')=>{
         component:MessengerTabView,
         icon:<Ionicons size={30} color={color} style={{ marginBottom: -3 }} name='chatbox'/>
     },
-    MyMessageTab:{
-        title:'my messages',
-        component:MyMessageTabView,
-        icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
-    }
+    // MyMessageTab:{
+    //   title:'my messages',
+    //   component:MyMessageTabView,
+    //   icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='pencil-box'/>
+    // }
   } as TabViewRecord
 }
 
@@ -91,7 +78,7 @@ export default ({auth}:{auth:Auth})=> {
   const onAddList = [
     ()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{}),
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
-    ()=>setModal(ChannelEditModal, {type:'mycontent'}),
+    // ()=>setModal(ChannelEditModal, {type:'mycontent'}),
   ]
   const drawerTabs = getDrawerTabs(theme)
 

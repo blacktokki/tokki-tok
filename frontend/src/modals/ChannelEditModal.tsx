@@ -24,7 +24,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
   const channel = channelList?.find(v=>v.id==id)
   const title = type=='messenger'?
     (id?lang('Chat Setting'):lang('New chat')):
-    (id?lang('Channel Setting'):lang('New Channel'))
+    ''//(id?lang('Channel Setting'):lang('New Channel'))
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const back = ()=>{
@@ -57,7 +57,7 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
             if(auth?.user?.id && auth.groupId){
               const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
               (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
-                screen:v.type == 'messenger'?'ChatScreen':'MyMessageScreen',
+                screen: 'ChatScreen', //v.type == 'messenger'?'ChatScreen':'MyMessageScreen',
                 params:{id:v.id}
               }))
             }

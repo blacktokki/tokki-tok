@@ -49,5 +49,8 @@ export default ()=>{
             )=>setColorScheme(colorScheme)}/>)}
       </View>
     </ConfigSection>
+    {!auth.user?.is_guest && <CommonSection bodyStyle={{alignItems:'flex-start', backgroundColor:theme=='light'?'transparent':"black"}}>
+      <TextButton title={lang('> Account Settings')} textStyle={{fontSize:20, color}} style={{paddingLeft:0, borderRadius:20}} onPress={()=>setModal(RegistrationModal, {id:auth.user?.id})}/>
+    </CommonSection>}
   </>
 }
