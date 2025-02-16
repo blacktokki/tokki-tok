@@ -6,10 +6,10 @@
     "static/js/1.79fdd7df.chunk.js.map": "/tokki-tok/static/js/1.79fdd7df.chunk.js.map",
     "static/js/2.ad033e9b.chunk.js": "/tokki-tok/static/js/2.ad033e9b.chunk.js",
     "static/js/2.ad033e9b.chunk.js.map": "/tokki-tok/static/js/2.ad033e9b.chunk.js.map",
-    "app.js": "/tokki-tok/static/js/app.8fcf789d.chunk.js",
-    "app.js.map": "/tokki-tok/static/js/app.8fcf789d.chunk.js.map",
-    "runtime~app.js": "/tokki-tok/static/js/runtime~app.84f89ab2.js",
-    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.84f89ab2.js.map",
+    "app.js": "/tokki-tok/static/js/app.5501b422.chunk.js",
+    "app.js.map": "/tokki-tok/static/js/app.5501b422.chunk.js.map",
+    "runtime~app.js": "/tokki-tok/static/js/runtime~app.5b059e46.js",
+    "runtime~app.js.map": "/tokki-tok/static/js/runtime~app.5b059e46.js.map",
     "static/js/5.74f84134.chunk.js": "/tokki-tok/static/js/5.74f84134.chunk.js",
     "static/js/5.74f84134.chunk.js.map": "/tokki-tok/static/js/5.74f84134.chunk.js.map",
     "static/js/6.baad8fc1.chunk.js": "/tokki-tok/static/js/6.baad8fc1.chunk.js",
@@ -20,8 +20,8 @@
     "static/js/8.2c248e75.chunk.js.map": "/tokki-tok/static/js/8.2c248e75.chunk.js.map",
     "static/js/9.badbc87d.chunk.js": "/tokki-tok/static/js/9.badbc87d.chunk.js",
     "static/js/9.badbc87d.chunk.js.map": "/tokki-tok/static/js/9.badbc87d.chunk.js.map",
-    "static/js/10.b0dd976a.chunk.js": "/tokki-tok/static/js/10.b0dd976a.chunk.js",
-    "static/js/10.b0dd976a.chunk.js.map": "/tokki-tok/static/js/10.b0dd976a.chunk.js.map",
+    "static/js/10.feb3629e.chunk.js": "/tokki-tok/static/js/10.feb3629e.chunk.js",
+    "static/js/10.feb3629e.chunk.js.map": "/tokki-tok/static/js/10.feb3629e.chunk.js.map",
     "static/js/11.1475679a.chunk.js": "/tokki-tok/static/js/11.1475679a.chunk.js",
     "static/js/11.1475679a.chunk.js.map": "/tokki-tok/static/js/11.1475679a.chunk.js.map",
     "static/js/12.487065dc.chunk.js": "/tokki-tok/static/js/12.487065dc.chunk.js",
@@ -150,8 +150,8 @@
     "virtual.html": "/tokki-tok/virtual.html"
   },
   "entrypoints": [
-    "static/js/runtime~app.84f89ab2.js",
+    "static/js/runtime~app.5b059e46.js",
     "static/js/6.baad8fc1.chunk.js",
-    "static/js/app.8fcf789d.chunk.js"
+    "static/js/app.5501b422.chunk.js"
   ]
 }
