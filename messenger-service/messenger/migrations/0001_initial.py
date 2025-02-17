@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(db_column='ch_type', default='messenger', max_length=100)),
                 ('description', models.TextField(blank=True, db_column='ch_description', default='', null=True)),
                 ('is_archive', models.BooleanField(db_column='ch_is_archive', default=False)),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.group')),
+                # ('group', models.IntegerField(on_delete=django.db.models.deletion.CASCADE, to='accounts.group')),
                 ('owner', models.ForeignKey(db_column='user_id', on_delete=django.db.models.deletion.CASCADE, to='accounts.user')),
             ],
             options={

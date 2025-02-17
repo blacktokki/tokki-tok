@@ -3,7 +3,7 @@ from django.db import models
 from easy_thumbnails.fields import ThumbnailerField
 from easy_thumbnails.exceptions import InvalidImageFormatError
 
-from accounts.models import Group, User
+from accounts.models import User
 from .manager import ChannelManager, ChannelContentManager, MessageManager, MessengerMemberManager
 
 
@@ -17,7 +17,6 @@ class Channel(models.Model):
     owner = models.ForeignKey(User, db_column='user_id', on_delete=models.SET_NULL, help_text='채널 소유자', null=True)
     subowner = models.ForeignKey(User, db_column='subuser_id', on_delete=models.SET_NULL, help_text='채널 예비소유자',
                                  null=True, related_name='subchannel_set')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, help_text='그룹')
     name = models.CharField(db_column='ch_name', max_length=255, blank=True, default='', help_text='채널명')
     type = models.CharField(db_column='ch_type', choices=TYPES, default='messenger', max_length=100, help_text='채널유형')
     is_archive = models.BooleanField(db_column="ch_is_archive", default=False, help_text='채널 비활성 여부')

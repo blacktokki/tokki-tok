@@ -27,7 +27,6 @@ class MessengerTestCase(TestUserMixin, APITestCase):
     def setUpTestData(cls):
         cls.user = User.objects.get_by_natural_key(cls.username)
         cls.user2 = User.objects.get_by_natural_key(cls.username2)
-        cls.group = Group.objects.get(name=cls.domain)
         cls.notification = Notification.objects.create(user=cls.user, type='WEB', token='')
         cls.notification2 = Notification.objects.create(user=cls.user2, type='WEB', token='')
 
@@ -40,7 +39,7 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_channel(self):
         # given
-        channel_data = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": ""}
+        channel_data = {"owner": self.user.id, "type": "messenger", "name": ""}
 
         # when
         create_response = self.client.post('/api/v1/channels/', channel_data)
@@ -54,8 +53,8 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_direct_channel(self):
         # given
-        channel_data_self = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": ""}
-        channel_data = {"owner": self.user.id, "group": self.group.id, "type": "messenger", "name": "",
+        channel_data_self = {"owner": self.user.id, "type": "messenger", "name": ""}
+        channel_data = {"owner": self.user.id, "type": "messenger", "name": "",
                         "subowner": self.user2.id}
 
         # when
@@ -68,7 +67,7 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_messenger_member(self):
         # given
-        channel = Channel.objects.create(owner=self.user2, group=self.group, type='messenger', name='name')
+        channel = Channel.objects.create(owner=self.user2, type='messenger', name='name')
         messengermember_data = {"user_ids": [self.user2.id, self.user.id], "channel": channel.id}
 
         # when
@@ -84,7 +83,7 @@ class MessengerTestCase(TestUserMixin, APITestCase):
 
     def test_messenger_content(self):
         # given
-        channel = Channel.objects.create(owner=self.user, group=self.group, type='messenger', name='name')
+        channel = Channel.objects.create(owner=self.user, type='messenger', name='name')
         MessengerMember.objects.create(channel=channel, user=self.user)
         MessengerMember.objects.create(channel=channel, user=self.user2)
         content_data = {"user": self.user.id, "channel": channel.id, 'content': 'content'}

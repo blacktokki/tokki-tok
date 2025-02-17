@@ -16,15 +16,5 @@ class Migration(migrations.Migration):
             code=django_db_views.migration_functions.ForwardViewMigration("SELECT\n        us.us_id as id,\n        us.us_username as username,\n        '' as first_name,\n        us.us_name as last_name,\n        us.us_image_url as image_url,\n        us.us_is_admin as is_staff,\n        us.dt_created as date_joined,\n        '' as password,\n        1 as is_active,\n        0 as is_superuser,\n        '' as email,\n        NOW() AS last_login\n    FROM {0}.user as us", 'user', engine='django.db.backends.mysql'),
             reverse_code=django_db_views.migration_functions.BackwardViewMigration('', 'user', engine='django.db.backends.mysql'),
             atomic=False,
-        ),
-        django_db_views.operations.ViewRunPython(
-            code=django_db_views.migration_functions.ForwardViewMigration('SELECT * FROM {0}.group', '`group`', engine='django.db.backends.mysql'),
-            reverse_code=django_db_views.migration_functions.BackwardViewMigration('', '`group`', engine='django.db.backends.mysql'),
-            atomic=False,
-        ),
-        django_db_views.operations.ViewRunPython(
-            code=django_db_views.migration_functions.ForwardViewMigration('SELECT * FROM {0}.membership', 'member', engine='django.db.backends.mysql'),
-            reverse_code=django_db_views.migration_functions.BackwardViewMigration('', 'member', engine='django.db.backends.mysql'),
-            atomic=False,
-        ),
+        )
     ]
