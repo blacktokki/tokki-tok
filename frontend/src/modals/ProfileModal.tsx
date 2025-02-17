@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Profile from '../components/Profile';
 import useAuthContext from '../hooks/useAuthContext';
-import useUserMembershipList from '../hooks/lists/useUserMembershipList';
+import useUserList from '../hooks/lists/useUserList';
 import { useMessengerChannelMutation } from '../hooks/lists/useMessengerChannelList';
 import CommonButton from '../components/CommonButton';
 import { Channel } from '../types';
@@ -22,7 +22,7 @@ export default function ProfileModal({id}:{id:number}) {
   const theme = useColorScheme()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
-  const userList = useUserMembershipList(auth)
+  const userList = useUserList(auth)
   const user = userList?.find(v=>v.id==id)
   const isSelf = auth.user && user && (auth.user?.id==user?.id)
   const channelMutation = useMessengerChannelMutation('messenger')

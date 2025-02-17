@@ -6,7 +6,7 @@ import TextButton from '../components/TextButton';
 import Colors from '../constants/Colors';
 import useResizeContext from '../hooks/useResizeContext';
 import TabView from '../components/TabView';
-import { TabViewRecord, UserMembership } from '../types';
+import { TabViewRecord, User } from '../types';
 import useModalsContext from '../hooks/useModalsContext';
 import ChannelEditModal from '../modals/ChannelEditModal';
 import CommonItem from '../components/CommonItem';
@@ -18,14 +18,14 @@ import { avatarFromChannel } from '../components/Avatar';
 import useColorScheme from '../hooks/useColorScheme';
 import { Ionicons, MaterialCommunityIcons } from '../lib/@expo/vector-icons';
 import RegistrationModal from '../modals/RegistrationModal';
-import useUserMembershipList from '../hooks/lists/useUserMembershipList';
+import useUserList from '../hooks/lists/useUserList';
 import ProfileModal from '../modals/ProfileModal';
 
 
 const MemberTabView = ()=>{
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
-  const userList = useUserMembershipList(auth)
+  const userList = useUserList(auth)
   return <View style={{flex:1}}>
     {userList?.map((item, index)=>{
       return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>setModal(ProfileModal, {id:item.id})}>

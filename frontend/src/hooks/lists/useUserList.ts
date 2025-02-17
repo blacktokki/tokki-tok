@@ -1,18 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { deleteUser, getUserMembershipList, patchUser, postUser } from "../../services";
+import { deleteUser, getUserList, patchUser, postUser } from "../../services";
 import useAuthContext, { Auth } from "../useAuthContext";
 
-export default function useUserMembershipList(auth?:Auth){
-  const { data } = useQuery(["UserMembershipList", auth?.groupId] , async()=>auth?.groupId?(await getUserMembershipList(auth?.groupId)):[])
+export default function useUserList(auth?:Auth){
+  const { data } = useQuery(["UserList", auth?.groupId] , async()=>auth?.groupId?(await getUserList()):[])
   return data
 }
 
-export function useUserMembershipMutation(){
+export function useUserMutation(){
   const queryClient = useQueryClient()
   const { auth, dispatch } = useAuthContext()
   const _create = useMutation(postUser, {
     onSuccess: ()=>{
-      queryClient.invalidateQueries("UserMembershipList")
+      queryClient.invalidateQueries("UserList")
     }
   })
   const _update = useMutation(patchUser, {
@@ -25,13 +25,13 @@ export function useUserMembershipMutation(){
           dispatch({type:"REFRESH"})
         }
       else{
-        queryClient.invalidateQueries("UserMembershipList")
+        queryClient.invalidateQueries("UserList")
       }
     }
   })
   const _delete = useMutation(deleteUser, {
     onSuccess: (data, id)=>{
-      queryClient.invalidateQueries("UserMembershipList")
+      queryClient.invalidateQueries("UserList")
       if (id == auth.user?.id)
         dispatch({type:"LOGOUT_REQUEST"})
     }

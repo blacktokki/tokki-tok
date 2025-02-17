@@ -1,12 +1,12 @@
 import React, {useRef,MutableRefObject, useMemo, useState, useEffect } from 'react';
 import { View, Text } from '../components/Themed';
 import useAuthContext from '../hooks/useAuthContext';
-import useUserMembershipList from '../hooks/lists/useUserMembershipList';
-import { TabViewRecord, UserMembership } from '../types';
+import useUserList from '../hooks/lists/useUserList';
+import { TabViewRecord, User } from '../types';
 import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
 import useModalsContext from '../hooks/useModalsContext';
-import useExternalMembershipList from '../hooks/lists/useExternalMembershipList';
+import useExternalUserList from '../hooks/lists/useExternalUserList';
 import TextField from '../components/TextField';
 import useLocalSearch from '../hooks/useLocalSearch';
 import TabView from '../components/TabView';
@@ -17,7 +17,7 @@ import ModalSection from '../components/ModalSection';
 import useModalEffect from '../hooks/useModalEffect';
 import CopyField from '../components/CopyField';
 
-const InviteItem = (props:{item:UserMembership, selectedRef:MutableRefObject<Set<number>>})=>{
+const InviteItem = (props:{item:User, selectedRef:MutableRefObject<Set<number>>})=>{
   const [selected, setSelected] = useState(props.selectedRef.current.has(props.item.id))
   return <View style={selected?{borderWidth:1, borderColor:'blue'}:{}}>
     <MemberItem member={props.item} onPress={()=>{
@@ -42,7 +42,7 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const { lang } = useLangContext()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
-  const userList = useUserMembershipList(auth)
+  const userList = useUserList(auth)
   const memberList = useMessengerMemberList(id)
   const messengerMemberMutation = useMessengerMemberMutation()
   const rawData = useMemo(()=>{
@@ -90,7 +90,7 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
   const memberList = useMessengerMemberList(id)
-  const externalMemberList = useExternalMembershipList(keyword)
+  const externalMemberList = useExternalUserList(keyword)
   const data = useMemo(()=>{
     const memberSet = new Set(memberList?.map(v=>v.user))
     return externalMemberList?.filter(v=>!memberSet.has(v.id)) || []

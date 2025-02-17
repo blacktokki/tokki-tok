@@ -2,7 +2,7 @@ import React, { useState,  useEffect, createContext, useMemo, useRef, useContext
 import firebase from "firebase/app";
 import "firebase/messaging";
 import {FCM_PUBLIC_VAPID_KEY, FCM_API_KEY} from "../constants/Envs"
-import { Notification as NotificationType, UserMembership } from "../types";
+import { Notification as NotificationType, User } from "../types";
 import { getNotification, postNotification, putNotification } from "../services/notification";
 
 const firebaseConfig = require("../../web/firebase-config.js")
@@ -43,7 +43,7 @@ const requestToken = async()=>{
 
 const FirebaseContext = createContext<{enable?:boolean, setEnable:(enable:boolean)=>void}>({setEnable:()=>{}});
 
-export const FirebaseProvider = ({user, children}:{user?:UserMembership|null, children:React.ReactNode})=>{
+export const FirebaseProvider = ({user, children}:{user?:User|null, children:React.ReactNode})=>{
   const tokenRef = useRef<string|null>()
   const [notification, setNotification] = useState<NotificationType|null>()
   const enable = useMemo(()=>notification===undefined?undefined:(notification?.token?true:false), [notification])

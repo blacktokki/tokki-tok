@@ -13,7 +13,7 @@ const endpoint = `${process.env.API_URL}/messenger`
 const createUser = async()=>{
     const token = (await axios.post(`${endpoint}/api-token-auth/`, {username: "guest", password:"guest"})).data
     const options = {headers:{'Authorization': `JWT ${token}`}}
-    const user = (await axios.get(`${endpoint}/api/v1/users/memberships/?_self=true`, options)).data[0]
+    const user = (await axios.get(`${endpoint}/api/v1/users/?_self=true`, options)).data[0]
     const websocket = new WebSocket(`${SCHEMA=='https'?'wss':'ws'}://${DOMAIN}/messenger/ws/`, ['Authorization', token])
     websocket.onmessage = (event) => {console.log("onmessage", event.data)}
     return {user, websocket, options, cnt:0}

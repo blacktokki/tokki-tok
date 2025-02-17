@@ -13,9 +13,9 @@ import useModalsContext from '../../../hooks/useModalsContext';
 import ChannelEditModal from '../../../modals/ChannelEditModal';
 import useLangContext from '../../../hooks/useLangContext';
 import ContractFooter from '../../../components/ContractFooter';
-import { MessengerChannel, TabViewRecord, UserMembership } from '../../../types';
+import { TabViewRecord } from '../../../types';
 import useAuthContext from '../../../hooks/useAuthContext';
-import useUserMembershipList from '../../../hooks/lists/useUserMembershipList';
+import useUserList from '../../../hooks/lists/useUserList';
 import { FontAwesome, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '../../../lib/@expo/vector-icons';
 import { useMessengerChannelSorted } from '../../../hooks/lists/useMessengerChannelList';
 import CommonItem from '../../../components/CommonItem';
@@ -63,7 +63,7 @@ const MemberTabView = ()=>{
   const {auth} = useAuthContext()
   const theme = useColorScheme()
   const { setModal } = useModalsContext()
-  const userList = useUserMembershipList(auth)
+  const userList = useUserList(auth)
   const memberItem = React.useMemo(
       ()=>userList && userList.map((item, index)=><MemberItem key={index} member={item} onPress={()=>setModal(ProfileModal, {id:item.id})}/>), [userList])
   return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}}>

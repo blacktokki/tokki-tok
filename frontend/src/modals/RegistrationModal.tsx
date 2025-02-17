@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput } from "react-native";
 import useLangContext from "../hooks/useLangContext";
-import useUserMembershipList, { useUserMembershipMutation } from "../hooks/lists/useUserMembershipList";
+import useUserList, { useUserMutation } from "../hooks/lists/useUserList";
 import useAuthContext from "../hooks/useAuthContext";
 import ModalSection from "../components/ModalSection";
 import useModalsContext from "../hooks/useModalsContext";
@@ -9,7 +9,7 @@ import { View, Text } from "../components/Themed";
 import RowField from "../components/RowField";
 import CommonButton from "../components/CommonButton";
 import CommonTextInput from "../components/CommonTextInput";
-import useExternalMembershipList from "../hooks/lists/useExternalMembershipList";
+import useExternalUserList from "../hooks/lists/useExternalUserList";
 // import TextButton from "../components/TextButton";
 // import Colors from "../constants/Colors";
 // import useColorScheme from "../hooks/useColorScheme";
@@ -40,9 +40,9 @@ export default function RegistrationModal({id}:{id?:number}) {
   const [checkPassword, setCheckPassword] = useState("")
   const [isStaff, setIsStaff] = useState(false)
   const [error, setError] = useState<ErrorMessages>({})
-  const userList = useUserMembershipList(auth)
-  const externalMemberList = useExternalMembershipList(username)
-  const userMembershipMutation = useUserMembershipMutation()
+  const userList = useUserList(auth)
+  const externalMemberList = useExternalUserList(username)
+  const userMembershipMutation = useUserMutation()
   const user = userList?.find(v=>v.id==id)
   const usernameDisable = user && user.is_guest===false
   useEffect(()=>{

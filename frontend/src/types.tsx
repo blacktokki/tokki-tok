@@ -67,18 +67,6 @@ export type CreateUser = BaseUser & {
   inviteGroupId: number
 }
 
-export type Membership = {
-  id?:number
-  root_group_id?:number,
-  image_url?:string
-  groupname:string,
-  group:number
-}
-
-export type UserMembership =  User & {
-  membership_set:Membership[]
-}
-
 type BaseChannel = {
   id?: number,
   name: string,

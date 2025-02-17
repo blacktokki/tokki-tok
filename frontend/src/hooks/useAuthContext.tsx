@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useReducer, useMemo, Dispatch, useState } from "react"
 import { checkLogin, login, logout } from "../services"
 import { getNotification, putNotification } from "../services/notification"
-import { UserMembership } from "../types"
+import { User } from "../types"
 
-type AuthAction = {type:string, username?:string, password?:string, user?:UserMembership|null}
+type AuthAction = {type:string, username?:string, password?:string, user?:User|null}
 
-export type Auth = {user?:UserMembership|null, groupId?:number}
+export type Auth = {user?:User|null, groupId?:number}
 
-type AuthState ={user?:UserMembership|null, request?:{username:string, password:string}|null}
+type AuthState ={user?:User|null, request?:{username:string, password:string}|null}
 
 const AuthContext = createContext<{auth:Auth, error?:string, dispatch:Dispatch<AuthAction>}>({auth:{}, dispatch:()=>{}});
 
@@ -60,8 +60,7 @@ export const AuthProvider = ({children}:{children:React.ReactNode})=>{
   const [authState, dispatch] = useReducer(authReducer, {} as Auth)
   const [error, setError] = useState<string>()
   const auth = useMemo(()=>({
-    user:authState.user,
-    groupId: authState.user?.membership_set.find(g=>g.root_group_id==null)?.group
+    user:authState.user
   }), [authState])
   useEffect(()=>{
     if(authState.user===undefined){

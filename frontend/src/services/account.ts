@@ -1,5 +1,5 @@
 
-import { CreateUser, User, UserMembership } from '../types';
+import { CreateUser, User } from '../types';
 import axios, { getToken, setToken } from './axios';
 import {accountURL as baseURL} from '../constants/Envs'
 
@@ -23,9 +23,9 @@ export const guestLogin =  async() => {
 }
 
 const checkLoginToken = async ()=>{
-    const value = (await axios.get("/api/v1/users/memberships/?_self=true"))?.data
+    const value = (await axios.get("/api/v1/users/?_self=true"))?.data
     if (value && value.length){
-        return value[0] as UserMembership
+        return value[0] as User
     }
     return null
 }
@@ -52,8 +52,8 @@ export const checkLogin = async() => {
     }
 }
 
-export const getUserList = async (group_id:number)=>{
-    return (await axios.get(`/api/v1/users/?group_id=${group_id}`) ).data as User[]
+export const getUserList = async ()=>{
+    return [] as User[]
 }
 
 export const postUser = async (user:CreateUser)=>{
@@ -82,10 +82,6 @@ export const deleteUser = async (userId:number)=>{
     await axios.delete(`/api/v1/user/${userId}/`, {baseURL})
 }
 
-export const getUserMembershipList = async (group_id:number)=>{
-    return (await axios.get(`/api/v1/users/memberships/?group_id=${group_id}`) ).data as UserMembership[]
-}
-
-export const getExternalMembershipList = async (username:string)=>{
-    return (await axios.get(`/api/v1/users/memberships/?username=${username}`) ).data as UserMembership[]
+export const getExternalUserList = async (username:string)=>{
+    return (await axios.get(`/api/v1/users/?username=${username}`) ).data as User[]
 }
