@@ -11,12 +11,10 @@ user_logged_in.disconnect(update_last_login, dispatch_uid='update_last_login')
 
 def account_service_login(request, data):
     session = requests.Session()
-    csrf = session.get(f"{settings.ACCOUNT_SERVICE_URL}/api/v1/user/csrf/").content
     headers = {
         "X-FORWARDED-FOR": request.META.get('HTTP_X_FORWARDED_FOR'),
         "X-REAL-IP": request.META.get('HTTP_X_REAL_IP'),
-        "User-Agent": request.META.get('HTTP_USER_AGENT'),
-        "X-CSRF-TOKEN": csrf,
+        "User-Agent": request.META.get('HTTP_USER_AGENT')
     }
     # remote_addr = request.META.get('REMOTE_ADDR')
 
@@ -35,10 +33,3 @@ def authenticate(request, username=None, password=None):
     if session:
         return session.get(f"{settings.ACCOUNT_SERVICE_URL}/api/v1/user/?self=true")
 
-
-def sso_token(request):
-    session, message = account_service_login(request, json.loads(request.body))
-    if session:
-        response = session.get(f"{settings.ACCOUNT_SERVICE_URL}/api/v1/user/sso/token")
-        return HttpResponse(response.text, status=response.status_code)
-    return HttpResponse(json.dumps({"message": message}), status=401)
