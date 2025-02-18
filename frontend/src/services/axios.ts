@@ -46,7 +46,7 @@ const needRefresh = (response: AxiosResponse<any, any>) => {
     return getToken().then(async (token) => {
       if (token) {
         const r = await account.post(
-          '/api/v1/user/sso/refresh/',
+          '/api/v1/user/token/refresh/',
           { token },
           { headers: { Authorization: '' } }
         );
