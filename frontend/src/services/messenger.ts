@@ -1,5 +1,8 @@
 import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel, EditMessengerContent } from '../types';
-import axios from './axios';
+import { baseURL } from "../constants/Envs"
+import { axiosCreate } from './axios';
+
+const axios = axiosCreate(baseURL)
 
 export const getChannelList = async (type:string, user_id?:number)=>{
     if(user_id==undefined)
@@ -81,3 +84,6 @@ export const postMessage = async (message:EditMessage, callback?:(args:{channel:
 export const patchMessengerContent = async (content:EditMessengerContent)=>{
     return (await axios.patch(`/api/v1/messengercontents/${content.id}/`, content)).data as MessengerContent
 }
+
+
+export default axios

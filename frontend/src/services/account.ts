@@ -1,34 +1,38 @@
 
 import { CreateUser, User } from '../types';
-import axios, { getToken, setToken } from './axios';
-import {accountURL as baseURL} from '../constants/Envs'
+import account, { getToken, setToken } from './axios';
+import axios from './messenger';
 
 export const login = async(username:string, password:string) => {
     if(username.endsWith('.guest') && password.length == 0)
         password = 'guest'
-    const r = await axios.post("/api-token-auth/", {username, password});
-    if(r.status == 200){
-        await setToken(r.data)
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    const r = await account.post("/login", formData);
+    const token:string = r.headers['authorization']
+    if(r.status == 200 && token){
+        await setToken(token.split(' ')[1])
         return await checkLogin()
     }
 }
 
 export const logout = async() => {
     await setToken(null)
-    return await axios.get("/api-auth/logout/")
+    return await account.get("/logout")
 }
 
 export const guestLogin =  async() => {
     return await login('guest', 'guest')
 }
 
-const checkLoginToken = async ()=>{
-    const value = (await axios.get("/api/v1/users/?_self=true"))?.data
-    if (value && value.length){
-        return value[0] as User
+const checkLoginToken = async () => {
+    const value = (await account.get('/api/v1/user/?self=true'))?.data?.value;
+    if (value) {
+      return value[0] as User;
     }
-    return null
-}
+    return null;
+  };
 
 export const checkLogin = async() => {
     const token = await getToken()
@@ -57,7 +61,7 @@ export const getUserList = async ()=>{
 }
 
 export const postUser = async (user:CreateUser)=>{
-    await axios.post(`/api/v1/user/`, {
+    await account.post(`/api/v1/user/`, {
         imageUrl:user.imageUrl,
         inviteGroupId: user.inviteGroupId,
         isAdmin: user.is_staff,
@@ -65,21 +69,20 @@ export const postUser = async (user:CreateUser)=>{
         name: user.name,
         password: user.password,
         username: user.username
-    }, {baseURL})
+    })
 }
 
 export const patchUser = async (user:{id:number, name:string, is_guest?:boolean, username?:string, password?:string})=>{
-    console.log(user)
-    await axios.patch(`/api/v1/user/`, {ids:[user.id], updated: {
+    await account.patch(`/api/v1/user/`, {ids:[user.id], updated: {
         name:user.name, 
         isGuest:user.is_guest,
         username:user.username,
         password:user.password,
-    }}, {baseURL})
+    }})
 }
 
 export const deleteUser = async (userId:number)=>{
-    await axios.delete(`/api/v1/user/${userId}/`, {baseURL})
+    await account.delete(`/api/v1/user/${userId}/`)
 }
 
 export const getExternalUserList = async (username:string)=>{

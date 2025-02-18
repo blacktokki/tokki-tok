@@ -1,5 +1,5 @@
 import { Notification } from '../types';
-import axios from './axios';
+import axios from './messenger';
 
 export const getNotification = async (user_id:number)=>{
     const data = (await axios.get(`/api/v1/notifications/?type=WEB&user=${user_id}`) ).data as Notification[]
