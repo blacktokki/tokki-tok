@@ -55,4 +55,4 @@ class MessengerPermission(BasePermission):
 
     @_has_object_permission.register(MessengerMember)
     def _(self, obj, request):
-        return obj.user == request.user
+        return obj.user == request.user or obj.channel.owner == request.user

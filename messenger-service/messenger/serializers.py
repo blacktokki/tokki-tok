@@ -103,7 +103,7 @@ class ChannelSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
         if instance.type in ['messenger']:
             self._enter_channel(instance, validated_data['owner'])
-            if 'subowner' in validated_data and not validated_data['owner'].id != validated_data['subowner'].id:
+            if 'subowner' in validated_data and validated_data['owner'].id != validated_data['subowner'].id:
                 self._enter_channel(instance, validated_data['subowner'])
         return instance
 
