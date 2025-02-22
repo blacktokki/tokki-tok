@@ -14,7 +14,7 @@ import { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberLis
 import { avatarFromChannel } from '../components/Avatar';
 import useModalEffect from '../hooks/useModalEffect';
 
-export default function ChannelEditModal({id, member_id, type}: {id?:number, member_id?:number, type:string}) {
+export default function ChannelEditModal({id, member_id, type}: {id?:number, member_id?:number, type:Channel['type']}) {
   const { lang } = useLangContext()
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
@@ -54,8 +54,8 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
         </View>}
         <View style={{flex:1, flexDirection:'row', justifyContent:'flex-end'}}>
           <CommonButton title={lang('save')} onPress={()=>{
-            if(auth?.user?.id && auth.groupId){
-              const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id, group:auth.groupId};
+            if(auth?.user?.id){
+              const newChannel:Channel = {id, name, description, type, owner:auth?.user?.id};
               (id?channelMutation.update(newChannel):channelMutation.create(newChannel)).then(v=>navigate("Main", {
                 screen: 'ChatScreen', //v.type == 'messenger'?'ChatScreen':'MyMessageScreen',
                 params:{id:v.id}

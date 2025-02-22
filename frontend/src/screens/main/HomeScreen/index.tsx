@@ -15,7 +15,7 @@ import useLangContext from '../../../hooks/useLangContext';
 import ContractFooter from '../../../components/ContractFooter';
 import { TabViewRecord } from '../../../types';
 import useAuthContext from '../../../hooks/useAuthContext';
-import useUserList from '../../../hooks/lists/useUserList';
+import usePeopleUserList from '../../../hooks/lists/usePeopleUserList';
 import { FontAwesome, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '../../../lib/@expo/vector-icons';
 import { useMessengerChannelSorted } from '../../../hooks/lists/useMessengerChannelList';
 import CommonItem from '../../../components/CommonItem';
@@ -25,8 +25,8 @@ import { navigate } from '../../../navigation';
 import CommonSection from '../../../components/CommonSection';
 import ConfigSections from './ConfigSections';
 import Avatar, { avatarFromChannel } from '../../../components/Avatar';
-import RegistrationModal from '../../../modals/RegistrationModal';
 import { useNavigation } from '@react-navigation/native';
+import AddPeopleModal from '../../../modals/AddPeopleModal';
 
 
 const useHeaderSetter = (options:any[]) =>{
@@ -59,11 +59,11 @@ const renderIndexDetector= (Component:React.ComponentType<any>, headerIndexRef:(
   </View>
 }
 
-const MemberTabView = ()=>{
+const PeopleTabView = ()=>{
   const {auth} = useAuthContext()
   const theme = useColorScheme()
   const { setModal } = useModalsContext()
-  const userList = useUserList(auth)
+  const userList = usePeopleUserList(auth)
   const memberItem = React.useMemo(
       ()=>userList && userList.map((item, index)=><MemberItem key={index} member={item} onPress={()=>setModal(ProfileModal, {id:item.id})}/>), [userList])
   return <ScrollView style={{flex:1, backgroundColor:Colors[theme].background}}>
@@ -118,8 +118,8 @@ const getBottomTabs = (theme:'light'|'dark', headerSetter:(ref:any)=>void)=>{
   const color = Colors[theme].iconColor
   return {
     OneTab:{
-        title:'member',
-        component:renderIndexDetector(MemberTabView, headerSetter),
+        title:'people',
+        component:renderIndexDetector(PeopleTabView, headerSetter),
         icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='account'/>,
     },
     TwoTab:{
@@ -150,7 +150,7 @@ export default function HomeScreen({navigation, route}: StackScreenProps<any, 'H
   const [ home, setHome ] = useState(windowType == 'landscape')
   const color = Colors[theme].text
   const options = [
-    {title:lang('member'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{})}]}/>},
+    {title:lang('people'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(AddPeopleModal, {})}]}/>},
     {title:lang('chat'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'messenger'})}]}/>},
     // {title:lang('my messages'), headerRight:()=><HeaderRight extra={[{title:lang('create'), onPress:()=>setModal(ChannelEditModal, {type:'mycontent'})}]}/>},
     {title:lang('config'), headerRight:()=><HeaderRight/>}

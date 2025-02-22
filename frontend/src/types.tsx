@@ -63,17 +63,15 @@ export type User = BaseUser & {
 }
 
 export type CreateUser = BaseUser & {
-  password:string,
-  inviteGroupId: number
+  password:string
 }
 
 type BaseChannel = {
   id?: number,
   name: string,
-  type: string,
+  type: "people" | "messenger",
   description?: string,
-  is_archive?: boolean,
-  group: number
+  is_archive?: boolean
 }
 
 export type Channel = BaseChannel & {
@@ -82,6 +80,7 @@ export type Channel = BaseChannel & {
 }
 
 export type MessengerChannel = BaseChannel & {
+  type: "messenger",
   member_count: number,
   unread_count: number,
   last_message?: {
@@ -159,6 +158,11 @@ export type MessengerMember = {
   user: number,
   channel: number,
   last_message?: number
+}
+
+export type People = {
+  id:number,
+  user:User
 }
 
 export type Notification = {

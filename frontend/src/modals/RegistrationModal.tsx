@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet } from "react-native";
 import useLangContext from "../hooks/useLangContext";
-import useUserList, { useUserMutation } from "../hooks/lists/useUserList";
+import useUserMutation from "../hooks/useUserMutation";
 import useAuthContext from "../hooks/useAuthContext";
 import ModalSection from "../components/ModalSection";
 import useModalsContext from "../hooks/useModalsContext";
@@ -28,7 +28,7 @@ const ErrorView = (props:{message?:string})=>{
 </View>:<></>
 }
 
-export default function RegistrationModal({id}:{id?:number}) {
+export default function RegistrationModal() {
   const { lang } = useLangContext()
   const {auth} = useAuthContext()
   // const theme = useColorScheme()
@@ -40,10 +40,9 @@ export default function RegistrationModal({id}:{id?:number}) {
   const [checkPassword, setCheckPassword] = useState("")
   const [isStaff, setIsStaff] = useState(false)
   const [error, setError] = useState<ErrorMessages>({})
-  const userList = useUserList(auth)
   const externalMemberList = useExternalUserList(username)
   const userMembershipMutation = useUserMutation()
-  const user = userList?.find(v=>v.id==id)
+  const user = auth.user
   const usernameDisable = user && user.is_guest===false
   useEffect(()=>{
     if (user){
@@ -62,24 +61,13 @@ export default function RegistrationModal({id}:{id?:number}) {
         setError(newError)
         return
     }
-    if (id){
+    if(user?.id){
       userMembershipMutation.update({
-        id,
+        id:user?.id,
         name,
         username:usernameDisable?undefined:username,
         is_guest:false,
         password:password.length>0?password:undefined,
-      }).then(()=>{(id!=auth.user?.id || user?.is_guest) && back()})
-    }
-    else{
-      auth?.groupId && userMembershipMutation.create({
-          username,
-          name,
-          password,
-          is_guest:false,
-          is_staff:isStaff,
-          inviteGroupId:auth.groupId,
-
       }).then(back)
     }
   }
@@ -122,17 +110,10 @@ export default function RegistrationModal({id}:{id?:number}) {
           />
           <ErrorView message={error.checkPassword}/>
         </RowField>
-        {/* <RowField name={lang('Manager Permission')} width={'60%'}>
-          <View style={{flexDirection:'row'}}>
-            {[[lang('Yes'), true], [lang('No'), false]].map(([title, value])=><TextButton 
-              key={title} title={title} textStyle={{fontSize:16, color, textDecorationLine:isStaff==value?'underline':'none'}} style={{borderRadius:20}} onPress={(
-              )=>setIsStaff(value)}/>)}
-          </View>
-        </RowField> */}
       </View>
       <View style={{width:'100%', flexDirection:'row'}}>
-        {id && <View style={{flexDirection:'row', justifyContent:'flex-start'}}>
-          <CommonButton title={lang('delete account')} style={{marginHorizontal:5}} textStyle={{color:'red'}} onPress={()=>userMembershipMutation.delete(id).then(back)}/>
+        {user?.id && <View style={{flexDirection:'row', justifyContent:'flex-start'}}>
+          <CommonButton title={lang('delete account')} style={{marginHorizontal:5}} textStyle={{color:'red'}} onPress={()=>userMembershipMutation.delete(user.id).then(back)}/>
         </View>}
         <View style={{flex:1, flexDirection:'row', justifyContent:'flex-end'}}>
           <CommonButton title={lang('save')} onPress={_register}/>

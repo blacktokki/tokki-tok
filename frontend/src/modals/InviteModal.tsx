@@ -1,7 +1,7 @@
 import React, {useRef,MutableRefObject, useMemo, useState, useEffect } from 'react';
 import { View, Text } from '../components/Themed';
 import useAuthContext from '../hooks/useAuthContext';
-import useUserList from '../hooks/lists/useUserList';
+import usePeopleUserList from '../hooks/lists/usePeopleUserList';
 import { TabViewRecord, User } from '../types';
 import CommonButton from '../components/CommonButton';
 import useMessengerMemberList, { useMessengerMemberMutation } from '../hooks/lists/useMessengerMemberList';
@@ -34,21 +34,17 @@ const InviteItem = (props:{item:User, selectedRef:MutableRefObject<Set<number>>}
 
 }
 type InviteTabViewProps = {
-  id:number,
   selectedRef:MutableRefObject<Set<number>>
+  userFilter:(user:User)=>boolean
 }
 
-const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
+const PeopleTabView = ({selectedRef, userFilter}:InviteTabViewProps)=>{
   const { lang } = useLangContext()
   const {auth} = useAuthContext()
-  const { setModal } = useModalsContext()
-  const userList = useUserList(auth)
-  const memberList = useMessengerMemberList(id)
-  const messengerMemberMutation = useMessengerMemberMutation()
+  const userList = usePeopleUserList(auth)
   const rawData = useMemo(()=>{
-    const memberSet = new Set(memberList?.map(v=>v.user))
-    return userList?.filter(v=>!memberSet.has(v.id)) || []
-  }, [userList, memberList])
+    return userList?.filter(userFilter) || []
+  }, [userList, userFilter])
   const {data, dispatch:dispatchKeyword, searchState} = useLocalSearch(rawData, (v, keyword)=>(v.username.includes(keyword) || v.name.includes(keyword)))
   const search = (k:string)=>{
     if (k?.length>0){
@@ -59,68 +55,41 @@ const GroupTabView = ({id, selectedRef}:InviteTabViewProps)=>{
       dispatchKeyword({type:'DISABLE_SEARCH'})
     }
   }
-  const back = ()=>{
-    setModal(InviteModal, null)
-  }
-  useModalEffect(back, [])
   return <View style={{alignItems:'center', flex:1}}>
     <View style={{'width': '100%', flex:1}}>
       <TextField name={`${lang('Username')} & ${lang('Name')}`} placeholder={auth.user?.name} value={searchState.keyword} setValue={search} width={'80%'}/>
-      {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
-    </View>
-    <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
-      <CommonButton title={lang('invite')} onPress={()=>{
-        messengerMemberMutation.invite({
-          channel_id:id,
-          user_ids:[...selectedRef.current]
-        }).then(back)
-      }}/>
-      <CommonButton title={lang('cancel')} onPress={back}/>
+      {data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
     </View>
   </View>
 }
 
 const DELAY = 500
 
-const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
+export const ExternalMembershipTabView = ({selectedRef, userFilter, isChannel}:InviteTabViewProps & {isChannel:boolean})=>{
   const { lang } = useLangContext()
   const [value, setValue] = useState('')
   const [keyword, setKeyword] = useState('')
   const timeoutRef = useRef<NodeJS.Timeout>()
   const {auth} = useAuthContext()
-  const { setModal } = useModalsContext()
-  const memberList = useMessengerMemberList(id)
   const externalMemberList = useExternalUserList(keyword)
   const data = useMemo(()=>{
-    const memberSet = new Set(memberList?.map(v=>v.user))
-    return externalMemberList?.filter(v=>!memberSet.has(v.id)) || []
-  }, [externalMemberList, memberList])
-  const messengerMemberMutation = useMessengerMemberMutation()
+    return externalMemberList?.filter(userFilter) || []
+  }, [externalMemberList, userFilter])
   useEffect(()=>{
     timeoutRef.current = setTimeout(()=>{
       setKeyword(value)
     }, DELAY)
     return ()=>{timeoutRef.current && clearTimeout(timeoutRef.current)}
   }, [value])
-  const back = ()=>{
-    setModal(InviteModal, null)
-  }
-  const inviteLink = location.href.replace('chat', 'invitee')
+  const inviteLink = isChannel?location.href.replace('chat', 'invitee'):undefined
   return <View style={{alignItems:'center', flex:1}}>
   <View style={{'width': '100%', flex:1, paddingVertical:10}}>
-    <CopyField name={lang('invite link')} width={'80%'} value={inviteLink}/>
-    <View style={{marginVertical: 10, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
+    {inviteLink && <>
+      <CopyField name={lang('invite link')} width={'80%'} value={inviteLink}/>
+      <View style={{marginVertical: 10, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
+    </>}
     <TextField name={lang('Username')} placeholder={auth.user?.username} value={value} setValue={setValue} width={'80%'}/>
-    {id && data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
-  </View>
-  <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
-    <CommonButton title={lang('invite')} onPress={()=>{
-      messengerMemberMutation.invite({
-        channel_id:id,
-        user_ids:[...selectedRef.current]
-      }).then(back)
-    }}/>
-    <CommonButton title={lang('cancel')} onPress={back}/>
+    {data && <FlatList contentContainerStyle={{flexGrow:1}} data={data} renderItem={({item})=><InviteItem item={item} selectedRef={selectedRef}/>}/>}
   </View>
 </View>
 }
@@ -128,18 +97,29 @@ const ExternalMembershipTabView = ({id, selectedRef}:InviteTabViewProps)=>{
 export default function InviteModal({id}:{id:number}) {
   const { lang } = useLangContext()
   const selectedRef = useRef<Set<number>>(new Set())
+  const messengerMemberList = useMessengerMemberList(id)
+  const userFilter =  useMemo(()=>{
+    const memberSet = new Set(messengerMemberList?.map(v=>v.user))
+    return (user:User) => !memberSet.has(user.id);
+  }, [messengerMemberList])
   const drawerTabs:TabViewRecord = {
-    group:{
-      title: 'Group',
-      component: ()=><GroupTabView id={id} selectedRef={selectedRef}/>,
+    member:{
+      title: 'People',
+      component: ()=><PeopleTabView selectedRef={selectedRef} userFilter={userFilter}/>,
       icon: <></>
     },
     external:{
       title: 'External members',
-      component: ()=><ExternalMembershipTabView id={id} selectedRef={selectedRef}/>,
+      component: ()=><ExternalMembershipTabView selectedRef={selectedRef} userFilter={userFilter} isChannel/>,
       icon: <></>
     }
   }
+  const messengerMemberMutation = useMessengerMemberMutation()
+  const { setModal } = useModalsContext()
+  const back = ()=>{
+    setModal(InviteModal, null)
+  }
+  useModalEffect(back, [])
   return <ModalSection>
     <View style={{flex:1, width:'100%'}}>
       <View style={{width:'100%'}}>
@@ -147,6 +127,15 @@ export default function InviteModal({id}:{id:number}) {
         <View style={{marginBottom: 20, height: 1, width: '100%'}} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
       </View>
       <TabView tabs={drawerTabs} tabBarPosition={"top"}/>
+      <View style={[{width:'100%', flexDirection:'row', padding:10,}, {justifyContent:'flex-end'}]}>
+        <CommonButton title={lang('invite')} onPress={()=>{
+          messengerMemberMutation.invite({
+            channel_id:id,
+            user_ids:[...selectedRef.current]
+          }).then(back)
+        }}/>
+        <CommonButton title={lang('cancel')} onPress={back}/>
+      </View>
     </View>
   </ModalSection>
 }

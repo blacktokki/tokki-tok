@@ -1,6 +1,6 @@
 
 import { CreateUser, User } from '../types';
-import account, { getToken, setToken } from './axios';
+import account, { getToken, needRefresh, setToken } from './axios';
 import axios from './messenger';
 
 export const login = async(username:string, password:string) => {
@@ -43,7 +43,7 @@ export const checkLogin = async() => {
     }
     catch(e:any){
         let error = e
-        if(e.response !== undefined && e.response.status==401){
+        if(needRefresh(e.response)){
             try{
                 return await checkLoginToken()
             }
@@ -56,14 +56,9 @@ export const checkLogin = async() => {
     }
 }
 
-export const getUserList = async ()=>{
-    return [] as User[]
-}
-
 export const postUser = async (user:CreateUser)=>{
     await account.post(`/api/v1/user/`, {
         imageUrl:user.imageUrl,
-        inviteGroupId: user.inviteGroupId,
         isAdmin: user.is_staff,
         isGuest: user.is_guest,
         name: user.name,
@@ -87,4 +82,8 @@ export const deleteUser = async (userId:number)=>{
 
 export const getExternalUserList = async (username:string)=>{
     return (await axios.get(`/api/v1/users/?username=${username}`) ).data as User[]
+}
+
+export const getExternalUser = async (id:number)=>{
+    return (await axios.get(`/api/v1/users/${id}/`) ).data as User
 }

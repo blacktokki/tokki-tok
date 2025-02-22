@@ -17,15 +17,15 @@ import { navigate } from '.'
 import { avatarFromChannel } from '../components/Avatar';
 import useColorScheme from '../hooks/useColorScheme';
 import { Ionicons, MaterialCommunityIcons } from '../lib/@expo/vector-icons';
-import RegistrationModal from '../modals/RegistrationModal';
-import useUserList from '../hooks/lists/useUserList';
+import usePeopleUserList from '../hooks/lists/usePeopleUserList';
 import ProfileModal from '../modals/ProfileModal';
+import AddPeopleModal from '../modals/AddPeopleModal';
 
 
-const MemberTabView = ()=>{
+const PeopleTabView = ()=>{
   const {auth} = useAuthContext()
   const { setModal } = useModalsContext()
-  const userList = useUserList(auth)
+  const userList = usePeopleUserList(auth)
   return <View style={{flex:1}}>
     {userList?.map((item, index)=>{
       return <CommonItem key={index} containerStyle={{marginHorizontal:0}} bodyStyle={{alignItems:'flex-start'}} onPress={()=>setModal(ProfileModal, {id:item.id})}>
@@ -51,8 +51,8 @@ const getDrawerTabs = (theme:'light'|'dark')=>{
   const color = Colors[theme].iconColor
   return {
     MemberTab:{
-      title:'member',
-      component:MemberTabView,
+      title:'people',
+      component:PeopleTabView,
       icon:<MaterialCommunityIcons size={32} color={color} style={{ marginBottom: -3 }} name='account'/>,
     },
     ChatTab:{
@@ -76,7 +76,7 @@ export default ({auth}:{auth:Auth})=> {
   const { setModal } = useModalsContext()
   
   const onAddList = [
-    ()=>setModal(RegistrationModal, auth.user?.is_guest?{id:auth.user.id}:{}),
+    ()=>setModal(AddPeopleModal, {}),
     ()=>setModal(ChannelEditModal, {type:'messenger'}),
     // ()=>setModal(ChannelEditModal, {type:'mycontent'}),
   ]

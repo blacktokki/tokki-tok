@@ -1,18 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { deleteUser, getUserList, patchUser, postUser } from "../../services";
-import useAuthContext, { Auth } from "../useAuthContext";
+import { useMutation } from "react-query";
+import { deleteUser, patchUser, postUser } from "../services";
+import useAuthContext from "./useAuthContext";
 
-export default function useUserList(auth?:Auth){
-  const { data } = useQuery(["UserList", auth?.groupId] , async()=>auth?.groupId?(await getUserList()):[])
-  return data
-}
-
-export function useUserMutation(){
-  const queryClient = useQueryClient()
+export default function useUserMutation(){
   const { auth, dispatch } = useAuthContext()
   const _create = useMutation(postUser, {
     onSuccess: ()=>{
-      queryClient.invalidateQueries("UserList")
     }
   })
   const _update = useMutation(patchUser, {
@@ -25,13 +18,11 @@ export function useUserMutation(){
           dispatch({type:"REFRESH"})
         }
       else{
-        queryClient.invalidateQueries("UserList")
       }
     }
   })
   const _delete = useMutation(deleteUser, {
     onSuccess: (data, id)=>{
-      queryClient.invalidateQueries("UserList")
       if (id == auth.user?.id)
         dispatch({type:"LOGOUT_REQUEST"})
     }

@@ -3,7 +3,7 @@ import {accountURL} from "../constants/Envs"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const needRefresh = (response: AxiosResponse<any, any>) => {
+export const needRefresh = (response: AxiosResponse<any, any>) => {
     return (
       (response.config.url === '/api/v1/user/?self=true' &&
         response.request.responseURL.endsWith('account/login')) ||

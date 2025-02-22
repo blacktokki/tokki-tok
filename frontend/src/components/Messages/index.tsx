@@ -16,8 +16,10 @@ import useViewerContentList from "../../hooks/lists/useMessengerViewerList";
 import EditorPreview from "./EditorPreview";
 import { MessengerContent } from "../../types";
 import MessageContentView from "./MessageContentView";
+import ProfileModal from "../../modals/ProfileModal";
 
 const MessengerContentPageItem = React.memo((props:MessengerContentPage & {ownerId?:number, reverse?:boolean, getOnPress?:(content:MessengerContent)=>()=>void})=>{
+    const { setModal } = useModalsContext()
     const lastTouchRef = useRef(Date.now()) 
     const touchableRef = useRef(()=>{
       return Date.now() - lastTouchRef.current > 350
@@ -41,6 +43,7 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           const isSelf = props.ownerId == content.user
           const dayChanged = next==undefined || date != next.created.slice(0, 10)
           const message = content.message_set[0]
+          const onProfile = ()=>setModal(ProfileModal, {id:content.user})
           if (isSystem)
             return <View key={content.id} style={{flexDirection:'row', justifyContent:'center', width:'100%', marginVertical:5}}>
               <Text>{message.content}</Text>
@@ -48,8 +51,11 @@ const MessengerContentPageItem = React.memo((props:MessengerContentPage & {owner
           return <View key={content.id}>
             {dayChanged?<View style={{flexDirection:'row', justifyContent:'center', width:'100%'}}><Text>{date}</Text></View>:undefined}
             <View key={content.id} style={{flexDirection:'row', justifyContent:isSelf?'space-between':'flex-start', width:'100%'}}>
-              {isFirst && !isSelf? <View style={{marginTop:3, marginLeft:12}}><Avatar name={content.name} userId={content.user} size={36}/></View>:<View style={{width:48}}/>}
-              <CommonSection autoScale outerContainerStyle={{maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
+              {isFirst && !isSelf? <TouchableOpacity style={{marginTop:3, marginLeft:12}} onPress={onProfile} >
+                  <Avatar name={content.name} userId={content.user} size={36}/>
+                </TouchableOpacity>:
+                <View style={{width:48}}/>}
+              <CommonSection autoScale outerContainerStyle={{maxWidth:'90%'}} title={isFirst?content.name:undefined} titleStyle={{flex:undefined}} titleOnPress={isFirst?onProfile:undefined} bodyStyle={{padding:10}} subtitle={`${created.slice(11)}`}>
                 <TouchableOpacity onLongPress={props.getOnPress?.(content)}>
                   {content.timer && <View style={{flexDirection:'row', alignItems:'stretch'}}>
                     <Text style={{fontSize:12}}>⌚</Text>

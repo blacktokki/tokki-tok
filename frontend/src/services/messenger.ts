@@ -1,13 +1,17 @@
-import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel, EditMessengerContent } from '../types';
+import { Channel, MessengerMember, MessengerContent, EditMessage, MessengerChannel, EditMessengerContent, People } from '../types';
 import { baseURL } from "../constants/Envs"
 import { axiosCreate } from './axios';
 
 const axios = axiosCreate(baseURL)
 
-export const getChannelList = async (type:string, user_id?:number)=>{
+export const getChannelList = async (type:Channel['type'], user_id?:number)=>{
     if(user_id==undefined)
         return Promise.resolve(null)
-    return (await axios.get(`/api/v1/channels/messenger/?type=${type}&messenger_user_id=${user_id}`) ).data as MessengerChannel[]
+    if (type==="people")
+        return (await axios.get(`/api/v1/channels/messenger/?type=${type}&owner_id=${user_id}`) ).data as MessengerChannel[]
+    if(type==="messenger")
+        return (await axios.get(`/api/v1/channels/messenger/?type=${type}&messenger_user_id=${user_id}`) ).data as MessengerChannel[]
+    return Promise.resolve(null)
 }
 
 export const postChannel = async(channel:Channel)=>{
@@ -25,6 +29,19 @@ export const putChannel = async(channel:Channel)=>{
 export const deleteChannel = async(channel_id:number)=>{
     await axios.delete(`/api/v1/channels/${channel_id}/`)
 }
+
+
+export const getPeopleList = async(channel_id:number)=>{
+    try{
+        return (await axios.get(`/api/v1/messengermembers/user/?channel=${channel_id}`) ).data as People[]
+    }
+    catch(e:any){
+        if (e.response.status==400 || e.response.status==403)
+            return Promise.resolve(null)
+        throw e
+    }
+}
+
 
 export const getMessengerMemberList = async(channel_id:number)=>{
     try{

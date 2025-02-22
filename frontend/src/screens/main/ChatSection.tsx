@@ -132,7 +132,7 @@ export default ({channel_id, isEditor, setIsEditor, style, extraButtons}:{channe
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`📤\n ${lang('File')}`} onPress={()=>uploadFile().then(f=>{contentMutation.create({channel:channel_id, user:auth.user?.id, content:'', file:f});setBottomTab(false)})}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`✏️\n ${lang('Editor')}`} onPress={()=>{setIsEditor(!isEditor); isEditor && setBottomTab(false)}}/>
           <CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={`⌚\n ${lang('Timer')}`} onPress={()=>{setModal(DateTimePickerModal, {datetime:timer, callback:(datetime:string)=>setTimer(datetime)});setBottomTab(false)}}/>
-          {extraButtons?.map(v=><CommonButton style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={v.title} onPress={()=>{v.onPress();setBottomTab(false)}} disabled={v.disabled}/>)}
+          {extraButtons?.map((v, k)=><CommonButton key={k} style={{height:80, flex:1, justifyContent:'center', marginRight:15}} title={v.title} onPress={()=>{v.onPress();setBottomTab(false)}} disabled={v.disabled}/>)}
         </View>}
       </ThemedView>
     </View>

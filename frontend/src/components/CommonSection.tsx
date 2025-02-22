@@ -2,10 +2,12 @@ import * as React from 'react';
 import { View, Text } from './Themed';
 import { StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native';
 import Colors from '../constants/Colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export type SectionParamList = {
     title?: string,
     titleStyle?:StyleProp<TextStyle>
+    titleOnPress?:()=>void,
     outerContainerStyle?:StyleProp<TextStyle>
     containerStyle?:StyleProp<ViewStyle>
     bodyStyle?:StyleProp<ViewStyle>
@@ -16,14 +18,19 @@ export type SectionParamList = {
 }
 
 export default function CommonSection(props:SectionParamList){
+  const titleText = <>
+    <Text style={[styles.title, props.titleStyle]}>{props.title}</Text>
+    <Text style={styles.subtitle}>{props.subtitle}</Text>
+  </>
   return (
     <View style={[styles.outerContainer, props.autoScale?{}:styles.outerContainerFill, props.outerContainerStyle]}>
         <View style={[styles.container, props.containerStyle]}>
             {props.withSeparator?<View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />:undefined}
-            {props.title?<View style={styles.titleView}>
-              <Text style={[styles.title, props.titleStyle]}>{props.title}</Text>
-              <Text style={styles.subtitle}>{props.subtitle}</Text>
-            </View>:undefined}
+            {props.title?
+              (props.titleOnPress?
+                <TouchableOpacity onPress={props.titleOnPress} style={styles.titleView}>{titleText}</TouchableOpacity >:
+                <View style={styles.titleView}>{titleText}</View>):
+              undefined}
             <View style={[styles.bodyView, props.bodyStyle]}>
             {props.children}
             </View>

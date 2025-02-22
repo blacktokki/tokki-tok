@@ -5,7 +5,7 @@ import { User } from "../types"
 
 type AuthAction = {type:string, username?:string, password?:string, user?:User|null}
 
-export type Auth = {user?:User|null, groupId?:number}
+export type Auth = {user?:User|null}
 
 type AuthState ={user?:User|null, request?:{username:string, password:string}|null}
 

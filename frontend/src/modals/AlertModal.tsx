@@ -23,7 +23,7 @@ export default function AlertModal({type}:{type:string}) {
         {
           title: 'Create User',
           onPress: ()=>{
-            setModal(RegistrationModal, {id:auth.user?.id})
+            setModal(RegistrationModal, {})
           }
         },
         {
