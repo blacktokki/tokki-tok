@@ -11,8 +11,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import HeaderRight from "../components/HeaderRight";
 import ChannelEditModal from "../modals/ChannelEditModal";
+import { Channel } from "../types";
 
-export default (navigation:StackNavigationProp<any, any>, route:RouteProp<any, any>,channel_id:any, type:string, isEditor:boolean)=>{
+export default (navigation:StackNavigationProp<any, any>, route:RouteProp<any, any>,channel_id:any, type:Channel['type'], isEditor:boolean)=>{
     const { lang, locale } = useLangContext()
     const {auth} = useAuthContext()
     const { setModal } = useModalsContext()

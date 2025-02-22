@@ -34,7 +34,7 @@ export function usePeopleMutation(){
   const {peopleId, peopleList} = usePeopleList(auth)
   const queryClient = useQueryClient()
 
-  const _create = useMutation(async ({user_ids}:{user_ids:number[]})=>{peopleId && postBulkMessengerMember({channel_id:peopleId, user_ids})}, {
+  const _create = useMutation(async ({user_ids}:{user_ids:number[]})=>{peopleId && await postBulkMessengerMember({channel_id:peopleId, user_ids})}, {
     onSuccess: (data, id)=>{
       queryClient.invalidateQueries("PeopleList")
     }

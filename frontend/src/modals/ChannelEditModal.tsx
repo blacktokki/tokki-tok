@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { View, Text } from '../components/Themed';
 import CommonButton from '../components/CommonButton';
 import useAuthContext from '../hooks/useAuthContext';
@@ -45,9 +45,11 @@ export default function ChannelEditModal({id, member_id, type}: {id?:number, mem
       <View style={{width:'100%'}}>
         <Text style={{fontSize:20}}>{title}</Text>
         <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255, 0.3)" />
+      </View>
+      <ScrollView style={{width:'100%', flexGrow:1, maxHeight:'80%'}}>
         <TextField name={lang('Channel Name')} value={name} setValue={setName} width={'60%'}/>
         <TextField name={lang('Description')} value={description} setValue={setDescription} multiline width={'60%'}/>
-      </View>
+      </ScrollView>
       <View style={{width:'100%', flexDirection:'row'}}>
         {member_id &&<View style={{flexDirection:'row', justifyContent:'flex-start'}}>
           <CommonButton title={lang('leave')} style={{marginHorizontal:5}} textStyle={{color:'red'}} onPress={()=>messengerMemberMutation.leave(member_id).then(back)}/>
