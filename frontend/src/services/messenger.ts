@@ -8,7 +8,7 @@ export const getChannelList = async (type:Channel['type'], user_id?:number)=>{
     if(user_id==undefined)
         return Promise.resolve(null)
     if (type==="people")
-        return (await axios.get(`/api/v1/channels/messenger/?type=${type}&owner_id=${user_id}`) ).data as MessengerChannel[]
+        return (await axios.get(`/api/v1/channels/messenger/?type=${type}&owner=${user_id}`) ).data as MessengerChannel[]
     if(type==="messenger")
         return (await axios.get(`/api/v1/channels/messenger/?type=${type}&messenger_user_id=${user_id}`) ).data as MessengerChannel[]
     return Promise.resolve(null)
