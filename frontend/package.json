@@ -35,7 +35,7 @@
     "@react-navigation/stack": "^5.14.9",
     "@tinymce/tinymce-react": "^4.3.0",
     "@unimodules/react-native-adapter": "^6.3.9",
-    "axios": "^1.1.3",
+    "axios": "^1.6.0",
     "dayjs": "^1.11.8",
     "expo": "~48.0.20",
     "expo-asset": "~8.9.1",
