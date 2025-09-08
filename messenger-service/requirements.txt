@@ -5,7 +5,7 @@ mysqlclient
 channels==3.0.1
 # pyopenssl==21.0.0
 django-db-views
-djangorestframework == 3.11.0
+djangorestframework == 3.15.2
 coreapi
 requests_toolbelt
 py_eureka_client
