@@ -74,7 +74,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@config-plugins/react-native-webrtc": "^1.0.0",
-    "@expo/webpack-config": "^0.16.27",
+    "@expo/webpack-config": "^19.0.1",
     "@expo/electron-adapter": "^0.0.55",
     "@types/react": "~18.0.27",
     "@types/react-native": "~0.63.2",
